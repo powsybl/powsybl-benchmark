@@ -1,8 +1,8 @@
 # benchmark
 
-Benchmark                           Mode  Cnt     Score    Error  Units
-OpenLoadFlowBenchmark.ieee118      thrpt    5   767,549 ± 19,818  ops/s
-OpenLoadFlowBenchmark.ieee14       thrpt    5  6813,799 ± 15,377  ops/s
-OpenLoadFlowBenchmark.ieee300      thrpt    5    95,619 ±  0,578  ops/s
-OpenLoadFlowBenchmark.pegase13659  thrpt    5     1,979 ±  0,024  ops/s
-OpenLoadFlowBenchmark.rte6515      thrpt    5     6,670 ±  0,229  ops/s
+Benchmark                          Mode  Cnt    Score    Error  Units
+OpenLoadFlowBenchmark.ieee118      avgt    5    1,265 ±  0,007  ms/op
+OpenLoadFlowBenchmark.ieee14       avgt    5    0,148 ±  0,003  ms/op
+OpenLoadFlowBenchmark.ieee300      avgt    5   10,664 ±  0,124  ms/op
+OpenLoadFlowBenchmark.pegase13659  avgt    5  508,062 ± 43,008  ms/op
+OpenLoadFlowBenchmark.rte6515      avgt    5  148,566 ±  3,253  ms/op
