@@ -20,7 +20,7 @@ Two differents load flow parameters sets have been tested:
 
 
 
-This table reports the average time execution for all network and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelisation.
+This table reports the average time execution for all network and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelization.
 
 | Network      | Basic parameters | Standard parameters |
 | ------------ | ---------------- | ------------------- |
