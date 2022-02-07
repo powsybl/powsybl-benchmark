@@ -21,31 +21,31 @@ import java.util.concurrent.TimeUnit;
 public class OpenLoadFlowBenchmark {
 
     @Benchmark
-    public LoadFlowResult ieee14(IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
-        return LoadFlow.run(networkState.getIeee14Network(), parametersState.getParameters());
+    public LoadFlowResult ieee14(LoadFlowProviderState providerState, IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getIeee14Network(), parametersState.getParameters());
     }
 
     @Benchmark
-    public LoadFlowResult ieee118(IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
-        return LoadFlow.run(networkState.getIeee118Network(), parametersState.getParameters());
+    public LoadFlowResult ieee118(LoadFlowProviderState providerState, IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getIeee118Network(), parametersState.getParameters());
     }
 
     @Benchmark
-    public LoadFlowResult ieee300(IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
-        return LoadFlow.run(networkState.getIeee300Network(), parametersState.getParameters());
-    }
-
-    @Benchmark
-    @Warmup(time = 30)
-    @Measurement(time = 30)
-    public LoadFlowResult rte6515(Rte6515NetworkState networkState, LoadFlowParametersState parametersState) {
-        return LoadFlow.run(networkState.getNetwork(), parametersState.getParameters());
+    public LoadFlowResult ieee300(LoadFlowProviderState providerState, IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getIeee300Network(), parametersState.getParameters());
     }
 
     @Benchmark
     @Warmup(time = 30)
     @Measurement(time = 30)
-    public LoadFlowResult pegase13659(Pegase13659NetworkState networkState, LoadFlowParametersState parametersState) {
-        return LoadFlow.run(networkState.getNetwork(), parametersState.getParameters());
+    public LoadFlowResult rte6515(LoadFlowProviderState providerState, Rte6515NetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getNetwork(), parametersState.getParameters());
+    }
+
+    @Benchmark
+    @Warmup(time = 30)
+    @Measurement(time = 30)
+    public LoadFlowResult pegase13659(LoadFlowProviderState providerState, Pegase13659NetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getNetwork(), parametersState.getParameters());
     }
 }
