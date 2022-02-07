@@ -38,6 +38,6 @@ TODO
 
 
 
-## Security analysis benchmark
+## Sensitivity analysis benchmark
 
 TODO
