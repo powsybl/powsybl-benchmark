@@ -10,7 +10,7 @@ Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) fr
 
 Five networks of various sizes have been used: 
 
-- 3 classical IEEE networks: 14, 118 and 300 buses 
+- 3 classical IEEE networks: 14, 118 and 300 buses.
 - 2 networks coming from [Matpower toolbox](https://matpower.org/): RTE 6515 buses (full French TSO EVH + HV network) and Pegase 13659 buses network (a pan European network).
 
 Two differents load flow parameters sets have been tested:
