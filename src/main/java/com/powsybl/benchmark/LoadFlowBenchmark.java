@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Fork(1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class OpenLoadFlowBenchmark {
+public class LoadFlowBenchmark {
 
     @Benchmark
     public LoadFlowResult ieee14(LoadFlowProviderState providerState, IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
