@@ -15,7 +15,7 @@ import com.powsybl.iidm.network.impl.NetworkFactoryImpl;
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-public class MatpowerUtil {
+public final class MatpowerUtil {
 
     private MatpowerUtil() {
     }
