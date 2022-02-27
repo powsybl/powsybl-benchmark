@@ -6,8 +6,9 @@
  */
 package com.powsybl.benchmark;
 
-import com.powsybl.loadflow.LoadFlowParameters;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
@@ -15,44 +16,10 @@ import org.openjdk.jmh.annotations.*;
 @State(Scope.Thread)
 public class LoadFlowParametersState {
 
-    private LoadFlowParameters basicParameters;
-
-    private LoadFlowParameters standardParameters;
-
-    public enum Type {
-        BASIC,
-        STANDARD
-    }
-
     @Param
-    private Type type;
+    private LoadFlowParametersType type;
 
-    @Setup(Level.Trial)
-    public void doSetup() {
-        basicParameters = new LoadFlowParameters()
-                .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
-                .setDistributedSlack(false)
-                .setNoGeneratorReactiveLimits(true)
-                .setPhaseShifterRegulationOn(false)
-                .setTransformerVoltageControlOn(false)
-                .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN);
-        standardParameters = new LoadFlowParameters()
-                .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
-                .setDistributedSlack(true)
-                .setNoGeneratorReactiveLimits(false)
-                .setPhaseShifterRegulationOn(false)
-                .setTransformerVoltageControlOn(false)
-                .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN);
-    }
-
-    public LoadFlowParameters getParameters() {
-        switch (type) {
-            case BASIC:
-                return basicParameters;
-            case STANDARD:
-                return standardParameters;
-            default:
-                throw new IllegalStateException("Unknown parameter type: " + type);
-        }
+    public LoadFlowParametersType getType() {
+        return type;
     }
 }

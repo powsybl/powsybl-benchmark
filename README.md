@@ -11,30 +11,35 @@ Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) fr
 Five networks of various sizes have been used: 
 
 - 3 classical IEEE networks: 14, 118 and 300 buses.
-- 2 networks coming from [Matpower toolbox](https://matpower.org/): RTE 6515 buses (full French TSO EVH + HV network) and Pegase 13659 buses network (a pan European network).
+- 2 networks coming from [Matpower toolbox](https://matpower.org/): RTE 1888 buses (EHV French system) and RTE 6515 buses (full EVH + HV French system).
 
 Two differents load flow parameters sets have been tested:
 
 - a basic one: this a the most basic configuration we can use for a load flow so just a Newton-Raphson run without any outer loop.
 - a standard one: slack bus is distributed and generator reactive limits are taken into account.
 
+This table reports the average time execution for all networks and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelization.
 
-
-This table reports the average time execution for all network and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelization.
-
-| Network      | Basic parameters | Standard parameters |
-| ------------ | ---------------- | ------------------- |
-| IEEE 14      | 149 &#181;s      | 222 &#181;s         |
-| IEEE 118     | 1,26 ms          | 2,35 ms             |
-| IEEE 300     | 10,7 ms          | 10,7 ms             |
-| RTE 6515     | 147 ms           | 274 ms              |
-| Pegase 13659 | 510 ms           | 1.08 s              |
+| Network  | Basic parameters | Standard parameters |
+| -------- | ---------------- | ------------------- |
+| IEEE 14  | 149 &#181;s      | 222 &#181;s         |
+| IEEE 118 | 1,26 ms          | 2,35 ms             |
+| IEEE 300 | 10,7 ms          | 10,7 ms             |
+| RTE 1888 | 29,4 ms          | 39.2 ms             |
+| RTE 6515 | 147 ms           | 274 ms              |
 
 
 
 ## Security analysis benchmark
 
-TODO
+Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. Same basic and standard load flow parameters sets as for load low benchmark have been used. 1000 contingencies have been simulated for each of the analysis (taking first 1000 lines of the network).
+
+This table reports the average time execution per contingency for all networks and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelization, contingencies are sequentially simulated.
+
+| Network  | Basic parameters    | Standard parameters |
+| -------- | ------------------- | ------------------- |
+| RTE 1888 | 7 ms / contingency  | 10 ms / contingency |
+| RTE 6515 | 32 ms / contingency | 49 ms / contingency |
 
 
 

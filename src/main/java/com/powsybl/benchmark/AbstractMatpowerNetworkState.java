@@ -6,11 +6,7 @@
  */
 package com.powsybl.benchmark;
 
-import com.powsybl.commons.datasource.ResourceDataSource;
-import com.powsybl.commons.datasource.ResourceSet;
-import com.powsybl.iidm.import_.Importers;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.iidm.network.impl.NetworkFactoryImpl;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
@@ -26,11 +22,7 @@ public abstract class AbstractMatpowerNetworkState {
 
     @Setup(Level.Trial)
     public void doSetup() {
-        String name = getName();
-        network = Importers.getImporter("MATPOWER")
-                .importData(new ResourceDataSource(name, new ResourceSet("/data", name + ".mat")),
-                            new NetworkFactoryImpl(),
-                            null);
+        network = MatpowerUtil.importMat(getName());
     }
 
     protected abstract String getName();
