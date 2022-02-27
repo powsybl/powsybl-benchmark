@@ -38,14 +38,14 @@ public class LoadFlowBenchmark {
     @Benchmark
     @Warmup(time = 30)
     @Measurement(time = 30)
-    public LoadFlowResult rte6515(LoadFlowProviderState providerState, Rte6515NetworkState networkState, LoadFlowParametersState parametersState) {
+    public LoadFlowResult rte1888(LoadFlowProviderState providerState, Rte1888NetworkState networkState, LoadFlowParametersState parametersState) {
         return LoadFlow.find(providerState.getProvider()).run(networkState.getNetwork(), parametersState.getType().getParameters());
     }
 
     @Benchmark
     @Warmup(time = 30)
     @Measurement(time = 30)
-    public LoadFlowResult pegase13659(LoadFlowProviderState providerState, Pegase13659NetworkState networkState, LoadFlowParametersState parametersState) {
+    public LoadFlowResult rte6515(LoadFlowProviderState providerState, Rte6515NetworkState networkState, LoadFlowParametersState parametersState) {
         return LoadFlow.find(providerState.getProvider()).run(networkState.getNetwork(), parametersState.getType().getParameters());
     }
 }

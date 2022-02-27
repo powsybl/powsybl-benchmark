@@ -94,13 +94,13 @@ public final class SecurityAnalysisBenchmark {
     }
 
     public static void main(String[] args) {
-        List<BenchmarkResult> results = new ArrayList<>();
+        List<BenchmarkResult> results = new ArrayList<>(4);
 
+        Network case1888rte = MatpowerUtil.importMat("case1888rte");
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
-        Network case13659pegase = MatpowerUtil.importMat("case13659pegase");
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
+            run("OpenSecurityAnalysis", case1888rte, loadFlowParametersType, 1000, results);
             run("OpenSecurityAnalysis", case6515rte, loadFlowParametersType, 1000, results);
-//            run("OpenSecurityAnalysis", case13659pegase, loadFlowParametersType, 1000, results);
         }
 
         for (BenchmarkResult result : results) {
