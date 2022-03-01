@@ -7,20 +7,15 @@
 package com.powsybl.benchmark;
 
 import com.google.common.base.Stopwatch;
-import com.powsybl.computation.local.LocalComputationManager;
 import com.powsybl.contingency.Contingency;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.iidm.network.VariantManagerConstants;
-import com.powsybl.security.LimitViolationFilter;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisParameters;
 import com.powsybl.security.SecurityAnalysisResult;
-import com.powsybl.security.detectors.DefaultLimitViolationDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -79,15 +74,7 @@ public final class SecurityAnalysisBenchmark {
                 .setLoadFlowParameters(loadFlowParametersType.getParameters());
         Stopwatch stopwatch = Stopwatch.createStarted();
         SecurityAnalysisResult result = SecurityAnalysis.find(provider)
-                .run(network,
-                    VariantManagerConstants.INITIAL_VARIANT_ID,
-                    new DefaultLimitViolationDetector(),
-                    new LimitViolationFilter(),
-                    LocalComputationManager.getDefault(),
-                    parameters,
-                    n -> contingencies,
-                    Collections.emptyList(),
-                    Collections.emptyList())
+                .run(network, contingencies, parameters)
                 .getResult();
         benchmarkResults.add(new BenchmarkResult(network.getId(), loadFlowParametersType, contingencyLimit, stopwatch.elapsed(TimeUnit.MILLISECONDS)));
         return result;
