@@ -7,8 +7,12 @@
 package com.powsybl.benchmark;
 
 import com.google.common.base.Stopwatch;
+import com.powsybl.commons.datasource.ResourceDataSource;
+import com.powsybl.commons.datasource.ResourceSet;
 import com.powsybl.contingency.Contingency;
+import com.powsybl.iidm.import_.Importers;
 import com.powsybl.iidm.network.Network;
+import com.powsybl.iidm.network.impl.NetworkFactoryImpl;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisParameters;
 import com.powsybl.security.SecurityAnalysisResult;
@@ -85,9 +89,20 @@ public final class SecurityAnalysisBenchmark {
 
         Network case1888rte = MatpowerUtil.importMat("case1888rte");
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
+        //This import work
+        //Network case6051realgrid = Importers.loadNetwork("ABSOLUTEPATHTO//CGMES_RealGrid.zip");
+
+        //This import does not work
+        Network case6051realgrid = Importers.getImporter("CGMES")
+                 .importData(new ResourceDataSource("CGMES_RealGrid", new ResourceSet("/data", "RealGrid-Merged_v3.0.zip")),
+                             new NetworkFactoryImpl(),
+                            null);
+
+        //Then crash on lfNetwork creation
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenSecurityAnalysis", case1888rte, loadFlowParametersType, 1000, results);
             run("OpenSecurityAnalysis", case6515rte, loadFlowParametersType, 1000, results);
+            run("OpenSecurityAnalysis", case6051realgrid, loadFlowParametersType, 1000, results);
         }
 
         for (BenchmarkResult result : results) {
