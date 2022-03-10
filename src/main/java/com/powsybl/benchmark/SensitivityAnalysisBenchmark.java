@@ -9,6 +9,7 @@ package com.powsybl.benchmark;
 import com.google.common.base.Stopwatch;
 import com.powsybl.computation.local.LocalComputationManager;
 import com.powsybl.contingency.Contingency;
+import com.powsybl.iidm.import_.Importers;
 import com.powsybl.iidm.network.Branch;
 import com.powsybl.iidm.network.Injection;
 import com.powsybl.iidm.network.Network;
@@ -121,11 +122,14 @@ public final class SensitivityAnalysisBenchmark {
         List<BenchmarkResult> results = new ArrayList<>(4);
         Network case1888rte = MatpowerUtil.importMat("case1888rte");
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
+        Network case6051realgrid = Importers.loadNetwork("D://tmp//TestConfigurations_packageCASv2.0//RealGrid//CGMES_RealGrid.zip");
 
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenSensitivityAnalysis", case1888rte, loadFlowParametersType, 1000, 10000, results);
             run("OpenSensitivityAnalysis", case6515rte, loadFlowParametersType, 1000, 10000, results);
         }
+
+        run("OpenSensitivityAnalysis", case6051realgrid, LoadFlowParametersType.BASIC, 1000, 10000, results);
 
         for (SensitivityAnalysisBenchmark.BenchmarkResult result : results) {
             LOGGER.info("Sensitivity analysis on network '{}' with {} contingencies and {} factors and load flow parameters {} done in {} ms: {} ms / contingency , {} factors / second",

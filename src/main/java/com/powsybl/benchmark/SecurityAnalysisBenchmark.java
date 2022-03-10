@@ -89,21 +89,14 @@ public final class SecurityAnalysisBenchmark {
 
         Network case1888rte = MatpowerUtil.importMat("case1888rte");
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
-        //This import work
-        //Network case6051realgrid = Importers.loadNetwork("ABSOLUTEPATHTO//CGMES_RealGrid.zip");
+        Network case6051realgrid = Importers.loadNetwork("D://tmp//TestConfigurations_packageCASv2.0//RealGrid//CGMES_RealGrid.zip");
 
-        //This import does not work
-        Network case6051realgrid = Importers.getImporter("CGMES")
-                 .importData(new ResourceDataSource("CGMES_RealGrid", new ResourceSet("/data", "RealGrid-Merged_v3.0.zip")),
-                             new NetworkFactoryImpl(),
-                            null);
-
-        //Then crash on lfNetwork creation
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenSecurityAnalysis", case1888rte, loadFlowParametersType, 1000, results);
             run("OpenSecurityAnalysis", case6515rte, loadFlowParametersType, 1000, results);
-            run("OpenSecurityAnalysis", case6051realgrid, loadFlowParametersType, 1000, results);
         }
+
+        run("OpenSecurityAnalysis", case6051realgrid, LoadFlowParametersType.BASIC, 1000, results);
 
         for (BenchmarkResult result : results) {
             LOGGER.info("Security analysis on network '{}' with {} contingencies and load flow parameters {} done in {} ms: {} ms / contingency",
