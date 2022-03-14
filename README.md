@@ -21,12 +21,12 @@ Two differents load flow parameters sets have been tested:
 This table reports the average time execution for all networks and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelization.
 
 | Network  | Basic parameters | Standard parameters |
-| -------- | ---------------- | ------------------- |
-| IEEE 14  | 149 &#181;s      | 222 &#181;s         |
-| IEEE 118 | 1,26 ms          | 2,35 ms             |
+| -------- |------------------|---------------------|
+| IEEE 14  | 146 &#181;s      | 223 &#181;s         |
+| IEEE 118 | 1,25 ms          | 2,29 ms             |
 | IEEE 300 | 10,7 ms          | 10,7 ms             |
-| RTE 1888 | 29,4 ms          | 39.2 ms             |
-| RTE 6515 | 147 ms           | 274 ms              |
+| RTE 1888 | 28,6 ms          | 36.9 ms             |
+| RTE 6515 | 146 ms           | 255 ms              |
 
 
 
@@ -37,9 +37,9 @@ Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses
 This table reports the average time execution per contingency for all networks and parameters sets using a MacBook Pro 2021, processor M1 Pro, 16 Go. Execution is done on a single core, there is no code parallelization, contingencies are sequentially simulated.
 
 | Network  | Basic parameters    | Standard parameters |
-| -------- | ------------------- | ------------------- |
+| -------- |---------------------|---------------------|
 | RTE 1888 | 7 ms / contingency  | 10 ms / contingency |
-| RTE 6515 | 32 ms / contingency | 49 ms / contingency |
+| RTE 6515 | 34 ms / contingency | 46 ms / contingency |
 
 
 
