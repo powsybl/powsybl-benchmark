@@ -90,10 +90,10 @@ public final class SecurityAnalysisBenchmark {
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
         Network case6051realgrid = Importers.importData("CGMES",
                                                         new ResourceDataSource("CGMES_v2.4.15_RealGridTestConfiguration",
-                                                                               new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_EQ_V2.xml"),
-                                                                               new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_SSH_V2.xml"),
-                                                                               new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_SV_V2.xml"),
-                                                                               new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
+                                                                               new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_EQ_V2.xml",
+                                                                                                                       "CGMES_v2.4.15_RealGridTestConfiguration_SSH_V2.xml",
+                                                                                                                       "CGMES_v2.4.15_RealGridTestConfiguration_SV_V2.xml",
+                                                                                                                       "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
                                                         null);
 
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
