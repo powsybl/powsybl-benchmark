@@ -41,8 +41,24 @@ This table reports the average time execution per contingency for all networks a
 | RTE 1888 | 7 ms / contingency  | 10 ms / contingency |
 | RTE 6515 | 34 ms / contingency | 46 ms / contingency |
 
+Another run has been done using i7-10610U CPU, and 32 Go RAM. CGMES Real grid 6051 network with basic parameter has been added to the run.
+
+| Network       | Basic parameters    | Standard parameters |
+| ------------- | ------------------- | ------------------- |
+| RTE 1888      | 18 ms / contingency | 23 ms / contingency |
+| RTE 6515      | 74 ms / contingency | 111 ms / contingency |
+| RealGrid 6051 | 71 ms / contingency | - |
 
 
 ## Sensitivity analysis benchmark
 
-TODO
+Sensitivity analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. Same basic and standard load flow parameters sets as for load low benchmark have been used. 1000 contingencies have been simulated for each of the analysis (taking first 1000 lines of the network).
+For each contingency 10000 factors are computed. Factors computed are the branch flow per injection increase. All permutation are computed and only the first 10000 are selected.
+
+This table reports the average time execution per contingency and factors for all networks and parameters sets using i7-10610U CPU, and 32 Go RAM. Execution is done on a single core, there is no code parallelization, contingencies are sequentially simulated.
+
+| Network       | Basic parameters                               | Standard parameters                            |
+| ------------- | ---------------------------------------------- | ---------------------------------------------  |
+| RTE 1888      | 18 ms / contingency,  555555 factors / second  | 26 ms / contingency,  384615 factors / second  |
+| RTE 6515      | 73 ms / contingency,  136986 factors / second  | 101 ms / contingency,  99009 factors / second  |
+| RealGrid 6051 | 64 ms / contingency,  156250 factors / second  | -                                              |

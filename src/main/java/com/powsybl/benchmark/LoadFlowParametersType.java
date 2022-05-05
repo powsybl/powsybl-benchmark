@@ -25,7 +25,15 @@ public enum LoadFlowParametersType {
             .setNoGeneratorReactiveLimits(false)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN));
+            .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN)),
+    STANDARDNOGENREACTIVELIMIT(new LoadFlowParameters()
+            .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
+            .setDistributedSlack(true)
+            .setNoGeneratorReactiveLimits(true)
+            .setPhaseShifterRegulationOn(false)
+            .setTransformerVoltageControlOn(false)
+            .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN)
+            .setDc(true));
 
     private final LoadFlowParameters parameters;
 
