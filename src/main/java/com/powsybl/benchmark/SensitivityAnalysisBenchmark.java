@@ -7,17 +7,15 @@
 package com.powsybl.benchmark;
 
 import com.google.common.base.Stopwatch;
-import com.powsybl.computation.local.LocalComputationManager;
+import com.powsybl.commons.datasource.ResourceDataSource;
+import com.powsybl.commons.datasource.ResourceSet;
 import com.powsybl.contingency.Contingency;
+import com.powsybl.contingency.ContingencyContext;
 import com.powsybl.iidm.import_.Importers;
 import com.powsybl.iidm.network.Branch;
 import com.powsybl.iidm.network.Injection;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.iidm.network.VariantManagerConstants;
 import com.powsybl.sensitivity.*;
-import com.powsybl.sensitivity.factors.BranchFlowPerInjectionIncrease;
-import com.powsybl.sensitivity.factors.functions.BranchFlow;
-import com.powsybl.sensitivity.factors.variables.InjectionIncrease;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,42 +85,42 @@ public final class SensitivityAnalysisBenchmark {
 
         SensitivityAnalysisParameters parameters = new SensitivityAnalysisParameters()
                 .setLoadFlowParameters(loadFlowParametersType.getParameters());
-        SensitivityFactorsProvider factorsProvider = n -> createFactorMatrix(network.getGeneratorStream().collect(Collectors.toList()),
-                n.getLineStream().collect(Collectors.toList())).subList(0, factorsLimit);
+        List<SensitivityFactor> factors = createFactorMatrix(network.getGeneratorStream().collect(Collectors.toList()),
+                network.getBranchStream().collect(Collectors.toList()), null, Branch.Side.ONE).subList(0, factorsLimit);
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         SensitivityAnalysisResult result = SensitivityAnalysis.find(provider)
                                                               .run(network,
-                                                                VariantManagerConstants.INITIAL_VARIANT_ID,
-                                                                factorsProvider,
-                                                                contingencies,
-                                                                parameters,
-                                                                LocalComputationManager.getDefault());
+                                                                      factors,
+                                                                      contingencies,
+                                                                      parameters);
         benchmarkResults.add(new SensitivityAnalysisBenchmark.BenchmarkResult(network.getId(), loadFlowParametersType, contingencyLimit, factorsLimit, stopwatch.elapsed(TimeUnit.MILLISECONDS)));
         return result;
     }
 
-    protected static <T extends Injection<T>> List<SensitivityFactor> createFactorMatrix(List<T> injections, List<Branch> branches) {
+    protected static <T extends Injection<T>> List<SensitivityFactor> createFactorMatrix(List<T> injections, List<Branch> branches, String contingencyId, Branch.Side side) {
         Objects.requireNonNull(injections);
         Objects.requireNonNull(branches);
-        List<SensitivityFactor> sensiFactorsList = injections.stream().flatMap(injection -> branches.stream().map(branch -> new BranchFlowPerInjectionIncrease(createBranchFlow(branch),
-                createInjectionIncrease(injection)))).collect(Collectors.toList());
-        return sensiFactorsList;
+        return injections.stream().flatMap(injection -> branches.stream().map(branch -> createBranchFlowPerInjectionIncrease(branch.getId(), injection.getId(), contingencyId, side))).collect(Collectors.toList());
     }
 
-    protected static BranchFlow createBranchFlow(Branch branch) {
-        return new BranchFlow(branch.getId(), branch.getNameOrId(), branch.getId());
+    protected static SensitivityFactor createBranchFlowPerInjectionIncrease(String functionId, String variableId, String contingencyId, Branch.Side side) {
+        SensitivityFunctionType ftype = side.equals(Branch.Side.ONE) ? SensitivityFunctionType.BRANCH_ACTIVE_POWER : SensitivityFunctionType.BRANCH_ACTIVE_POWER_2;
+        return new SensitivityFactor(ftype, functionId, SensitivityVariableType.INJECTION_ACTIVE_POWER, variableId, false, Objects.isNull(contingencyId) ? ContingencyContext.all() : ContingencyContext.specificContingency(contingencyId));
     }
 
-    protected static <T extends Injection<T>> InjectionIncrease createInjectionIncrease(T injection) {
-        return new InjectionIncrease(injection.getId(), injection.getId(), injection.getId());
-    }
 
     public static void main(String[] args) {
         List<BenchmarkResult> results = new ArrayList<>(4);
         Network case1888rte = MatpowerUtil.importMat("case1888rte");
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
-        Network case6051realgrid = Importers.loadNetwork("D://tmp//TestConfigurations_packageCASv2.0//RealGrid//CGMES_RealGrid.zip");
+        Network case6051realgrid = Importers.importData("CGMES",
+                new ResourceDataSource("CGMES_v2.4.15_RealGridTestConfiguration",
+                        new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_EQ_V2.xml",
+                                "CGMES_v2.4.15_RealGridTestConfiguration_SSH_V2.xml",
+                                "CGMES_v2.4.15_RealGridTestConfiguration_SV_V2.xml",
+                                "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
+                null);
 
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenSensitivityAnalysis", case1888rte, loadFlowParametersType, 1000, 10000, results);
