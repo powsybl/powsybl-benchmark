@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -122,12 +123,23 @@ public final class SensitivityAnalysisBenchmark {
                                 "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
                 null);
 
-        for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
-            run("OpenSensitivityAnalysis", case1888rte, loadFlowParametersType, 1000, 10000, results);
-            run("OpenSensitivityAnalysis", case6515rte, loadFlowParametersType, 1000, 10000, results);
-        }
+        ArrayList<Integer> contingenciesCounts = new ArrayList<>(
+                Arrays.asList(100, 500, 1000, 4000, 6000));
 
-        run("OpenSensitivityAnalysis", case6051realgrid, LoadFlowParametersType.BASIC, 1000, 10000, results);
+        ArrayList<Integer> factorCount = new ArrayList<>(
+                Arrays.asList(100, 500, 1000, 5000, 10000));
+
+        String providerName = "OpenSensitivityAnalysis";
+
+        for(Integer contingencies: contingenciesCounts) {
+            for(Integer factors: factorCount) {
+                run(providerName, case1888rte, LoadFlowParametersType.BASIC, contingencies, factors, results);
+                run(providerName, case1888rte, LoadFlowParametersType.STANDARD, contingencies, factors, results);
+                run(providerName, case6515rte, LoadFlowParametersType.BASIC, contingencies, factors, results);
+                run(providerName, case6515rte, LoadFlowParametersType.STANDARD, contingencies, factors, results);
+                run(providerName, case6051realgrid, LoadFlowParametersType.STANDARDNOGENREACTIVELIMIT, contingencies, factors, results);
+            }
+        }
 
         for (SensitivityAnalysisBenchmark.BenchmarkResult result : results) {
             LOGGER.info("Sensitivity analysis on network '{}' with {} contingencies and {} factors and load flow parameters {} done in {} ms: {} ms / contingency , {} factors / second",
