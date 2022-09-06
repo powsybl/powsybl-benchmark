@@ -46,3 +46,18 @@ This table reports the average time execution per contingency for all networks a
 ## Sensitivity analysis benchmark
 
 TODO
+
+
+## Running the benchmarks
+
+Build the project using Maven:
+
+```
+mvn clean verify
+```
+
+Use the self-contained executable JAR which holds the benchmarks and all essential JMH infrastructure code:
+
+```
+java -jar target/benchmarks.jar
+```
