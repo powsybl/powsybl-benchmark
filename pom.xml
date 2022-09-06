@@ -30,7 +30,35 @@
         <logback.version>1.2.10</logback.version>
         <powsybl-core.version>4.7.0</powsybl-core.version>
         <powsybl-open-loadflow.version>0.18.0</powsybl-open-loadflow.version>
+        <maven-shade-plugin.version>3.2.0</maven-shade-plugin.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>benchmark</finalName>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.openjdk.jmh.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
