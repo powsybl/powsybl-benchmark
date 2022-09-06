@@ -59,5 +59,5 @@ mvn clean verify
 Use the self-contained executable JAR which holds the benchmarks and all essential JMH infrastructure code:
 
 ```
-java -jar target/benchmarks.jar
+java -jar target/benchmark.jar
 ```
