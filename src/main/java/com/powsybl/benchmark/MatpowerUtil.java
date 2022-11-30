@@ -8,7 +8,7 @@ package com.powsybl.benchmark;
 
 import com.powsybl.commons.datasource.ResourceDataSource;
 import com.powsybl.commons.datasource.ResourceSet;
-import com.powsybl.iidm.import_.Importers;
+import com.powsybl.iidm.network.Importer;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.iidm.network.impl.NetworkFactoryImpl;
 
@@ -21,7 +21,7 @@ public final class MatpowerUtil {
     }
 
     public static Network importMat(String name) {
-        return Importers.getImporter("MATPOWER")
+        return Importer.find("MATPOWER")
                 .importData(new ResourceDataSource(name, new ResourceSet("/data", name + ".mat")),
                         new NetworkFactoryImpl(),
                         null);

@@ -28,8 +28,8 @@
         <commons-math3.version>3.6.1</commons-math3.version>
         <jmh.version>1.34</jmh.version>
         <logback.version>1.2.10</logback.version>
-        <powsybl-core.version>4.7.0</powsybl-core.version>
-        <powsybl-open-loadflow.version>0.18.0</powsybl-open-loadflow.version>
+        <powsybl-core.version>5.0.0</powsybl-core.version>
+        <powsybl-open-loadflow.version>0.24.0</powsybl-open-loadflow.version>
         <maven-shade-plugin.version>3.2.0</maven-shade-plugin.version>
     </properties>
 

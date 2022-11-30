@@ -86,8 +86,8 @@ public final class SecurityAnalysisBenchmark {
         Network case1888rte = MatpowerUtil.importMat("case1888rte");
         Network case6515rte = MatpowerUtil.importMat("case6515rte");
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
-            run("OpenSecurityAnalysis", case1888rte, loadFlowParametersType, 1000, results);
-            run("OpenSecurityAnalysis", case6515rte, loadFlowParametersType, 1000, results);
+            run("OpenLoadFlow", case1888rte, loadFlowParametersType, 1000, results);
+            run("OpenLoadFlow", case6515rte, loadFlowParametersType, 1000, results);
         }
 
         for (BenchmarkResult result : results) {
