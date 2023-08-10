@@ -25,11 +25,17 @@ public class IeeeNetworkState {
 
     private Network ieee300Network;
 
+    private Network ieee33Network;
+
+    private Network ieee69Network;
+
     @Setup(Level.Trial)
     public void doSetup() {
         ieee14Network = IeeeCdfNetworkFactory.create14();
         ieee118Network = IeeeCdfNetworkFactory.create118();
         ieee300Network = IeeeCdfNetworkFactory.create300();
+        ieee33Network = IeeeCdfNetworkFactory.create33();
+        ieee69Network = IeeeCdfNetworkFactory.create69();
     }
 
     public Network getIeee14Network() {
@@ -42,5 +48,13 @@ public class IeeeNetworkState {
 
     public Network getIeee300Network() {
         return ieee300Network;
+    }
+
+    public Network getIeee33Network() {
+        return ieee33Network;
+    }
+
+    public Network getIeee69Network() {
+        return ieee69Network;
     }
 }

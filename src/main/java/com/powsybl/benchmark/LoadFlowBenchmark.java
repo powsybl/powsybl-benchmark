@@ -48,4 +48,25 @@ public class LoadFlowBenchmark {
     public LoadFlowResult rte6515(LoadFlowProviderState providerState, Rte6515NetworkState networkState, LoadFlowParametersState parametersState) {
         return LoadFlow.find(providerState.getProvider()).run(networkState.getNetwork(), parametersState.getType().getParameters());
     }
+
+    @Benchmark
+    @Warmup(time = 30)
+    @Measurement(time = 30)
+    public LoadFlowResult ieee33(LoadFlowProviderState providerState, IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getIeee33Network(), parametersState.getType().getParameters());
+    }
+
+    @Benchmark
+    @Warmup(time = 30)
+    @Measurement(time = 30)
+    public LoadFlowResult ieee69(LoadFlowProviderState providerState, IeeeNetworkState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getIeee69Network(), parametersState.getType().getParameters());
+    }
+
+    @Benchmark
+    @Warmup(time = 30)
+    @Measurement(time = 30)
+    public LoadFlowResult europeanLv(LoadFlowProviderState providerState, EuropeanLvTestFeederFactoryState networkState, LoadFlowParametersState parametersState) {
+        return LoadFlow.find(providerState.getProvider()).run(networkState.getEuropeeanLvNetwork(), parametersState.getType().getParameters());
+    }
 }
