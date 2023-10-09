@@ -22,11 +22,11 @@ This table reports the average time execution for all networks and parameters se
 
 | Network  | Basic parameters | Standard parameters |
 | -------- |------------------|---------------------|
-| IEEE 14  | 131 &#181;s      | 221 &#181;s         |
-| IEEE 118 | 1,01 ms          | 2,205 ms            |
-| IEEE 300 | 10,168 ms        | 9,904 ms            |
-| RTE 1888 | 22,42 ms         | 32.059 ms           |
-| RTE 6515 | 114 ms           | 241 ms              |
+| IEEE 14  | 140 &#181;s      | 140 &#181;s         |
+| IEEE 118 | 1,05 ms          | 1.54 ms             |
+| IEEE 300 | 3.2 ms           | 4.8 ms              |
+| RTE 1888 | 22,5 ms          | 31.3 ms             |
+| RTE 6515 | 123 ms           | 250 ms              |
 
 
 
@@ -38,8 +38,8 @@ This table reports the average time execution per contingency for all networks a
 
 | Network  | Basic parameters    | Standard parameters |
 | -------- |---------------------|---------------------|
-| RTE 1888 | 7 ms / contingency  | 11 ms / contingency |
-| RTE 6515 | 29 ms / contingency | 42 ms / contingency |
+| RTE 1888 | 7 ms / contingency  | 9 ms / contingency  |
+| RTE 6515 | 31 ms / contingency | 41 ms / contingency |
 
 
 
