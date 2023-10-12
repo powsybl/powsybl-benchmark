@@ -6,7 +6,7 @@
 
 
 
-Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v0.24.0](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v0.24.0). More load flow engines will be added later.
+Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v1.3.0](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v1.3.0). More load flow engines will be added later.
 
 Five networks of various sizes have been used: 
 
