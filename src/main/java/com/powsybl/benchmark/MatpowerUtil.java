@@ -21,9 +21,17 @@ public final class MatpowerUtil {
     }
 
     public static Network importMat(String name) {
-        return Importer.find("MATPOWER")
+        Network network = Importer.find("MATPOWER")
                 .importData(new ResourceDataSource(name, new ResourceSet("/data", name + ".mat")),
                         new NetworkFactoryImpl(),
                         null);
+        // FIX RTE cases as it seems there is data issue with phase shift
+        for (var twt : network.getTwoWindingsTransformers()) {
+            var ptc = twt.getPhaseTapChanger();
+            if (ptc != null) {
+                ptc.getCurrentStep().setAlpha(0);
+            }
+        }
+        return network;
     }
 }

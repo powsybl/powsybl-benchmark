@@ -15,14 +15,14 @@ public enum LoadFlowParametersType {
     BASIC(new LoadFlowParameters()
             .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
             .setDistributedSlack(false)
-            .setNoGeneratorReactiveLimits(true)
+            .setUseReactiveLimits(false)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
             .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN)),
     STANDARD(new LoadFlowParameters()
             .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
             .setDistributedSlack(true)
-            .setNoGeneratorReactiveLimits(false)
+            .setUseReactiveLimits(true)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
             .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN));
