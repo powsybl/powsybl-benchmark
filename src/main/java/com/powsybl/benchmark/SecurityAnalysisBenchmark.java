@@ -12,13 +12,13 @@ import com.powsybl.iidm.network.Network;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisParameters;
 import com.powsybl.security.SecurityAnalysisResult;
+import com.powsybl.security.SecurityAnalysisRunParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
@@ -30,38 +30,11 @@ public final class SecurityAnalysisBenchmark {
     private SecurityAnalysisBenchmark() {
     }
 
-    static class BenchmarkResult {
+    record BenchmarkResult(String networkId,
+                           LoadFlowParametersType loadFlowParametersType,
+                           int contingencyCount,
+                           long milliSeconds) {
 
-        private final String networkId;
-
-        private final LoadFlowParametersType loadFlowParametersType;
-
-        private final int contingencyCount;
-
-        private final long milliSeconds;
-
-        BenchmarkResult(String networkId, LoadFlowParametersType loadFlowParametersType, int contingencyCount, long milliSeconds) {
-            this.networkId = networkId;
-            this.loadFlowParametersType = loadFlowParametersType;
-            this.contingencyCount = contingencyCount;
-            this.milliSeconds = milliSeconds;
-        }
-
-        String getNetworkId() {
-            return networkId;
-        }
-
-        LoadFlowParametersType getLoadFlowParametersType() {
-            return loadFlowParametersType;
-        }
-
-        int getContingencyCount() {
-            return contingencyCount;
-        }
-
-        long getMilliSeconds() {
-            return milliSeconds;
-        }
     }
 
     private static SecurityAnalysisResult run(String provider, Network network, LoadFlowParametersType loadFlowParametersType,
@@ -69,12 +42,13 @@ public final class SecurityAnalysisBenchmark {
         List<Contingency> contingencies = network.getLineStream()
                 .limit(contingencyLimit)
                 .map(line -> Contingency.line(line.getId()))
-                .collect(Collectors.toList());
+                .toList();
         SecurityAnalysisParameters parameters = new SecurityAnalysisParameters()
                 .setLoadFlowParameters(loadFlowParametersType.getParameters());
         Stopwatch stopwatch = Stopwatch.createStarted();
+        var runParameters = SecurityAnalysisRunParameters.getDefault().setSecurityAnalysisParameters(parameters);
         SecurityAnalysisResult result = SecurityAnalysis.find(provider)
-                .run(network, contingencies, parameters)
+                .run(network, contingencies, runParameters)
                 .getResult();
         benchmarkResults.add(new BenchmarkResult(network.getId(), loadFlowParametersType, contingencyLimit, stopwatch.elapsed(TimeUnit.MILLISECONDS)));
         return result;
@@ -92,8 +66,8 @@ public final class SecurityAnalysisBenchmark {
 
         for (BenchmarkResult result : results) {
             LOGGER.info("Security analysis on network '{}' with {} contingencies and load flow parameters {} done in {} ms: {} ms / contingency",
-                    result.getNetworkId(), result.getContingencyCount(), result.getLoadFlowParametersType(), result.getMilliSeconds(),
-                    result.getMilliSeconds() / result.getContingencyCount());
+                    result.networkId(), result.contingencyCount(), result.loadFlowParametersType(), result.milliSeconds(),
+                    result.milliSeconds() / result.contingencyCount());
         }
     }
 }

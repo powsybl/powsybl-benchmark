@@ -15,7 +15,7 @@ Execution is done on a single core, there is no code parallelization.
 
 ## Load flow benchmark
 
-Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v1.3.0](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v1.3.0). More load flow engines will be added later.
+Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.0.0](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.0.0). More load flow engines will be added later.
 
 Five networks of various sizes have been used: 
 
@@ -29,11 +29,11 @@ Two different load flow parameters sets have been tested:
 
 | Network  | Basic parameters | Standard parameters |
 |----------|------------------|---------------------|
-| IEEE 14  | 105 µs           | 108 µs              |
-| IEEE 118 | 1.14 ms          | 1.61 ms             |
-| IEEE 300 | 3.2 ms           | 4.7 ms              |
-| RTE 1888 | 21.3 ms          | 28.8 ms             |
-| RTE 6515 | 126 ms           | 248 ms              |
+| IEEE 14  | 142 µs           | 151 µs              |
+| IEEE 118 | 1.26 ms          | 1.85 ms             |
+| IEEE 300 | 3.4 ms           | 6.3 ms              |
+| RTE 1888 | 22.2 ms          | 29.7 ms             |
+| RTE 6515 | 140 ms           | 272 ms              |
 
 
 ## Security analysis benchmark
@@ -44,8 +44,8 @@ parameters sets as for load low benchmark have been used. 1000 contingencies hav
 
 | Network  | Basic parameters    | Standard parameters |
 |----------|---------------------|---------------------|
-| RTE 1888 | 6 ms / contingency  | 7 ms / contingency  |
-| RTE 6515 | 28 ms / contingency | 39 ms / contingency |
+| RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
+| RTE 6515 | 28 ms / contingency | 40 ms / contingency |
 
 ## Sensitivity analysis benchmark
 
