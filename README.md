@@ -29,11 +29,11 @@ Two different load flow parameters sets have been tested:
 
 | Network  | Basic parameters | Standard parameters |
 |----------|------------------|---------------------|
-| IEEE 14  | 142 µs           | 151 µs              |
-| IEEE 118 | 1.26 ms          | 1.85 ms             |
-| IEEE 300 | 3.4 ms           | 6.3 ms              |
-| RTE 1888 | 22.2 ms          | 29.7 ms             |
-| RTE 6515 | 140 ms           | 272 ms              |
+| IEEE 14  | 179 µs           | 188 µs              |
+| IEEE 118 | 1.37 ms          | 1.88 ms             |
+| IEEE 300 | 3.5 ms           | 5.9 ms              |
+| RTE 1888 | 24.7 ms          | 30.7 ms             |
+| RTE 6515 | 118 ms           | 191 ms              |
 
 
 ## Security analysis benchmark
@@ -45,7 +45,7 @@ parameters sets as for load low benchmark have been used. 1000 contingencies hav
 | Network  | Basic parameters    | Standard parameters |
 |----------|---------------------|---------------------|
 | RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
-| RTE 6515 | 28 ms / contingency | 40 ms / contingency |
+| RTE 6515 | 18 ms / contingency | 29 ms / contingency |
 
 ## Sensitivity analysis benchmark
 
