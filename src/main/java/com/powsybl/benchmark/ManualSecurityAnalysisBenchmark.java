@@ -7,6 +7,8 @@
 package com.powsybl.benchmark;
 
 import com.google.common.base.Stopwatch;
+import com.powsybl.benchmark.state.LoadFlowParametersType;
+import com.powsybl.benchmark.state.MatpowerUtil;
 import com.powsybl.contingency.Contingency;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.security.SecurityAnalysis;
@@ -21,20 +23,21 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * @deprecated since 2025.4.0
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-public final class SecurityAnalysisBenchmark {
+@Deprecated(forRemoval = true, since = "2025.4.0")
+public final class ManualSecurityAnalysisBenchmark {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityAnalysisBenchmark.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManualSecurityAnalysisBenchmark.class);
 
-    private SecurityAnalysisBenchmark() {
+    private ManualSecurityAnalysisBenchmark() {
     }
 
     record BenchmarkResult(String networkId,
                            LoadFlowParametersType loadFlowParametersType,
                            int contingencyCount,
                            long milliSeconds) {
-
     }
 
     private static SecurityAnalysisResult run(String provider, Network network, LoadFlowParametersType loadFlowParametersType,
