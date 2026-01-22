@@ -64,7 +64,7 @@ public class XmxSecurityAnalysisBenchmark extends AbstractSecurityAnalysisBenchm
 
     @Fork(FORKS)
     @Benchmark
-    public SecurityAnalysisResult runXmxXmxUndefined(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
+    public SecurityAnalysisResult runXmxUndefined(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
         return runXmx(securityAnalysisMultiThreadsParametersState);
     }
 
