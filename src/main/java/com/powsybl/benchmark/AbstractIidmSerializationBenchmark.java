@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2026, RTE (https://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+package com.powsybl.benchmark;
+
+import com.powsybl.benchmark.state.AbstractIidmSerializationState;
+import com.powsybl.iidm.network.Network;
+import com.powsybl.iidm.serde.ExportOptions;
+import com.powsybl.iidm.serde.NetworkSerDe;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
+ */
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Warmup(iterations = 4, time = 1)
+@Measurement(iterations = 8, time = 1)
+@Fork(1)
+public abstract class AbstractIidmSerializationBenchmark<T extends AbstractIidmSerializationState> {
+
+    protected void doDeserialization(Blackhole blackhole, T serializationState) {
+        Network network = Network.read(serializationState.getFilePath());
+        blackhole.consume(network);
+    }
+
+    protected void doSerialization(Blackhole blackhole, T serializationState) throws IOException {
+        try (OutputStream os = OutputStream.nullOutputStream()) {
+            ExportOptions options = new ExportOptions();
+            options.setFormat(serializationState.getFormat());
+            NetworkSerDe.write(serializationState.getData(), options, os);
+            blackhole.consume(os);
+        }
+    }
+
+    protected void doNetworkCopy(Blackhole blackhole, T serializationState) {
+        Network copy = NetworkSerDe.copy(serializationState.getData(), serializationState.getFormat());
+        blackhole.consume(copy);
+    }
+
+    public abstract void networkDeserialization(Blackhole blackhole, T serializationState);
+
+    public abstract void networkSerialization(Blackhole blackhole, T serializationState) throws IOException;
+
+    public abstract void networkCopy(Blackhole blackhole, T serializationState);
+}

@@ -9,68 +9,54 @@ package com.powsybl.benchmark.state;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.powsybl.commons.PowsyblException;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.powsybl.contingency.json.ContingencyJsonModule;
 import com.powsybl.contingency.list.ContingencyList;
-import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
 @State(Scope.Thread)
-public class ContingenciesSerializationState {
+public class ContingenciesSerializationState extends AbstractSerializationState<ContingencyList> {
 
     private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new ContingencyJsonModule());
     private static final ObjectReader READER = MAPPER.readerFor(ContingencyList.class);
+    private static final ObjectWriter WRITER = MAPPER.writerWithDefaultPrettyPrinter();
+    private static final String PARAMETER_NAME = "contingency.file";
 
     /**
      * Default contingency list file path.
-     * <p>You can provide your own file by using the {@code -Dcontingency.file} paramter</p>
+     * <p>You can provide your own file by using the {@value #PARAMETER_NAME} parameter</p>
      */
     @Param({"src/main/resources/data/contingencyList.json"})
     private String defaultContingencyListPath;
 
-    private Path contingencyListPath;
-    private byte[] fileContent;
-    private ContingencyList contingencyList;
+    String getDefaultFilePath() {
+        return defaultContingencyListPath;
+    }
 
-    @Setup(Level.Trial)
-    public void setup() throws IOException {
-        contingencyListPath = getContingencyFilePath();
-        fileContent = Files.readAllBytes(contingencyListPath);
-        try (InputStream inputStream = Files.newInputStream(contingencyListPath)) {
-            contingencyList = READER.readValue(inputStream);
+    String getParameterName() {
+        return PARAMETER_NAME;
+    }
+
+    protected ContingencyList readData() throws IOException {
+        try (InputStream inputStream = Files.newInputStream(filePath)) {
+            return READER.readValue(inputStream);
         }
     }
 
-    public Path getContingencyListPath() {
-        return contingencyListPath;
+    public ObjectReader reader() {
+        return READER;
     }
 
-    public byte[] getFileContent() {
-        return fileContent;
-    }
-
-    public ContingencyList getContingencyList() {
-        return contingencyList;
-    }
-
-    private Path getContingencyFilePath() {
-        String contingencyListFile = System.getProperty("contingency.file", defaultContingencyListPath);
-
-        Path path = Path.of(contingencyListFile);
-        if (!Files.exists(path)) {
-            throw new PowsyblException("File not found: " + contingencyListFile);
-        }
-        return path;
+    public ObjectWriter writer() {
+        return WRITER;
     }
 }
