@@ -123,6 +123,9 @@ java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark
 # This will run only benchmarks that contain "1G" or "2G" in their name
 java -jar target/benchmark.jar "1G|2G"
 
+# This will run all the IIDM serialization benchmarks (XML, JSON and Binary)
+java -jar target/benchmark.jar "iidmSerializationBenchmark"
+
 # This will only run the Xmx1G benchmark
 java -jar target/benchmark.jar XmxSecurityAnalysisBenchmark.runXmx1G
 ```
