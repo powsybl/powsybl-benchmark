@@ -143,7 +143,7 @@ java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark
 java -jar target/benchmark.jar "1G|2G"
 
 # This will run all the IIDM serialization benchmarks (XML, JSON and Binary)
-java -jar target/benchmark.jar "iidmSerializationBenchmark"
+java -jar target/benchmark.jar NetworkSerializationBenchmark
 
 # This will only run the Xmx1G benchmark
 java -jar target/benchmark.jar XmxSecurityAnalysisBenchmark.runXmx1G
