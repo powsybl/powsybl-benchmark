@@ -7,10 +7,10 @@
  */
 package com.powsybl.benchmark;
 
-import com.powsybl.benchmark.state.AbstractIidmSerializationState;
+import com.powsybl.benchmark.state.IidmSerializationState;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.iidm.serde.ExportOptions;
 import com.powsybl.iidm.serde.NetworkSerDe;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
@@ -28,33 +28,32 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 4, time = 1)
-@Measurement(iterations = 8, time = 1)
+@Warmup(iterations = 4, time = 2)
+@Measurement(iterations = 8, time = 2)
 @Fork(1)
-public abstract class AbstractIidmSerializationBenchmark<T extends AbstractIidmSerializationState> {
+public class NetworkSerializationBenchmark {
 
-    protected void doDeserialization(Blackhole blackhole, T serializationState) {
+    @Benchmark
+    public void networkDeserialization(Blackhole blackhole, IidmSerializationState serializationState) {
         Network network = Network.read(serializationState.getFilePath());
         blackhole.consume(network);
     }
 
-    protected void doSerialization(Blackhole blackhole, T serializationState) throws IOException {
+    @Benchmark
+    public void networkSerialization(Blackhole blackhole, IidmSerializationState serializationState) throws IOException {
         try (OutputStream os = OutputStream.nullOutputStream()) {
-            ExportOptions options = new ExportOptions();
-            options.setFormat(serializationState.getFormat());
-            NetworkSerDe.write(serializationState.getData(), options, os);
+            NetworkSerDe.write(serializationState.getNetwork(), serializationState.getExportOptions(), os);
             blackhole.consume(os);
         }
     }
 
-    protected void doNetworkCopy(Blackhole blackhole, T serializationState) {
-        Network copy = NetworkSerDe.copy(serializationState.getData(), serializationState.getFormat());
+    @Benchmark
+    public void networkCopy(Blackhole blackhole, IidmSerializationState serializationState) {
+        if (serializationState.getTreeDataFormat() == null) {
+            // Should not happen
+            return;
+        }
+        Network copy = NetworkSerDe.copy(serializationState.getNetwork(), serializationState.getTreeDataFormat());
         blackhole.consume(copy);
     }
-
-    public abstract void networkDeserialization(Blackhole blackhole, T serializationState);
-
-    public abstract void networkSerialization(Blackhole blackhole, T serializationState) throws IOException;
-
-    public abstract void networkCopy(Blackhole blackhole, T serializationState);
 }
