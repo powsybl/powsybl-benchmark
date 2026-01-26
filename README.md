@@ -11,7 +11,7 @@ All the benchmark results presented here were obtained on the same hardware and 
 | RAM            | 32 Go                                |
 | OS             | Ubuntu 22.04 LTS                     |
 
-Execution is done on a single core, there is no code parallelization unless explicitly stated.
+Execution is done on a single core, there is no code parallelization and the results are in `ms/op` unless explicitly stated.
 
 ## Load flow benchmark
 
