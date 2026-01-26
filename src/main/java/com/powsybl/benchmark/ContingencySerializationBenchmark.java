@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 public class ContingencySerializationBenchmark {
 
     @Benchmark
-    public void parsing(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
+    public void benchmark1Parsing(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
         ContingencyList list;
         try (InputStream inputStream = Files.newInputStream(serializationState.getFilePath())) {
             list = serializationState.reader().readValue(inputStream);
@@ -45,25 +45,25 @@ public class ContingencySerializationBenchmark {
     }
 
     @Benchmark
-    public void parsingFromBytes(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
+    public void benchmark2ParsingFromBytes(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
         ContingencyList list = serializationState.reader().readValue(serializationState.getFileContent());
         blackhole.consume(list);
     }
 
     @Benchmark
-    public void justReading(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
+    public void benchmark3JustReading(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
         byte[] list = Files.readAllBytes(serializationState.getFilePath());
         blackhole.consume(list);
     }
 
     @Benchmark
-    public void readingToString(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
+    public void benchmark4ReadingToString(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
         String list = Files.readString(serializationState.getFilePath());
         blackhole.consume(list);
     }
 
     @Benchmark
-    public void writing(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
+    public void benchmark5Writing(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
         try (OutputStream outputStream = OutputStream.nullOutputStream()) {
             serializationState.writer().writeValue(outputStream, serializationState.getData());
             blackhole.consume(outputStream);
@@ -71,7 +71,7 @@ public class ContingencySerializationBenchmark {
     }
 
     @Benchmark
-    public void bufferedWriting(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
+    public void benchmark6BufferedWriting(Blackhole blackhole, ContingenciesSerializationState serializationState) throws IOException {
         try (Writer writer = Writer.nullWriter()) {
             serializationState.writer().writeValue(writer, serializationState.getData());
             blackhole.consume(writer);
