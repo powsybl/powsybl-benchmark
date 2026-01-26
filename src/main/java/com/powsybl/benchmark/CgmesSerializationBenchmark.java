@@ -32,13 +32,13 @@ import java.util.concurrent.TimeUnit;
 public class CgmesSerializationBenchmark {
 
     @Benchmark
-    public void networkDeserialization(Blackhole blackhole, CgmesSerializationState serializationState) {
+    public void benchmark1NetworkDeserialization(Blackhole blackhole, CgmesSerializationState serializationState) {
         Network network = Network.read(serializationState.getFilePath());
         blackhole.consume(network);
     }
 
     @Benchmark
-    public void networkSerialization(Blackhole blackhole, CgmesSerializationState serializationState) {
+    public void benchmark3NetworkFileSerialization(Blackhole blackhole, CgmesSerializationState serializationState) {
         Path path = serializationState.getOutputPath();
         serializationState.getNetwork().write(serializationState.getFormat(), serializationState.getProperties(), path);
         blackhole.consume(path);

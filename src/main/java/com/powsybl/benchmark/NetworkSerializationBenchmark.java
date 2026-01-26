@@ -21,6 +21,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,17 +31,17 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 4, time = 2)
 @Measurement(iterations = 8, time = 2)
-@Fork(1)
+@Fork(2)
 public class NetworkSerializationBenchmark {
 
     @Benchmark
-    public void networkDeserialization(Blackhole blackhole, IidmSerializationState serializationState) {
+    public void benchmark1NetworkDeserialization(Blackhole blackhole, IidmSerializationState serializationState) {
         Network network = Network.read(serializationState.getFilePath());
         blackhole.consume(network);
     }
 
     @Benchmark
-    public void networkSerialization(Blackhole blackhole, IidmSerializationState serializationState) throws IOException {
+    public void benchmark2NetworkStreamSerialization(Blackhole blackhole, IidmSerializationState serializationState) throws IOException {
         try (OutputStream os = OutputStream.nullOutputStream()) {
             NetworkSerDe.write(serializationState.getNetwork(), serializationState.getExportOptions(), os);
             blackhole.consume(os);
@@ -48,7 +49,14 @@ public class NetworkSerializationBenchmark {
     }
 
     @Benchmark
-    public void networkCopy(Blackhole blackhole, IidmSerializationState serializationState) {
+    public void benchmark3NetworkFileSerialization(Blackhole blackhole, IidmSerializationState serializationState) {
+        Path path = serializationState.getOutputPath();
+        serializationState.getNetwork().write(serializationState.getFormat(), serializationState.getProperties(), path);
+        blackhole.consume(path);
+    }
+
+    @Benchmark
+    public void benchmark4NetworkCopy(Blackhole blackhole, IidmSerializationState serializationState) {
         if (serializationState.getTreeDataFormat() == null) {
             // Should not happen
             return;

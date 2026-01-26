@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Properties;
 
 /**
  * <p>You can provide your own file by using the {@value #PARAMETER_NAME} parameter</p>
@@ -34,6 +35,7 @@ public abstract class AbstractNetworkSerializationState {
     private Network network;
     private Path outputDir;
     private Path outputPath;
+    private Properties properties;
     private Path tmpDir;
 
     @Setup(Level.Trial)
@@ -46,6 +48,9 @@ public abstract class AbstractNetworkSerializationState {
 
         // Get the network
         network = loadNetwork();
+
+        // Properties
+        properties = new Properties();
 
         // Setup specific data
         setupSpecificData();
@@ -75,6 +80,10 @@ public abstract class AbstractNetworkSerializationState {
 
     protected Path getOutputDir() {
         return outputDir;
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 
     protected Path getTmpDir() {

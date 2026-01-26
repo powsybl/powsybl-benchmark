@@ -101,11 +101,12 @@ TODO
 
 Network serialization benchmark has been done with RTE 6515 buses network.
 
-| Benchmark Operation | XML (XIIDM) | JSON (JIIDM) | Binary (BIIDM) | CGMES   |
-|---------------------|-------------|--------------|----------------|---------|
-| Deserialization     | 78.14       | 53.73        | 41.93          | 1689.24 |
-| Serialization       | 112.97      | 88.52        | 73.22          | 691.52  |
-| Copy                | 277.96      | 224.23       | 156.26         | —       |
+| Benchmark Operation    | XML (XIIDM) | JSON (JIIDM) | Binary (BIIDM) | CGMES   |
+|------------------------|-------------|--------------|----------------|---------|
+| Deserialization        | 75.23       | 49.05        | 38.21          | 1855.48 |
+| Stream serialization   | 101.35      | 89.50        | 75.34          | —       |
+| File serialization     | 189.70      | 91.77        | 80.02          | 703.36  |
+| Copy                   | 307.31      | 210.63       | 155.06         | —       |
 
 
 ### Contingency serialization benchmark

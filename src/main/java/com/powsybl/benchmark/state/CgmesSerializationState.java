@@ -11,15 +11,11 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
-import java.util.Properties;
-
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
 @State(Scope.Thread)
 public class CgmesSerializationState extends AbstractNetworkSerializationState {
-
-    private Properties properties;
 
     @Param({"CGMES"})
     private String format;
@@ -27,17 +23,10 @@ public class CgmesSerializationState extends AbstractNetworkSerializationState {
     @Override
     public void setupSpecificData() {
         setOutputPath(getOutputDir().resolve(getFormat().toLowerCase()));
-
-        // Export options
-        properties = new Properties();
     }
 
     public String getFormat() {
         return format;
-    }
-
-    public Properties getProperties() {
-        return properties;
     }
 
     protected void writeTmpFile() {
