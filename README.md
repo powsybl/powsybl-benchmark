@@ -99,14 +99,26 @@ TODO
 
 ### Network serialization benchmark
 
-Network serialization benchmark has been done with RTE 6515 buses network.
+Network serialization benchmark has been done with RTE 6515 buses network and the 
+[ENTSOE RealGrid network v3.0.3](https://www.entsoe.eu/Documents/CIM_documents/Grid_Model_CIM/CGMES_ConformityAssessmentScheme_TestConfigurations_v3-0-3.zip).
+
+For the RTE 6515 buses network:
 
 | Benchmark Operation    | XML (XIIDM) | JSON (JIIDM) | Binary (BIIDM) | CGMES   |
 |------------------------|-------------|--------------|----------------|---------|
-| Deserialization        | 75.23       | 49.05        | 38.21          | 1855.48 |
-| Stream serialization   | 101.35      | 89.50        | 75.34          | —       |
-| File serialization     | 189.70      | 91.77        | 80.02          | 703.36  |
-| Copy                   | 307.31      | 210.63       | 155.06         | —       |
+| Deserialization        | 73.26       | 48.36        | 39.63          | 1644.27 |
+| Stream serialization   | 95.37       | 88.69        | 78.93          | —       |
+| File serialization     | 182.18      | 94.46        | 75.23          | 700.93  |
+| Copy                   | 355.47      | 213.81       | 145.36         | —       |
+
+For the ENTSOE RealGrid network:
+
+| Benchmark Operation    | XML (XIIDM) | JSON (JIIDM) | Binary (BIIDM) | CGMES   |
+|------------------------|-------------|--------------|----------------|---------|
+| Deserialization        | 273.87      | 166.77       | 124.26         | 3649.50 |
+| Stream serialization   | 306.92      | 247.26       | 200.09         | —       |
+| File serialization     | 757.48      | 273.10       | 216.81         | 1959.44 |
+| Copy                   | 1275.75     | 854.35       | 437.56         | —       |
 
 
 ### Contingency serialization benchmark

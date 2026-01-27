@@ -7,6 +7,8 @@
  */
 package com.powsybl.benchmark.state;
 
+import static com.powsybl.benchmark.Constants.RTE_6515;
+
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
@@ -14,6 +16,6 @@ public class Rte6515NetworkState extends AbstractMatpowerNetworkState {
 
     @Override
     protected String getName() {
-        return "case6515rte";
+        return RTE_6515;
     }
 }

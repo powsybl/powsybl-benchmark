@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.powsybl.benchmark.Constants.RTE_1888;
+import static com.powsybl.benchmark.Constants.RTE_6515;
+
 /**
  * @deprecated since 2025.4.0
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
@@ -60,8 +63,8 @@ public final class ManualSecurityAnalysisBenchmark {
     public static void main(String[] args) {
         List<BenchmarkResult> results = new ArrayList<>(4);
 
-        Network case1888rte = MatpowerUtil.importMat("case1888rte");
-        Network case6515rte = MatpowerUtil.importMat("case6515rte");
+        Network case1888rte = MatpowerUtil.importMat(RTE_1888);
+        Network case6515rte = MatpowerUtil.importMat(RTE_6515);
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenLoadFlow", case1888rte, loadFlowParametersType, 1000, results);
             run("OpenLoadFlow", case6515rte, loadFlowParametersType, 1000, results);

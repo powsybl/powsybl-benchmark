@@ -17,6 +17,8 @@ import org.openjdk.jmh.annotations.State;
 
 import java.util.List;
 
+import static com.powsybl.benchmark.Constants.RTE_6515;
+
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
@@ -24,7 +26,7 @@ import java.util.List;
 public class SecurityAnalysisMultiThreadsParametersState {
 
     private static final int CONTINGENCY_LIMIT = 500;
-    private static final String NETWORK_NAME = "case6515rte";
+    private static final String NETWORK_NAME = RTE_6515;
 
     @Param({"1", "2", "4", "8"})
     private int threadCount;

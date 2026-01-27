@@ -9,10 +9,14 @@ package com.powsybl.benchmark.state;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import com.powsybl.commons.PowsyblException;
+import com.powsybl.commons.datasource.ResourceDataSource;
+import com.powsybl.commons.datasource.ResourceSet;
 import com.powsybl.iidm.network.Network;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.IOException;
@@ -21,22 +25,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+import static com.powsybl.benchmark.Constants.REAL_GRID;
+import static com.powsybl.benchmark.Constants.RTE_6515;
+
 /**
- * <p>You can provide your own file by using the {@value #PARAMETER_NAME} parameter</p>
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
+@State(Scope.Thread)
 public abstract class AbstractNetworkSerializationState {
-
-    private static final String PARAMETER_NAME = "network.file";
-    private static final String DEFAULT_NETWORK = "case6515rte";
 
     private FileSystem fileSystem;
     private Path filePath;
-    private Network network;
     private Path outputDir;
     private Path outputPath;
     private Properties properties;
     private Path tmpDir;
+
+    @Param({REAL_GRID, RTE_6515})
+    private String networkName;
+
+    private Network network;
 
     @Setup(Level.Trial)
     public void setup() throws IOException {
@@ -103,14 +111,10 @@ public abstract class AbstractNetworkSerializationState {
     protected abstract void writeTmpFile();
 
     private Network loadNetwork() {
-        String networkFile = System.getProperty(PARAMETER_NAME);
-        if (networkFile == null) {
-            return MatpowerUtil.importMat(DEFAULT_NETWORK);
-        }
-        Path path = Path.of(networkFile);
-        if (!Files.exists(path)) {
-            throw new PowsyblException("File not found: " + networkFile);
-        }
-        return Network.read(path);
+        return switch (networkName) {
+            case REAL_GRID -> Network.read(new ResourceDataSource(networkName, new ResourceSet("/data", networkName + ".zip")));
+            case RTE_6515 -> MatpowerUtil.importMat(networkName);
+            default -> throw new IllegalArgumentException("Unknown network: " + networkName);
+        };
     }
 }
