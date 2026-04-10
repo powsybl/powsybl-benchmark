@@ -5,10 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.state.LoadFlowParametersType;
-import com.powsybl.benchmark.state.SecurityAnalysisMultiThreadsParametersState;
+import com.powsybl.benchmark.loadflow.state.LoadFlowParametersType;
+import com.powsybl.benchmark.security.state.SecurityAnalysisMultiThreadsParametersState;
 import com.powsybl.security.SecurityAnalysisResult;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;

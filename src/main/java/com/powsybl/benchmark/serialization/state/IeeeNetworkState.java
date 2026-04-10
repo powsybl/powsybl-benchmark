@@ -5,8 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.serialization.state;
 
+import com.powsybl.ieeecdf.converter.IeeeCdfNetworkFactory;
 import com.powsybl.iidm.network.Network;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
@@ -17,18 +18,30 @@ import org.openjdk.jmh.annotations.State;
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
 @State(Scope.Thread)
-public abstract class AbstractMatpowerNetworkState {
+public class IeeeNetworkState {
 
-    private Network network;
+    private Network ieee14Network;
+
+    private Network ieee118Network;
+
+    private Network ieee300Network;
 
     @Setup(Level.Trial)
     public void doSetup() {
-        network = MatpowerUtil.importMat(getName());
+        ieee14Network = IeeeCdfNetworkFactory.create14();
+        ieee118Network = IeeeCdfNetworkFactory.create118();
+        ieee300Network = IeeeCdfNetworkFactory.create300();
     }
 
-    protected abstract String getName();
+    public Network getIeee14Network() {
+        return ieee14Network;
+    }
 
-    public Network getNetwork() {
-        return network;
+    public Network getIeee118Network() {
+        return ieee118Network;
+    }
+
+    public Network getIeee300Network() {
+        return ieee300Network;
     }
 }

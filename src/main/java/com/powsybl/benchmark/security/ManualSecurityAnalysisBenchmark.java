@@ -1,14 +1,15 @@
-/**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+/*
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.security;
 
 import com.google.common.base.Stopwatch;
-import com.powsybl.benchmark.state.LoadFlowParametersType;
-import com.powsybl.benchmark.state.MatpowerUtil;
+import com.powsybl.benchmark.loadflow.state.LoadFlowParametersType;
+import com.powsybl.benchmark.commons.MatpowerUtil;
 import com.powsybl.contingency.Contingency;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.security.SecurityAnalysis;
@@ -21,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.powsybl.benchmark.commons.Constants.RTE_1888;
+import static com.powsybl.benchmark.commons.Constants.RTE_6515;
 
 /**
  * @deprecated since 2025.4.0
@@ -60,8 +64,8 @@ public final class ManualSecurityAnalysisBenchmark {
     public static void main(String[] args) {
         List<BenchmarkResult> results = new ArrayList<>(4);
 
-        Network case1888rte = MatpowerUtil.importMat("case1888rte");
-        Network case6515rte = MatpowerUtil.importMat("case6515rte");
+        Network case1888rte = MatpowerUtil.importMat(RTE_1888);
+        Network case6515rte = MatpowerUtil.importMat(RTE_6515);
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenLoadFlow", case1888rte, loadFlowParametersType, 1000, results);
             run("OpenLoadFlow", case6515rte, loadFlowParametersType, 1000, results);

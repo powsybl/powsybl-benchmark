@@ -5,22 +5,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.loadflow.state;
 
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
+import static com.powsybl.benchmark.commons.Constants.RTE_1888;
 
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-@State(Scope.Thread)
-public class LoadFlowParametersState {
+public class Rte1888NetworkState extends AbstractMatpowerNetworkState {
 
-    @Param
-    private LoadFlowParametersType type;
-
-    public LoadFlowParametersType getType() {
-        return type;
+    @Override
+    protected String getName() {
+        return RTE_1888;
     }
 }

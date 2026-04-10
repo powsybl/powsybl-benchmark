@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.loadflow.state;
 
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;

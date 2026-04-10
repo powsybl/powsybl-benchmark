@@ -75,6 +75,10 @@
         <!-- PowSyBl dependencies -->
         <dependency>
             <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-cgmes-conversion</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.powsybl</groupId>
             <artifactId>powsybl-config-classic</artifactId>
         </dependency>
         <dependency>
@@ -94,11 +98,19 @@
             <artifactId>powsybl-open-loadflow</artifactId>
             <version>${powsybl-open-loadflow.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-triple-store-impl-rdf4j</artifactId>
+        </dependency>
 
         <!-- Other dependencies -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

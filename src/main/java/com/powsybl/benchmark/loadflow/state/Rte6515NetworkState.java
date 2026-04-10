@@ -5,15 +5,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.loadflow.state;
+
+import static com.powsybl.benchmark.commons.Constants.RTE_6515;
 
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-public class Rte1888NetworkState extends AbstractMatpowerNetworkState {
+public class Rte6515NetworkState extends AbstractMatpowerNetworkState {
 
     @Override
     protected String getName() {
-        return "case1888rte";
+        return RTE_6515;
     }
 }
