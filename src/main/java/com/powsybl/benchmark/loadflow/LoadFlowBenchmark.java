@@ -1,16 +1,17 @@
-/**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+/*
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.loadflow;
 
-import com.powsybl.benchmark.state.IeeeNetworkState;
-import com.powsybl.benchmark.state.LoadFlowParametersState;
-import com.powsybl.benchmark.state.LoadFlowProviderState;
-import com.powsybl.benchmark.state.Rte1888NetworkState;
-import com.powsybl.benchmark.state.Rte6515NetworkState;
+import com.powsybl.benchmark.serialization.state.IeeeNetworkState;
+import com.powsybl.benchmark.loadflow.state.LoadFlowParametersState;
+import com.powsybl.benchmark.loadflow.state.LoadFlowProviderState;
+import com.powsybl.benchmark.loadflow.state.Rte1888NetworkState;
+import com.powsybl.benchmark.loadflow.state.Rte6515NetworkState;
 import com.powsybl.loadflow.LoadFlow;
 import com.powsybl.loadflow.LoadFlowResult;
 import org.openjdk.jmh.annotations.Benchmark;

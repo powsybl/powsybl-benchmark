@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.loadflow.state;
 
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -15,12 +15,12 @@ import org.openjdk.jmh.annotations.State;
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
 @State(Scope.Thread)
-public class LoadFlowProviderState {
+public class LoadFlowParametersState {
 
-    @Param({"OpenLoadFlow"})
-    private String provider;
+    @Param
+    private LoadFlowParametersType type;
 
-    public String getProvider() {
-        return provider;
+    public LoadFlowParametersType getType() {
+        return type;
     }
 }

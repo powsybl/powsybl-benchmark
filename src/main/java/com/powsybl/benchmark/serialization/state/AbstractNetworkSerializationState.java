@@ -5,10 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.serialization.state;
 
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
+import com.powsybl.benchmark.commons.MatpowerUtil;
 import com.powsybl.commons.datasource.ResourceDataSource;
 import com.powsybl.commons.datasource.ResourceSet;
 import com.powsybl.iidm.network.Network;
@@ -25,8 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import static com.powsybl.benchmark.Constants.REAL_GRID;
-import static com.powsybl.benchmark.Constants.RTE_6515;
+import static com.powsybl.benchmark.commons.Constants.REAL_GRID;
+import static com.powsybl.benchmark.commons.Constants.RTE_6515;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}

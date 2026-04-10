@@ -5,9 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.serialization;
 
-import com.powsybl.benchmark.state.CgmesSerializationState;
+import com.powsybl.benchmark.serialization.state.CgmesSerializationState;
 import com.powsybl.iidm.network.Network;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;

@@ -173,5 +173,5 @@ java -jar target/benchmark.jar XmxSecurityAnalysisBenchmark.runXmx1G
 To run the manual Security Analysis benchmark, use the following command:
 
 ```
-java -cp target/benchmark.jar com.powsybl.benchmark.ManualSecurityAnalysisBenchmark
+java -cp target/benchmark.jar com.powsybl.benchmark.security.ManualSecurityAnalysisBenchmark
 ```

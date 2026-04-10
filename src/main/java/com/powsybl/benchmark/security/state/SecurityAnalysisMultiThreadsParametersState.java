@@ -5,8 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.state;
+package com.powsybl.benchmark.security.state;
 
+import com.powsybl.benchmark.commons.MatpowerUtil;
 import com.powsybl.contingency.Contingency;
 import com.powsybl.iidm.network.Network;
 import org.openjdk.jmh.annotations.Level;
@@ -17,7 +18,7 @@ import org.openjdk.jmh.annotations.State;
 
 import java.util.List;
 
-import static com.powsybl.benchmark.Constants.RTE_6515;
+import static com.powsybl.benchmark.commons.Constants.RTE_6515;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}

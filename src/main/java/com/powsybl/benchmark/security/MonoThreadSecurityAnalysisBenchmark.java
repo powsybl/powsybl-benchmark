@@ -5,13 +5,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.state.AbstractMatpowerNetworkState;
-import com.powsybl.benchmark.state.LoadFlowParametersState;
-import com.powsybl.benchmark.state.LoadFlowProviderState;
-import com.powsybl.benchmark.state.Rte1888NetworkState;
-import com.powsybl.benchmark.state.Rte6515NetworkState;
+import com.powsybl.benchmark.loadflow.state.AbstractMatpowerNetworkState;
+import com.powsybl.benchmark.loadflow.state.LoadFlowParametersState;
+import com.powsybl.benchmark.loadflow.state.LoadFlowProviderState;
+import com.powsybl.benchmark.loadflow.state.Rte1888NetworkState;
+import com.powsybl.benchmark.loadflow.state.Rte6515NetworkState;
 import com.powsybl.contingency.Contingency;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.security.SecurityAnalysisResult;
