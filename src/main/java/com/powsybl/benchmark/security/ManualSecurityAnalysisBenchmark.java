@@ -1,12 +1,15 @@
-/**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+/*
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.security;
 
 import com.google.common.base.Stopwatch;
+import com.powsybl.benchmark.loadflow.state.LoadFlowParametersType;
+import com.powsybl.benchmark.commons.MatpowerUtil;
 import com.powsybl.commons.datasource.ResourceDataSource;
 import com.powsybl.commons.datasource.ResourceSet;
 import com.powsybl.contingency.Contingency;
@@ -15,56 +18,33 @@ import com.powsybl.iidm.network.Network;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisParameters;
 import com.powsybl.security.SecurityAnalysisResult;
+import com.powsybl.security.SecurityAnalysisRunParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+
+import static com.powsybl.benchmark.commons.Constants.RTE_1888;
+import static com.powsybl.benchmark.commons.Constants.RTE_6515;
 
 /**
+ * @deprecated since 2025.4.0
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-public final class SecurityAnalysisBenchmark {
+@Deprecated(forRemoval = true, since = "2025.4.0")
+public final class ManualSecurityAnalysisBenchmark {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityAnalysisBenchmark.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManualSecurityAnalysisBenchmark.class);
 
-    private SecurityAnalysisBenchmark() {
+    private ManualSecurityAnalysisBenchmark() {
     }
 
-    static class BenchmarkResult {
-
-        private final String networkId;
-
-        private final LoadFlowParametersType loadFlowParametersType;
-
-        private final int contingencyCount;
-
-        private final long milliSeconds;
-
-        BenchmarkResult(String networkId, LoadFlowParametersType loadFlowParametersType, int contingencyCount, long milliSeconds) {
-            this.networkId = networkId;
-            this.loadFlowParametersType = loadFlowParametersType;
-            this.contingencyCount = contingencyCount;
-            this.milliSeconds = milliSeconds;
-        }
-
-        String getNetworkId() {
-            return networkId;
-        }
-
-        LoadFlowParametersType getLoadFlowParametersType() {
-            return loadFlowParametersType;
-        }
-
-        int getContingencyCount() {
-            return contingencyCount;
-        }
-
-        long getMilliSeconds() {
-            return milliSeconds;
-        }
+    record BenchmarkResult(String networkId,
+                           LoadFlowParametersType loadFlowParametersType,
+                           int contingencyCount,
+                           long milliSeconds) {
     }
 
     private static SecurityAnalysisResult run(String provider, Network network, LoadFlowParametersType loadFlowParametersType,
@@ -72,12 +52,13 @@ public final class SecurityAnalysisBenchmark {
         List<Contingency> contingencies = network.getLineStream()
                 .limit(contingencyLimit)
                 .map(line -> Contingency.line(line.getId()))
-                .collect(Collectors.toList());
+                .toList();
         SecurityAnalysisParameters parameters = new SecurityAnalysisParameters()
                 .setLoadFlowParameters(loadFlowParametersType.getParameters());
         Stopwatch stopwatch = Stopwatch.createStarted();
+        var runParameters = SecurityAnalysisRunParameters.getDefault().setSecurityAnalysisParameters(parameters);
         SecurityAnalysisResult result = SecurityAnalysis.find(provider)
-                .run(network, contingencies, parameters)
+                .run(network, contingencies, runParameters)
                 .getResult();
         benchmarkResults.add(new BenchmarkResult(network.getId(), loadFlowParametersType, contingencyLimit, stopwatch.elapsed(TimeUnit.MILLISECONDS)));
         return result;
@@ -86,8 +67,8 @@ public final class SecurityAnalysisBenchmark {
     public static void main(String[] args) {
         List<BenchmarkResult> results = new ArrayList<>(4);
 
-        Network case1888rte = MatpowerUtil.importMat("case1888rte");
-        Network case6515rte = MatpowerUtil.importMat("case6515rte");
+        Network case1888rte = MatpowerUtil.importMat(RTE_1888);
+        Network case6515rte = MatpowerUtil.importMat(RTE_6515);
         Network case6051realgrid = Importers.importData("CGMES",
                                                         new ResourceDataSource("CGMES_v2.4.15_RealGridTestConfiguration",
                                                                                new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_EQ_V2.xml",
@@ -95,18 +76,17 @@ public final class SecurityAnalysisBenchmark {
                                                                                                                        "CGMES_v2.4.15_RealGridTestConfiguration_SV_V2.xml",
                                                                                                                        "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
                                                         null);
-
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
-            run("OpenSecurityAnalysis", case1888rte, loadFlowParametersType, 1000, results);
-            run("OpenSecurityAnalysis", case6515rte, loadFlowParametersType, 1000, results);
+            run("OpenLoadFlow", case1888rte, loadFlowParametersType, 1000, results);
+            run("OpenLoadFlow", case6515rte, loadFlowParametersType, 1000, results);
         }
 
         run("OpenSecurityAnalysis", case6051realgrid, LoadFlowParametersType.BASIC, 1000, results);
 
         for (BenchmarkResult result : results) {
             LOGGER.info("Security analysis on network '{}' with {} contingencies and load flow parameters {} done in {} ms: {} ms / contingency",
-                    result.getNetworkId(), result.getContingencyCount(), result.getLoadFlowParametersType(), result.getMilliSeconds(),
-                    result.getMilliSeconds() / result.getContingencyCount());
+                    result.networkId(), result.contingencyCount(), result.loadFlowParametersType(), result.milliSeconds(),
+                    result.milliSeconds() / result.contingencyCount());
         }
     }
 }

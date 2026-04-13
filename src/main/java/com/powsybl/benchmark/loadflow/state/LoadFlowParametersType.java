@@ -1,10 +1,11 @@
-/**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+/*
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark;
+package com.powsybl.benchmark.loadflow.state;
 
 import com.powsybl.loadflow.LoadFlowParameters;
 
@@ -15,24 +16,24 @@ public enum LoadFlowParametersType {
     BASIC(new LoadFlowParameters()
             .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
             .setDistributedSlack(false)
-            .setNoGeneratorReactiveLimits(true)
+            .setUseReactiveLimits(false)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN)),
+            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)),
     STANDARD(new LoadFlowParameters()
             .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
             .setDistributedSlack(true)
-            .setNoGeneratorReactiveLimits(false)
+            .setUseReactiveLimits(true)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN)),
+            .setConnectedComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)),
     STANDARDNOGENREACTIVELIMIT(new LoadFlowParameters()
             .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
             .setDistributedSlack(true)
             .setNoGeneratorReactiveLimits(true)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setConnectedComponentMode(LoadFlowParameters.ConnectedComponentMode.MAIN)
+            .setConnectedComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)
             .setDc(true));
 
     private final LoadFlowParameters parameters;
