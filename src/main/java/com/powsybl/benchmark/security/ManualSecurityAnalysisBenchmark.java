@@ -13,7 +13,7 @@ import com.powsybl.benchmark.commons.MatpowerUtil;
 import com.powsybl.commons.datasource.ResourceDataSource;
 import com.powsybl.commons.datasource.ResourceSet;
 import com.powsybl.contingency.Contingency;
-import com.powsybl.iidm.import_.Importers;
+import com.powsybl.iidm.network.Importers;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisParameters;
@@ -70,12 +70,12 @@ public final class ManualSecurityAnalysisBenchmark {
         Network case1888rte = MatpowerUtil.importMat(RTE_1888);
         Network case6515rte = MatpowerUtil.importMat(RTE_6515);
         Network case6051realgrid = Importers.importData("CGMES",
-                                                        new ResourceDataSource("CGMES_v2.4.15_RealGridTestConfiguration",
-                                                                               new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_EQ_V2.xml",
-                                                                                                                       "CGMES_v2.4.15_RealGridTestConfiguration_SSH_V2.xml",
-                                                                                                                       "CGMES_v2.4.15_RealGridTestConfiguration_SV_V2.xml",
-                                                                                                                       "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
-                                                        null);
+            new ResourceDataSource("CGMES_v2.4.15_RealGridTestConfiguration",
+                new ResourceSet("/data/CGMES_RealGrid", "CGMES_v2.4.15_RealGridTestConfiguration_EQ_V2.xml",
+                    "CGMES_v2.4.15_RealGridTestConfiguration_SSH_V2.xml",
+                    "CGMES_v2.4.15_RealGridTestConfiguration_SV_V2.xml",
+                    "CGMES_v2.4.15_RealGridTestConfiguration_TP_V2.xml")),
+            null);
         for (LoadFlowParametersType loadFlowParametersType : LoadFlowParametersType.values()) {
             run("OpenLoadFlow", case1888rte, loadFlowParametersType, 1000, results);
             run("OpenLoadFlow", case6515rte, loadFlowParametersType, 1000, results);

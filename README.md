@@ -52,11 +52,11 @@ parameters sets as for load low benchmark have been used. 1000 contingencies hav
 TODO: replace this
 Another run has been done using i7-10610U CPU, and 32 Go RAM. CGMES Real grid 6051 network with basic parameter has been added to the run.
 
-| Network       | Basic parameters    | Standard parameters |
-| ------------- | ------------------- | ------------------- |
-| RTE 1888      | 18 ms / contingency | 23 ms / contingency |
+| Network       | Basic parameters    | Standard parameters  |
+|---------------|---------------------|----------------------|
+| RTE 1888      | 18 ms / contingency | 23 ms / contingency  |
 | RTE 6515      | 74 ms / contingency | 111 ms / contingency |
-| RealGrid 6051 | 71 ms / contingency | - |
+| RealGrid 6051 | 71 ms / contingency | -                    |
 
 ### Mono-thread security analysis benchmark
 
