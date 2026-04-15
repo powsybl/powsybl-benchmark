@@ -7,9 +7,10 @@
  */
 package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.loadflow.state.AbstractMatpowerNetworkState;
+import com.powsybl.benchmark.loadflow.state.AbstractNetworkState;
 import com.powsybl.benchmark.loadflow.state.LoadFlowParametersState;
 import com.powsybl.benchmark.loadflow.state.LoadFlowProviderState;
+import com.powsybl.benchmark.loadflow.state.RealGridNetworkState;
 import com.powsybl.benchmark.loadflow.state.Rte1888NetworkState;
 import com.powsybl.benchmark.loadflow.state.Rte6515NetworkState;
 import com.powsybl.contingency.Contingency;
@@ -32,24 +33,8 @@ public class MonoThreadSecurityAnalysisBenchmark extends AbstractSecurityAnalysi
 
     private static final int CONTINGENCY_LIMIT = 1000;
 
-    @Benchmark
-    @Fork(FORKS)
-    public SecurityAnalysisResult rte1888MonoThread(LoadFlowProviderState providerState,
-                                                    Rte1888NetworkState networkState,
-                                                    LoadFlowParametersState loadFlowParametersState) {
-        return runMonoThread(providerState, networkState, loadFlowParametersState);
-    }
-
-    @Benchmark
-    @Fork(FORKS)
-    public SecurityAnalysisResult rte6515MonoThread(LoadFlowProviderState providerState,
-                                                    Rte6515NetworkState networkState,
-                                                    LoadFlowParametersState loadFlowParametersState) {
-        return runMonoThread(providerState, networkState, loadFlowParametersState);
-    }
-
     private static SecurityAnalysisResult runMonoThread(LoadFlowProviderState providerState,
-                                                        AbstractMatpowerNetworkState networkState,
+                                                        AbstractNetworkState networkState,
                                                         LoadFlowParametersState loadFlowParametersState) {
         Network network = networkState.getNetwork();
         List<Contingency> contingencies = network.getLineStream()
@@ -62,5 +47,29 @@ public class MonoThreadSecurityAnalysisBenchmark extends AbstractSecurityAnalysi
             1,
             loadFlowParametersState.getType().getParameters(),
             contingencies);
+    }
+
+    @Benchmark
+    @Fork(FORKS)
+    public SecurityAnalysisResult benchmark1Rte1888MonoThread(LoadFlowProviderState providerState,
+                                                              Rte1888NetworkState networkState,
+                                                              LoadFlowParametersState loadFlowParametersState) {
+        return runMonoThread(providerState, networkState, loadFlowParametersState);
+    }
+
+    @Benchmark
+    @Fork(FORKS)
+    public SecurityAnalysisResult benchmark2Rte6515MonoThread(LoadFlowProviderState providerState,
+                                                              Rte6515NetworkState networkState,
+                                                              LoadFlowParametersState loadFlowParametersState) {
+        return runMonoThread(providerState, networkState, loadFlowParametersState);
+    }
+
+    @Benchmark
+    @Fork(FORKS)
+    public SecurityAnalysisResult benchmark3RealGridMonoThread(LoadFlowProviderState providerState,
+                                                               RealGridNetworkState networkState,
+                                                               LoadFlowParametersState loadFlowParametersState) {
+        return runMonoThread(providerState, networkState, loadFlowParametersState);
     }
 }

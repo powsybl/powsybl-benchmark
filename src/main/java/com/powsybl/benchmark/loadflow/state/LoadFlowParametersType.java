@@ -26,14 +26,14 @@ public enum LoadFlowParametersType {
             .setUseReactiveLimits(true)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setConnectedComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)),
-    STANDARDNOGENREACTIVELIMIT(new LoadFlowParameters()
+            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)),
+    STANDARD_REACTIVE_LIMITS_NOT_USED(new LoadFlowParameters()
             .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
             .setDistributedSlack(true)
-            .setNoGeneratorReactiveLimits(true)
+            .setUseReactiveLimits(false)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setConnectedComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)
+            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)
             .setDc(true));
 
     private final LoadFlowParameters parameters;
