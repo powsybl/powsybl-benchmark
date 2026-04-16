@@ -17,23 +17,26 @@ Execution is done on a single core, there is no code parallelization and the res
 
 Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.1.1](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.1.1). More load flow engines will be added later.
 
-Five networks of various sizes have been used: 
+Six networks of various sizes have been used: 
 
 - 3 classical IEEE networks: 14, 118 and 300 buses.
 - 2 networks coming from [Matpower toolbox](https://matpower.org/): RTE 1888 buses (EHV French system) and RTE 6515 buses (full EVH + HV French system).
+- ENTSOE [RealGrid network v3.0.3](https://www.entsoe.eu/Documents/CIM_documents/Grid_Model_CIM/CGMES_ConformityAssessmentScheme_TestConfigurations_v3-0-3.zip).
 
-Two different load flow parameters sets have been tested:
+Three different load flow parameters sets have been tested:
 
 - a basic one: this is the most basic configuration we can use for a load flow, so just a Newton-Raphson run without any outer loop.
 - a standard one: slack bus is distributed and generator reactive limits are taken into account.
+- a standard one with the reactive limits not used
 
-| Network  | Basic parameters | Standard parameters |
-|----------|------------------|---------------------|
-| IEEE 14  | 179 µs           | 188 µs              |
-| IEEE 118 | 1.37 ms          | 1.88 ms             |
-| IEEE 300 | 3.5 ms           | 5.9 ms              |
-| RTE 1888 | 24.7 ms          | 30.7 ms             |
-| RTE 6515 | 118 ms           | 191 ms              |
+| Network  | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 151 µs           | 152 µs              | 58 µs                                                  |
+| IEEE 118 | 1.09 ms          | 1.53 ms             | 411 µs                                                 |
+| IEEE 300 | 2.91 ms          | 4.88 ms             | 1.05 ms                                                |
+| RTE 1888 | 21.5 ms          | 26.6 ms             | 9.7 ms                                                 |
+| RTE 6515 | 98.4 ms          | 177.8 ms            | 49.1 ms                                                |
+| RealGrid | 103 ms           | 168 ms              | 63.1 ms                                                |
 
 
 ## Security analysis benchmark

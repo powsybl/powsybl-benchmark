@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.loadflow.state;
 
+import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;

@@ -7,7 +7,6 @@
  */
 package com.powsybl.benchmark.sensitivity;
 
-import com.powsybl.benchmark.loadflow.state.LoadFlowProviderState;
 import com.powsybl.benchmark.sensitivity.state.SensitivityAnalysisState;
 import com.powsybl.sensitivity.SensitivityAnalysis;
 import com.powsybl.sensitivity.SensitivityAnalysisResult;
@@ -36,9 +35,8 @@ public class SensitivityAnalysisBenchmark {
     @Fork(FORKS)
     @Benchmark
     public void benchmarkSensitivityAnalysis(Blackhole blackhole,
-                                             LoadFlowProviderState providerState,
                                              SensitivityAnalysisState sensitivityAnalysisState) {
-        SensitivityAnalysisResult result = SensitivityAnalysis.find(providerState.getProvider())
+        SensitivityAnalysisResult result = SensitivityAnalysis.find(sensitivityAnalysisState.getProvider())
             .run(sensitivityAnalysisState.getNetwork(),
                 sensitivityAnalysisState.getFactors(),
                 sensitivityAnalysisState.getRunParameters());

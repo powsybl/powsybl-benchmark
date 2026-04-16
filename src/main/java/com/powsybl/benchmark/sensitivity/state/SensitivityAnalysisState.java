@@ -7,14 +7,10 @@
  */
 package com.powsybl.benchmark.sensitivity.state;
 
-import com.powsybl.benchmark.commons.MatpowerUtil;
-import com.powsybl.benchmark.loadflow.state.LoadFlowParametersType;
-import com.powsybl.commons.datasource.ResourceDataSource;
-import com.powsybl.commons.datasource.ResourceSet;
-import com.powsybl.contingency.Contingency;
+import com.powsybl.benchmark.commons.state.AbstractAnalysisState;
+import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 import com.powsybl.contingency.ContingencyContext;
 import com.powsybl.iidm.network.Network;
-import com.powsybl.iidm.network.TwoSides;
 import com.powsybl.openloadflow.sensi.OpenSensitivityAnalysisParameters;
 import com.powsybl.sensitivity.SensitivityAnalysisParameters;
 import com.powsybl.sensitivity.SensitivityAnalysisRunParameters;
@@ -28,8 +24,10 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.util.List;
-import java.util.Objects;
 
+import static com.powsybl.benchmark.commons.Constants.IEEE_118;
+import static com.powsybl.benchmark.commons.Constants.IEEE_14;
+import static com.powsybl.benchmark.commons.Constants.IEEE_300;
 import static com.powsybl.benchmark.commons.Constants.REAL_GRID;
 import static com.powsybl.benchmark.commons.Constants.RTE_1888;
 import static com.powsybl.benchmark.commons.Constants.RTE_6515;
@@ -38,32 +36,27 @@ import static com.powsybl.benchmark.commons.Constants.RTE_6515;
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
 @State(Scope.Thread)
-public class SensitivityAnalysisState {
-
-    @Param({"1000"})
-    private int contingenciesLimit;
+public class SensitivityAnalysisState extends AbstractAnalysisState {
 
     @Param({"10000"})
     private int factorsLimit;
 
-    @Param({RTE_1888, RTE_6515, REAL_GRID})
+    @Param({IEEE_14, IEEE_118, IEEE_300, RTE_1888, RTE_6515, REAL_GRID})
     private String networkName;
 
     @Param
     private LoadFlowParametersType type;
 
-    private Network network;
-
     private List<SensitivityFactor> factors;
     private SensitivityAnalysisRunParameters runParameters;
 
+    @Override
     @Setup(Level.Trial)
     public void doSetup() {
-        network = loadNetwork(networkName);
-        List<Contingency> contingencies = computeContingencies(network, contingenciesLimit);
+        super.doSetup();
         factors = computeSensitivityFactors(network, factorsLimit);
         SensitivityAnalysisParameters parameters = new SensitivityAnalysisParameters()
-            .setLoadFlowParameters(type.getParameters());
+            .setLoadFlowParameters(getParameters());
         OpenSensitivityAnalysisParameters sensitivityAnalysisParametersExt = new OpenSensitivityAnalysisParameters();
         parameters.addExtension(OpenSensitivityAnalysisParameters.class, sensitivityAnalysisParametersExt);
         sensitivityAnalysisParametersExt.setThreadCount(1);
@@ -72,39 +65,32 @@ public class SensitivityAnalysisState {
             .setContingencies(contingencies);
     }
 
-    private static SensitivityFactor createBranchFlowPerInjectionIncrease(String functionId,
-                                                                          String variableId,
-                                                                          String contingencyId,
-                                                                          TwoSides side) {
-        SensitivityFunctionType sensitivityFunctionType = side.equals(TwoSides.ONE) ?
-            SensitivityFunctionType.BRANCH_ACTIVE_POWER_1 :
-            SensitivityFunctionType.BRANCH_ACTIVE_POWER_2;
-        return new SensitivityFactor(sensitivityFunctionType, functionId,
-            SensitivityVariableType.INJECTION_ACTIVE_POWER,
-            variableId,
-            false,
-            Objects.isNull(contingencyId) ?
-                ContingencyContext.all() :
-                ContingencyContext.specificContingency(contingencyId));
+    @Override
+    protected String getNetworkName() {
+        return networkName;
     }
 
-    private static List<Contingency> computeContingencies(Network network, int contingenciesLimit) {
-        return network.getLineStream()
-            .limit(contingenciesLimit)
-            .map(line -> Contingency.line(line.getId()))
-            .toList();
+    @Override
+    protected void setLoadFlowParameters() {
+        parameters = type.getParameters();
     }
 
     private static List<SensitivityFactor> computeSensitivityFactors(Network network, int factorsLimit) {
         return network.getGeneratorStream()
             .flatMap(injection -> network.getBranchStream()
-                .map(branch -> createBranchFlowPerInjectionIncrease(branch.getId(), injection.getId(), null, TwoSides.ONE)))
+                .map(branch -> createBranchFlowPerInjectionIncrease(branch.getId(), injection.getId())))
             .limit(factorsLimit)
             .toList();
     }
 
-    public Network getNetwork() {
-        return network;
+    private static SensitivityFactor createBranchFlowPerInjectionIncrease(String functionId,
+                                                                          String variableId) {
+        return new SensitivityFactor(SensitivityFunctionType.BRANCH_ACTIVE_POWER_1,
+            functionId,
+            SensitivityVariableType.INJECTION_ACTIVE_POWER,
+            variableId,
+            false,
+            ContingencyContext.all());
     }
 
     public List<SensitivityFactor> getFactors() {
@@ -113,13 +99,5 @@ public class SensitivityAnalysisState {
 
     public SensitivityAnalysisRunParameters getRunParameters() {
         return runParameters;
-    }
-
-    private Network loadNetwork(String networkName) {
-        return switch (networkName) {
-            case REAL_GRID -> Network.read(new ResourceDataSource(networkName, new ResourceSet("/data", networkName + ".zip")));
-            case RTE_1888, RTE_6515 -> MatpowerUtil.importMat(networkName);
-            default -> throw new IllegalArgumentException("Unknown network: " + networkName);
-        };
     }
 }

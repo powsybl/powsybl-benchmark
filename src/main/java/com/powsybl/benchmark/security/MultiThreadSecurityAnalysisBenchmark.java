@@ -7,13 +7,14 @@
  */
 package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.loadflow.state.LoadFlowParametersType;
-import com.powsybl.benchmark.security.state.SecurityAnalysisMultiThreadsParametersState;
+import com.powsybl.benchmark.security.state.MultiThreadsSecurityAnalysisState;
+import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,15 +23,19 @@ import java.util.concurrent.TimeUnit;
  */
 @Warmup(iterations = 3, time = 30, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
-public class MultiThreadSecurityAnalysisBenchmark extends AbstractSecurityAnalysisBenchmark {
+public class MultiThreadSecurityAnalysisBenchmark {
+
+    private static final int FORKS = 1;
 
     @Fork(FORKS)
     @Benchmark
-    public SecurityAnalysisResult runMultiThreads(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return run(securityAnalysisMultiThreadsParametersState.getProvider(),
-            securityAnalysisMultiThreadsParametersState.getNetwork(),
-            securityAnalysisMultiThreadsParametersState.getThreadCount(),
-            LoadFlowParametersType.STANDARD.getParameters(),
-            securityAnalysisMultiThreadsParametersState.getContingencies());
+    public void benchmarkMultiThreadsSecurityAnalysis(Blackhole blackhole,
+                                MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        SecurityAnalysisResult result = SecurityAnalysis.find(multiThreadsSecurityAnalysisState.getProvider())
+            .run(multiThreadsSecurityAnalysisState.getNetwork(),
+                multiThreadsSecurityAnalysisState.getContingencies(),
+                multiThreadsSecurityAnalysisState.getRunParameters())
+            .getResult();
+        blackhole.consume(result);
     }
 }

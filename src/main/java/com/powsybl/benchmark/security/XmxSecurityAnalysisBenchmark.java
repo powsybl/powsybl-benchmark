@@ -7,72 +7,75 @@
  */
 package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.loadflow.state.LoadFlowParametersType;
-import com.powsybl.benchmark.security.state.SecurityAnalysisMultiThreadsParametersState;
+import com.powsybl.benchmark.security.state.MultiThreadsSecurityAnalysisState;
+import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.infra.Blackhole;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
-public class XmxSecurityAnalysisBenchmark extends AbstractSecurityAnalysisBenchmark {
+public class XmxSecurityAnalysisBenchmark {
 
     private static final int FORKS = 1;
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx128m"})
     @Benchmark
-    public SecurityAnalysisResult runXmx128M(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx128M(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx256m"})
     @Benchmark
-    public SecurityAnalysisResult runXmx256M(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx256M(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx512m"})
     @Benchmark
-    public SecurityAnalysisResult runXmx512M(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx512M(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx1g"})
     @Benchmark
-    public SecurityAnalysisResult runXmx1G(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx1G(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx2g"})
     @Benchmark
-    public SecurityAnalysisResult runXmx2G(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx2G(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx4g"})
     @Benchmark
-    public SecurityAnalysisResult runXmx4G(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx4G(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(value = FORKS, jvmArgs = {"-Xmx8g"})
     @Benchmark
-    public SecurityAnalysisResult runXmx8G(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmx8G(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
     @Fork(FORKS)
     @Benchmark
-    public SecurityAnalysisResult runXmxUndefined(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return runXmx(securityAnalysisMultiThreadsParametersState);
+    public void runXmxUndefined(Blackhole blackhole, MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        runXmx(blackhole, multiThreadsSecurityAnalysisState);
     }
 
-    private static SecurityAnalysisResult runXmx(SecurityAnalysisMultiThreadsParametersState securityAnalysisMultiThreadsParametersState) {
-        return run(securityAnalysisMultiThreadsParametersState.getProvider(),
-            securityAnalysisMultiThreadsParametersState.getNetwork(),
-            securityAnalysisMultiThreadsParametersState.getThreadCount(),
-            LoadFlowParametersType.STANDARD.getParameters(),
-            securityAnalysisMultiThreadsParametersState.getContingencies());
+    private static void runXmx(Blackhole blackhole,
+                               MultiThreadsSecurityAnalysisState multiThreadsSecurityAnalysisState) {
+        SecurityAnalysisResult result = SecurityAnalysis.find(multiThreadsSecurityAnalysisState.getProvider())
+            .run(multiThreadsSecurityAnalysisState.getNetwork(),
+                multiThreadsSecurityAnalysisState.getContingencies(),
+                multiThreadsSecurityAnalysisState.getRunParameters())
+            .getResult();
+        blackhole.consume(result);
     }
 }
