@@ -27,7 +27,7 @@
 
         <jmh.version>1.37</jmh.version>
         <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
-        <powsybl-core.version>7.1.1</powsybl-core.version>
+        <powsybl-core.version>7.3.0-SNAPSHOT</powsybl-core.version>
         <powsybl-open-loadflow.version>2.1.1</powsybl-open-loadflow.version>
     </properties>
 
@@ -88,6 +88,12 @@
         <dependency>
             <groupId>com.powsybl</groupId>
             <artifactId>powsybl-iidm-impl</artifactId>
+            <version>${powsybl-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.powsybl</groupId>
+            <artifactId>powsybl-iidm-test</artifactId>
+            <version>${powsybl-core.version}</version>
         </dependency>
         <dependency>
             <groupId>com.powsybl</groupId>
