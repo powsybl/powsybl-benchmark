@@ -15,7 +15,8 @@ Execution is done on a single core, there is no code parallelization, and the re
 
 ## Load flow benchmark
 
-Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.1.1](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.1.1). More load flow engines will be added later.
+Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.2.1](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.2.1). 
+More load flow engines will be added later.
 
 Six networks of various sizes have been used: 
 
@@ -31,37 +32,16 @@ Three different load flow parameters sets have been tested:
 
 | Network  | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 151 µs           | 152 µs              | 58 µs                                                  |
-| IEEE 118 | 1.09 ms          | 1.53 ms             | 411 µs                                                 |
-| IEEE 300 | 2.91 ms          | 4.88 ms             | 1.05 ms                                                |
-| RTE 1888 | 21.5 ms          | 26.6 ms             | 9.7 ms                                                 |
-| RTE 6515 | 98.4 ms          | 177.8 ms            | 49.1 ms                                                |
-| RealGrid | 103 ms           | 168 ms              | 63.1 ms                                                |
+| IEEE 14  | 156 µs           | 158 µs              | 60 µs                                                  |
+| IEEE 118 | 1.16 ms          | 1.54 ms             | 474 µs                                                 |
+| IEEE 300 | 2.75 ms          | 4.96 ms             | 1.08 ms                                                |
+| RTE 1888 | 20.5 ms          | 24.8 ms             | 9.6 ms                                                 |
+| RTE 6515 | 102 ms           | 144 ms              | 52.0 ms                                                |
+| RealGrid | 97.1 ms          | 165 ms              | 56.6 ms                                                |
 
-_Note: those results are for the v2025.3.2 version_
+_Note: those results are for the v2026.0.0 version_
 
 ## Security analysis benchmark
-
-### Manual security analysis benchmark (deprecated)
-
-Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. The same basic and standard load flow 
-parameters sets as for load flow benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
-(taking the first 1000 lines of the network).
-
-| Network  | Basic parameters    | Standard parameters |
-|----------|---------------------|---------------------|
-| RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
-| RTE 6515 | 18 ms / contingency | 29 ms / contingency |
-
-Another run has been done using i7-10610U CPU, and 32 Go RAM. CGMES Real grid 6051 network with basic parameter has been added to the run.
-
-| Network       | Basic parameters    | Standard parameters  |
-|---------------|---------------------|----------------------|
-| RTE 1888      | 18 ms / contingency | 23 ms / contingency  |
-| RTE 6515      | 74 ms / contingency | 111 ms / contingency |
-| RealGrid 6051 | 71 ms / contingency | -                    |
-
-_Note: those results are for the v2025.3.2 version_
 
 ### Mono-thread security analysis benchmark
 
