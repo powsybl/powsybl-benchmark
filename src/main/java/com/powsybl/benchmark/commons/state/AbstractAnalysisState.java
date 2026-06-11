@@ -14,6 +14,8 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
  */
 @State(Scope.Thread)
 public abstract class AbstractAnalysisState extends AbstractLoadFlowState {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAnalysisState.class);
 
     @Param({"1000"})
     private int contingenciesLimit;
@@ -33,6 +36,7 @@ public abstract class AbstractAnalysisState extends AbstractLoadFlowState {
     public void doSetup() {
         super.doSetup();
         contingencies = computeContingencies(network, contingenciesLimit);
+        LOGGER.warn("Contingencies : {}", contingencies.size());
     }
 
     private static List<Contingency> computeContingencies(Network network, int contingenciesLimit) {

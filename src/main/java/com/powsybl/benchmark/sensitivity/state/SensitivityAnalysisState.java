@@ -22,6 +22,8 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -37,6 +39,7 @@ import static com.powsybl.benchmark.commons.Constants.RTE_6515;
  */
 @State(Scope.Thread)
 public class SensitivityAnalysisState extends AbstractAnalysisState {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SensitivityAnalysisState.class);
 
     @Param({"10000"})
     private int factorsLimit;
@@ -55,6 +58,7 @@ public class SensitivityAnalysisState extends AbstractAnalysisState {
     public void doSetup() {
         super.doSetup();
         factors = computeSensitivityFactors(network, factorsLimit);
+        LOGGER.warn("Factors : {}", factors.size());
         SensitivityAnalysisParameters parameters = new SensitivityAnalysisParameters()
             .setLoadFlowParameters(getParameters());
         OpenSensitivityAnalysisParameters sensitivityAnalysisParametersExt = new OpenSensitivityAnalysisParameters();

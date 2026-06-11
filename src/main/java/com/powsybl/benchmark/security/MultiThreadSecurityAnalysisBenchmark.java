@@ -11,8 +11,11 @@ import com.powsybl.benchmark.security.state.MultiThreadsSecurityAnalysisState;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -21,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 30, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
 public class MultiThreadSecurityAnalysisBenchmark {

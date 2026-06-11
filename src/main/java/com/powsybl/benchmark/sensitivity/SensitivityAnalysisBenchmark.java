@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @author Bertrand Rix {@literal <bertrand.rix at artelys.com>}
  */
 @BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.SECONDS)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 30, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
 public class SensitivityAnalysisBenchmark {
