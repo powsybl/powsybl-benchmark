@@ -20,11 +20,6 @@ import static com.powsybl.benchmark.commons.Constants.*;
 public class ReleaseMonoThreadSecurityAnalysisState extends MonoThreadSecurityAnalysisState {
 
     @Param({IEEE_14, IEEE_118, IEEE_300, RTE_1888, RTE_6515})
-    private String networkName;
-
-    @Override
-    protected String getNetworkName() {
-        return networkName;
-    }
+    protected String networkName;
 
 }

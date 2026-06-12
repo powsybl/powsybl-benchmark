@@ -21,7 +21,7 @@ import static com.powsybl.benchmark.commons.Constants.*;
 public class MonoThreadSecurityAnalysisState extends AbstractSecurityAnalysisState {
 
     @Param({IEEE_14, IEEE_118, IEEE_300, RTE_1888, RTE_6515, REAL_GRID})
-    private String networkName;
+    protected String networkName;
 
     @Param
     private LoadFlowParametersType type;
