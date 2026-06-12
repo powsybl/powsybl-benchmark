@@ -51,16 +51,16 @@ contingencies have been sequentially simulated for each of the analyses (taking 
 
 The results here are the duration per contingency.
 
-| Network  | Contincencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
+| Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 49 µs            | 83 µs               | 16 µs                                                  |
-| IEEE 118 | 177           | 221 µs           | 468 µs              | 43 µs                                                  |
-| IEEE 300 | 304           | 851 µs           | 1.9 ms              | 141 µs                                                 |
-| RTE 1888 | 1000          | 5 ms             | 8 ms                | 1.2 ms                                                 |
-| RTE 6515 | 1000          | 18 ms            | 29.85 ms            | 7 ms                                                   |
-| RealGrid | 1000          | 704 ms           | 696 ms              | 626 ms                                                 |
+| IEEE 14  | 17            | 46 µs            | 74 µs               | 16 µs                                                  |
+| IEEE 118 | 177           | 198 µs           | 422 µs              | 44 µs                                                  |
+| IEEE 300 | 304           | 837 µs           | 1.93 ms             | 146 µs                                                 |
+| RTE 1888 | 1000          | 4.2 ms           | 6.9 ms              | 1.2 ms                                                 |
+| RTE 6515 | 1000          | 17.3 ms          | 19.5 ms             | 6.1 ms                                                 |
+| RealGrid | 1000          | 719 ms           | 636 ms              | 628 ms                                                 |
 
-_Note: those results are for the v2025.3.2 version_
+_Note: those results are for the v2026.0.0 version_
 
 ### Multi-thread security analysis benchmark
 
