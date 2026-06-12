@@ -42,27 +42,6 @@ _Note: those results are for the v2025.3.2 version_
 
 ## Security analysis benchmark
 
-### Manual security analysis benchmark (deprecated)
-
-Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. The same basic and standard load flow 
-parameters sets as for load flow benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
-(taking the first 1000 lines of the network).
-
-| Network  | Basic parameters    | Standard parameters |
-|----------|---------------------|---------------------|
-| RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
-| RTE 6515 | 18 ms / contingency | 29 ms / contingency |
-
-Another run has been done using i7-10610U CPU, and 32 Go RAM. CGMES Real grid 6051 network with basic parameter has been added to the run.
-
-| Network       | Basic parameters    | Standard parameters  |
-|---------------|---------------------|----------------------|
-| RTE 1888      | 18 ms / contingency | 23 ms / contingency  |
-| RTE 6515      | 74 ms / contingency | 111 ms / contingency |
-| RealGrid 6051 | 71 ms / contingency | -                    |
-
-_Note: those results are for the v2025.3.2 version_
-
 ### Mono-thread security analysis benchmark
 
 Security analysis benchmark has been done with the IEEE networks, the RTE 1888 buses and RTE 6515 buses networks, and
