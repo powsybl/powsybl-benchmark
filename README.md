@@ -45,7 +45,7 @@ _Note: those results are for the v2025.3.2 version_
 ### Manual security analysis benchmark (deprecated)
 
 Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. The same basic and standard load flow 
-parameters sets as for load low benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
+parameters sets as for load flow benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
 (taking the first 1000 lines of the network).
 
 | Network  | Basic parameters    | Standard parameters |
@@ -66,7 +66,7 @@ _Note: those results are for the v2025.3.2 version_
 ### Mono-thread security analysis benchmark
 
 Security analysis benchmark has been done with the IEEE networks, the RTE 1888 buses and RTE 6515 buses networks, and
-ENTSOE RealGrid network. The same load flow parameters sets as for load low benchmark have been used. At most, 1000 
+ENTSOE RealGrid network. The same load flow parameters sets as for load flow benchmark have been used. At most, 1000 
 contingencies have been sequentially simulated for each of the analyses (taking the first 1000 existing lines of the network).
 
 The results here are the duration per contingency.
@@ -119,7 +119,7 @@ _Note: those results are for the v2025.3.2 version_
 ## Sensitivity analysis benchmark
 
 Sensitivity analysis benchmark has been done with the IEEE networks, the RTE 1888 buses and RTE 6515 buses networks, and
-ENTSOE RealGrid network. The same load flow parameters sets as for load low benchmark have been used.
+ENTSOE RealGrid network. The same load flow parameters sets as for load flow benchmark have been used.
 
 At most, 1000 contingencies have been simulated for each of the analyses (taking the first 1000 lines of the network).
 For each contingency, at most 10,000 factors are computed. Factors computed are the branch flow per injection increase. All 
