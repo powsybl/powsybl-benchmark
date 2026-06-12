@@ -33,8 +33,7 @@ public enum LoadFlowParametersType {
             .setUseReactiveLimits(false)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)
-            .setDc(true));
+            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED));
 
     private final LoadFlowParameters parameters;
 
