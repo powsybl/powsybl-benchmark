@@ -215,6 +215,12 @@ java -jar target/benchmark.jar NetworkSerializationBenchmark
 java -jar target/benchmark.jar XmxSecurityAnalysisBenchmark.runXmx1G
 ```
 
+To run only the benchmarks used for the release, use the following command:
+
+```
+java -jar target/benchmark.jar --release
+```
+
 ### Deprecated benchmarks (to be removed)
 To run the manual Security Analysis benchmark, use the following command:
 

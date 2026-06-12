@@ -72,20 +72,22 @@ public final class BenchmarkRunner {
     /**
      * Processes a single line from the JMH BenchmarkList file and adds a matching
      * pattern to the list if the corresponding class or method is annotated with @ReleaseBenchmark.
-     * The JMH BenchmarkList format is: "fully.qualified.ClassName.methodName ..."
+     * <p>
+     * The JMH BenchmarkList binary format starts with:
+     * {@code JMH S <len> <userClass> S <len> <generatedClass> S <len> <methodName> ...}
      */
     private static void processLine(String line, List<String> matchingPatterns) {
-        String[] parts = line.trim().split("\\s+");
-        if (parts.length == 0) {
+        // Tokens are space-separated; strings are preceded by "S <length>"
+        String[] tokens = line.trim().split("\\s+");
+        // Minimum: "JMH", "S", <userClass>, "S", <generatedClass>, "S", <methodName>
+        if (tokens.length < 7 || !"JMH".equals(tokens[0])) {
             return;
         }
-        // parts[0] is "fully.qualified.ClassName.methodName"
-        int lastDot = parts[0].lastIndexOf('.');
-        if (lastDot < 0) {
-            return;
-        }
-        String className = parts[0].substring(0, lastDot);
-        String methodName = parts[0].substring(lastDot + 1);
+        // token[1]="S", token[2]=<len>, token[3]=<userClass>
+        // token[4]="S", token[5]=<len>, token[6]=<generatedClass>
+        // token[7]="S", token[8]=<len>, token[9]=<methodName>
+        String className = tokens[3];
+        String methodName = tokens[9];
         try {
             Class<?> clazz = Class.forName(className);
             if (isReleaseBenchmark(clazz, methodName)) {
