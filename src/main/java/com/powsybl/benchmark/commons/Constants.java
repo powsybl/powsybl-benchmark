@@ -16,7 +16,10 @@ public final class Constants {
         // Utility class
     }
 
+    public static final String IEEE_14 = "Ieee14";
+    public static final String IEEE_118 = "Ieee118";
+    public static final String IEEE_300 = "Ieee300";
+    public static final String REAL_GRID = "RealGrid";
     public static final String RTE_1888 = "case1888rte";
     public static final String RTE_6515 = "case6515rte";
-    public static final String REAL_GRID = "RealGrid";
 }

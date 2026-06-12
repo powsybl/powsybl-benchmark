@@ -11,37 +11,41 @@ All the benchmark results presented here were obtained on the same hardware and 
 | RAM            | 32 Go                                |
 | OS             | Ubuntu 22.04 LTS                     |
 
-Execution is done on a single core, there is no code parallelization and the results are in `ms/op` unless explicitly stated.
+Execution is done on a single core, there is no code parallelization, and the results are in `ms/op` unless explicitly stated.
 
 ## Load flow benchmark
 
 Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.1.1](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.1.1). More load flow engines will be added later.
 
-Five networks of various sizes have been used: 
+Six networks of various sizes have been used: 
 
-- 3 classical IEEE networks: 14, 118 and 300 buses.
+- 3 classical IEEE networks: 14, 118, and 300 buses.
 - 2 networks coming from [Matpower toolbox](https://matpower.org/): RTE 1888 buses (EHV French system) and RTE 6515 buses (full EVH + HV French system).
+- ENTSOE [RealGrid network v3.0.3](https://www.entsoe.eu/Documents/CIM_documents/Grid_Model_CIM/CGMES_ConformityAssessmentScheme_TestConfigurations_v3-0-3.zip).
 
-Two different load flow parameters sets have been tested:
+Three different load flow parameters sets have been tested:
 
 - a basic one: this is the most basic configuration we can use for a load flow, so just a Newton-Raphson run without any outer loop.
 - a standard one: slack bus is distributed and generator reactive limits are taken into account.
+- a standard one with the reactive limits not used
 
-| Network  | Basic parameters | Standard parameters |
-|----------|------------------|---------------------|
-| IEEE 14  | 179 µs           | 188 µs              |
-| IEEE 118 | 1.37 ms          | 1.88 ms             |
-| IEEE 300 | 3.5 ms           | 5.9 ms              |
-| RTE 1888 | 24.7 ms          | 30.7 ms             |
-| RTE 6515 | 118 ms           | 191 ms              |
+| Network  | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 151 µs           | 152 µs              | 58 µs                                                  |
+| IEEE 118 | 1.09 ms          | 1.53 ms             | 411 µs                                                 |
+| IEEE 300 | 2.91 ms          | 4.88 ms             | 1.05 ms                                                |
+| RTE 1888 | 21.5 ms          | 26.6 ms             | 9.7 ms                                                 |
+| RTE 6515 | 98.4 ms          | 177.8 ms            | 49.1 ms                                                |
+| RealGrid | 103 ms           | 168 ms              | 63.1 ms                                                |
 
+_Note: those results are for the v2025.3.2 version_
 
 ## Security analysis benchmark
 
 ### Manual security analysis benchmark (deprecated)
 
 Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. The same basic and standard load flow 
-parameters sets as for load low benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
+parameters sets as for load flow benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
 (taking the first 1000 lines of the network).
 
 | Network  | Basic parameters    | Standard parameters |
@@ -49,26 +53,45 @@ parameters sets as for load low benchmark have been used. 1000 contingencies hav
 | RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
 | RTE 6515 | 18 ms / contingency | 29 ms / contingency |
 
+Another run has been done using i7-10610U CPU, and 32 Go RAM. CGMES Real grid 6051 network with basic parameter has been added to the run.
+
+| Network       | Basic parameters    | Standard parameters  |
+|---------------|---------------------|----------------------|
+| RTE 1888      | 18 ms / contingency | 23 ms / contingency  |
+| RTE 6515      | 74 ms / contingency | 111 ms / contingency |
+| RealGrid 6051 | 71 ms / contingency | -                    |
+
+_Note: those results are for the v2025.3.2 version_
+
 ### Mono-thread security analysis benchmark
 
-Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. The same basic and standard load flow 
-parameters sets as for load low benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
-(taking the first 1000 lines of the network).
+Security analysis benchmark has been done with the IEEE networks, the RTE 1888 buses and RTE 6515 buses networks, and
+ENTSOE RealGrid network. The same load flow parameters sets as for load flow benchmark have been used. At most, 1000 
+contingencies have been sequentially simulated for each of the analyses (taking the first 1000 existing lines of the network).
 
-| Network  | Basic parameters    | Standard parameters |
-|----------|---------------------|---------------------|
-| RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
-| RTE 6515 | 19 ms / contingency | 30 ms / contingency |
+The results here are the duration per contingency.
+
+| Network  | Contincencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|---------------|------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 17            | 49 µs            | 83 µs               | 16 µs                                                  |
+| IEEE 118 | 177           | 221 µs           | 468 µs              | 43 µs                                                  |
+| IEEE 300 | 304           | 851 µs           | 1.9 ms              | 141 µs                                                 |
+| RTE 1888 | 1000          | 5 ms             | 8 ms                | 1.2 ms                                                 |
+| RTE 6515 | 1000          | 18 ms            | 29.85 ms            | 7 ms                                                   |
+| RealGrid | 1000          | 704 ms           | 696 ms              | 626 ms                                                 |
+
+_Note: those results are for the v2025.3.2 version_
 
 ### Multi-thread security analysis benchmark
 
-Security analysis benchmark has been done with RTE 6515 buses, the standard load flow parameters set and limited to 500
+Security analysis benchmark has been done with the RTE 6515 buses network, the standard load flow parameters set and limited to 500
 contingencies.
 
 | Network  | 1 thread        | 2 threads           | 4 threads           | 8 threads           |
 |----------|-----------------|---------------------|---------------------|---------------------|
 | RTE 6515 | 14.60 (1.00)    | 8.23 (0.89)         | 5.03 (0.73)         | 4.00 (0.46)         |
 
+_Note: those results are for the v2025.3.2 version_
 
 ### Influence of the `-Xmx` parameter
 
@@ -91,9 +114,29 @@ and the parallelization efficiency (equals to `(T₁ / Tₙ) / n)`.
 
 The failures are due to insufficient memory (Out-of-memory error).
 
+_Note: those results are for the v2025.3.2 version_
+
 ## Sensitivity analysis benchmark
 
-TODO
+Sensitivity analysis benchmark has been done with the IEEE networks, the RTE 1888 buses and RTE 6515 buses networks, and
+ENTSOE RealGrid network. The same load flow parameters sets as for load flow benchmark have been used.
+
+At most, 1000 contingencies have been simulated for each of the analyses (taking the first 1000 lines of the network).
+For each contingency, at most 10,000 factors are computed. Factors computed are the branch flow per injection increase. All 
+permutations are computed and only the first 10,000 are selected.
+
+This table presents the average execution time per contingency and factors for all networks and parameters sets.
+
+| Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|---------------|------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 17            | 68 µs            | 102 µs              | 19 µs                                                  |
+| IEEE 118 | 177           | 3.4 ms           | 3.8 ms              | 2.9 ms                                                 |
+| IEEE 300 | 304           | 3.9 ms           | 5.0 ms              | 2.7 ms                                                 |
+| RTE 1888 | 1000          | 9.3 ms           | 12.2 ms             | 3.7 ms                                                 |
+| RTE 6515 | 1000          | 25.0 ms          | 35.4 ms             | 4.9 ms                                                 |
+| RealGrid | 1000          | 23.2 ms          | 27.1 ms             | 5.1 ms                                                 |
+
+_Note: those results are for the v2025.3.2 version_
 
 ## Serialization benchmark
 
@@ -120,6 +163,7 @@ For the ENTSOE RealGrid network:
 | File serialization     | 757.48      | 273.10       | 216.81         | 1959.44 |
 | Copy                   | 1275.75     | 854.35       | 437.56         | —       |
 
+_Note: those results are for the v2025.3.2 version_
 
 ### Contingency serialization benchmark
 
@@ -134,6 +178,8 @@ generated by using the first 1000 lines of the network.
 | Reading to string   | 0.107        |
 | Writing             | 0.188        |
 | Buffered writing    | 0.167        |
+
+_Note: those results are for the v2025.3.2 version_
 
 ## Running the benchmarks
 

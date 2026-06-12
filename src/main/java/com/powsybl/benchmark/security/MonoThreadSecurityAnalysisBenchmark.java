@@ -7,60 +7,40 @@
  */
 package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.loadflow.state.AbstractMatpowerNetworkState;
-import com.powsybl.benchmark.loadflow.state.LoadFlowParametersState;
-import com.powsybl.benchmark.loadflow.state.LoadFlowProviderState;
-import com.powsybl.benchmark.loadflow.state.Rte1888NetworkState;
-import com.powsybl.benchmark.loadflow.state.Rte6515NetworkState;
-import com.powsybl.contingency.Contingency;
-import com.powsybl.iidm.network.Network;
+import com.powsybl.benchmark.security.state.MonoThreadSecurityAnalysisState;
+import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 30, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
-public class MonoThreadSecurityAnalysisBenchmark extends AbstractSecurityAnalysisBenchmark {
+public class MonoThreadSecurityAnalysisBenchmark {
 
-    private static final int CONTINGENCY_LIMIT = 1000;
-
-    @Benchmark
-    @Fork(FORKS)
-    public SecurityAnalysisResult rte1888MonoThread(LoadFlowProviderState providerState,
-                                                    Rte1888NetworkState networkState,
-                                                    LoadFlowParametersState loadFlowParametersState) {
-        return runMonoThread(providerState, networkState, loadFlowParametersState);
-    }
+    private static final int FORKS = 1;
 
     @Benchmark
     @Fork(FORKS)
-    public SecurityAnalysisResult rte6515MonoThread(LoadFlowProviderState providerState,
-                                                    Rte6515NetworkState networkState,
-                                                    LoadFlowParametersState loadFlowParametersState) {
-        return runMonoThread(providerState, networkState, loadFlowParametersState);
-    }
-
-    private static SecurityAnalysisResult runMonoThread(LoadFlowProviderState providerState,
-                                                        AbstractMatpowerNetworkState networkState,
-                                                        LoadFlowParametersState loadFlowParametersState) {
-        Network network = networkState.getNetwork();
-        List<Contingency> contingencies = network.getLineStream()
-            .limit(CONTINGENCY_LIMIT)
-            .map(line -> Contingency.line(line.getId()))
-            .toList();
-
-        return run(providerState.getProvider(),
-            network,
-            1,
-            loadFlowParametersState.getType().getParameters(),
-            contingencies);
+    public void benchmarkMonoThreadSecurityAnalysis(Blackhole blackhole,
+                                                    MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
+        SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
+            .run(monoThreadSecurityAnalysisState.getNetwork(),
+                monoThreadSecurityAnalysisState.getContingencies(),
+                monoThreadSecurityAnalysisState.getRunParameters())
+            .getResult();
+        blackhole.consume(result);
     }
 }

@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.loadflow.state;
+package com.powsybl.benchmark.commons.state;
 
 import com.powsybl.loadflow.LoadFlowParameters;
 
@@ -26,7 +26,15 @@ public enum LoadFlowParametersType {
             .setUseReactiveLimits(true)
             .setPhaseShifterRegulationOn(false)
             .setTransformerVoltageControlOn(false)
-            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED));
+            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)),
+    STANDARD_REACTIVE_LIMITS_NOT_USED(new LoadFlowParameters()
+            .setVoltageInitMode(LoadFlowParameters.VoltageInitMode.UNIFORM_VALUES)
+            .setDistributedSlack(true)
+            .setUseReactiveLimits(false)
+            .setPhaseShifterRegulationOn(false)
+            .setTransformerVoltageControlOn(false)
+            .setComponentMode(LoadFlowParameters.ComponentMode.MAIN_CONNECTED)
+            .setDc(true));
 
     private final LoadFlowParameters parameters;
 
