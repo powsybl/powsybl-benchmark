@@ -7,7 +7,9 @@
  */
 package com.powsybl.benchmark.security;
 
+import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.security.state.MonoThreadSecurityAnalysisState;
+import com.powsybl.benchmark.security.state.ReleaseMonoThreadSecurityAnalysisState;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -36,6 +38,19 @@ public class MonoThreadSecurityAnalysisBenchmark {
     @Fork(FORKS)
     public void benchmarkMonoThreadSecurityAnalysis(Blackhole blackhole,
                                                     MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
+        SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
+            .run(monoThreadSecurityAnalysisState.getNetwork(),
+                monoThreadSecurityAnalysisState.getContingencies(),
+                monoThreadSecurityAnalysisState.getRunParameters())
+            .getResult();
+        blackhole.consume(result);
+    }
+
+    @Benchmark
+    @Fork(FORKS)
+    @ReleaseBenchmark
+    public void benchmarkMonoThreadSecurityAnalysisWithoutRealGrid(Blackhole blackhole,
+                                                                   ReleaseMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
                 monoThreadSecurityAnalysisState.getContingencies(),

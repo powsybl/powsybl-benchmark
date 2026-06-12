@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.loadflow;
 
+import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.loadflow.state.LoadFlowState;
 import com.powsybl.loadflow.LoadFlow;
 import com.powsybl.loadflow.LoadFlowResult;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 10, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 10, timeUnit = TimeUnit.SECONDS)
+@ReleaseBenchmark
 public class LoadFlowBenchmark {
 
     @Benchmark
