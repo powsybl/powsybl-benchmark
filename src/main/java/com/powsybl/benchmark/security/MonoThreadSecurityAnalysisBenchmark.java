@@ -46,6 +46,9 @@ public class MonoThreadSecurityAnalysisBenchmark {
         blackhole.consume(result);
     }
 
+    /**
+     * This benchmark is only for release purpose as Security analysis on the RealGrid network takes A LOT of time.
+     */
     @Benchmark
     @Fork(FORKS)
     @ReleaseBenchmark
