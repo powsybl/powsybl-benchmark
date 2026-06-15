@@ -108,12 +108,12 @@ This table presents the average execution time per contingency and factors for a
 
 | Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 68 µs            | 102 µs              | 19 µs                                                  |
-| IEEE 118 | 177           | 3.4 ms           | 3.8 ms              | 2.9 ms                                                 |
-| IEEE 300 | 304           | 3.9 ms           | 5.0 ms              | 2.7 ms                                                 |
-| RTE 1888 | 1000          | 9.3 ms           | 12.2 ms             | 3.7 ms                                                 |
-| RTE 6515 | 1000          | 25.0 ms          | 35.4 ms             | 4.9 ms                                                 |
-| RealGrid | 1000          | 23.2 ms          | 27.1 ms             | 5.1 ms                                                 |
+| IEEE 14  | 17            | 68 µs            | 102 µs              | 84 µs                                                  |
+| IEEE 118 | 177           | 3.4 ms           | 3.8 ms              | 4.5 ms                                                 |
+| IEEE 300 | 304           | 3.9 ms           | 5.0 ms              | 5.2 ms                                                 |
+| RTE 1888 | 1000          | 9.3 ms           | 12.2 ms             | 11.8 ms                                                |
+| RTE 6515 | 1000          | 25.0 ms          | 35.4 ms             | 31.2 ms                                                |
+| RealGrid | 1000          | 23.2 ms          | 27.1 ms             | 28.8 ms                                                |
 
 _Note: those results are for the v2025.3.2 version_
 
