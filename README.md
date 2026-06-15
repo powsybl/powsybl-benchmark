@@ -52,12 +52,12 @@ The results here are the duration per contingency.
 
 | Network  | Contincencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 49 µs            | 83 µs               | 16 µs                                                  |
-| IEEE 118 | 177           | 221 µs           | 468 µs              | 43 µs                                                  |
-| IEEE 300 | 304           | 851 µs           | 1.9 ms              | 141 µs                                                 |
-| RTE 1888 | 1000          | 5 ms             | 8 ms                | 1.2 ms                                                 |
-| RTE 6515 | 1000          | 18 ms            | 29.85 ms            | 7 ms                                                   |
-| RealGrid | 1000          | 704 ms           | 696 ms              | 626 ms                                                 |
+| IEEE 14  | 17            | 49 µs            | 83 µs               | 56 µs                                                  |
+| IEEE 118 | 177           | 221 µs           | 468 µs              | 266 µs                                                 |
+| IEEE 300 | 304           | 851 µs           | 1.9 ms              | 1.1 ms                                                 |
+| RTE 1888 | 1000          | 5 ms             | 8 ms                | 5.5 ms                                                 |
+| RTE 6515 | 1000          | 18 ms            | 29.85 ms            | 20.6 ms                                                |
+| RealGrid | 1000          | 704 ms           | 696 ms              | 715 ms                                                 |
 
 _Note: those results are for the v2025.3.2 version_
 
