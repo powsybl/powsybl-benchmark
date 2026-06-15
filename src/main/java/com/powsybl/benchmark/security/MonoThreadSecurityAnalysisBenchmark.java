@@ -36,7 +36,7 @@ public class MonoThreadSecurityAnalysisBenchmark {
 
     @Benchmark
     @Fork(FORKS)
-    public void benchmarkMonoThreadSecurityAnalysis(Blackhole blackhole,
+    public void benchmarkMonoThreadSecurityAnalysisWithRealGrid(Blackhole blackhole,
                                                     MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
