@@ -7,7 +7,6 @@
  */
 package com.powsybl.benchmark.security.state;
 
-import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -18,21 +17,9 @@ import static com.powsybl.benchmark.commons.Constants.*;
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
 @State(Scope.Thread)
-public class MonoThreadSecurityAnalysisState extends AbstractSecurityAnalysisState {
+public class ReleaseMonoThreadSecurityAnalysisState extends MonoThreadSecurityAnalysisState {
 
-    @Param({IEEE_14, IEEE_118, IEEE_300, RTE_1888, RTE_6515, REAL_GRID})
+    @Param({IEEE_14, IEEE_118, IEEE_300, RTE_1888, RTE_6515})
     protected String networkName;
 
-    @Param
-    private LoadFlowParametersType type;
-
-    @Override
-    protected String getNetworkName() {
-        return networkName;
-    }
-
-    @Override
-    protected void setLoadFlowParameters() {
-        parameters = type.getParameters();
-    }
 }

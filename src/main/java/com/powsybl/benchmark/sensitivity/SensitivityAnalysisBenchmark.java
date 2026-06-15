@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.sensitivity;
 
+import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.sensitivity.state.SensitivityAnalysisState;
 import com.powsybl.sensitivity.SensitivityAnalysis;
 import com.powsybl.sensitivity.SensitivityAnalysisResult;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 30, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
+@ReleaseBenchmark
 public class SensitivityAnalysisBenchmark {
 
     private static final int FORKS = 1;
