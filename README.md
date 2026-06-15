@@ -193,3 +193,9 @@ java -jar target/benchmark.jar NetworkSerializationBenchmark
 # This will only run the Xmx1G benchmark
 java -jar target/benchmark.jar XmxSecurityAnalysisBenchmark.runXmx1G
 ```
+
+To run only the benchmarks used for the release, use the following command:
+
+```
+java -jar target/benchmark.jar --release
+```

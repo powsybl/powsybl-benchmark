@@ -13,12 +13,7 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
-import static com.powsybl.benchmark.commons.Constants.IEEE_118;
-import static com.powsybl.benchmark.commons.Constants.IEEE_14;
-import static com.powsybl.benchmark.commons.Constants.IEEE_300;
-import static com.powsybl.benchmark.commons.Constants.REAL_GRID;
-import static com.powsybl.benchmark.commons.Constants.RTE_1888;
-import static com.powsybl.benchmark.commons.Constants.RTE_6515;
+import static com.powsybl.benchmark.commons.Constants.*;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}

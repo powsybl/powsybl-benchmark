@@ -12,27 +12,14 @@ import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 import com.powsybl.contingency.ContingencyContext;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.openloadflow.sensi.OpenSensitivityAnalysisParameters;
-import com.powsybl.sensitivity.SensitivityAnalysisParameters;
-import com.powsybl.sensitivity.SensitivityAnalysisRunParameters;
-import com.powsybl.sensitivity.SensitivityFactor;
-import com.powsybl.sensitivity.SensitivityFunctionType;
-import com.powsybl.sensitivity.SensitivityVariableType;
-import org.openjdk.jmh.annotations.Level;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
+import com.powsybl.sensitivity.*;
+import org.openjdk.jmh.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static com.powsybl.benchmark.commons.Constants.IEEE_118;
-import static com.powsybl.benchmark.commons.Constants.IEEE_14;
-import static com.powsybl.benchmark.commons.Constants.IEEE_300;
-import static com.powsybl.benchmark.commons.Constants.REAL_GRID;
-import static com.powsybl.benchmark.commons.Constants.RTE_1888;
-import static com.powsybl.benchmark.commons.Constants.RTE_6515;
+import static com.powsybl.benchmark.commons.Constants.*;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
