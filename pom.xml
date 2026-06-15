@@ -20,7 +20,7 @@
     </parent>
 
     <artifactId>powsybl-benchmark</artifactId>
-    <version>2025.3.3-SNAPSHOT</version>
+    <version>2025.3.3</version>
 
     <properties>
         <java.version>21</java.version>
