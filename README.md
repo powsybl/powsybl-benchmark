@@ -31,37 +31,16 @@ Three different load flow parameters sets have been tested:
 
 | Network  | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 151 µs           | 152 µs              | 58 µs                                                  |
-| IEEE 118 | 1.09 ms          | 1.53 ms             | 411 µs                                                 |
-| IEEE 300 | 2.91 ms          | 4.88 ms             | 1.05 ms                                                |
-| RTE 1888 | 21.5 ms          | 26.6 ms             | 9.7 ms                                                 |
-| RTE 6515 | 98.4 ms          | 177.8 ms            | 49.1 ms                                                |
-| RealGrid | 103 ms           | 168 ms              | 63.1 ms                                                |
+| IEEE 14  | 151 µs           | 152 µs              | 158 µs                                                 |
+| IEEE 118 | 1.09 ms          | 1.53 ms             | 1.22 ms                                                |
+| IEEE 300 | 2.91 ms          | 4.88 ms             | 3.54 ms                                                |
+| RTE 1888 | 21.5 ms          | 26.6 ms             | 23.7 ms                                                |
+| RTE 6515 | 98.4 ms          | 177.8 ms            | 115.1 ms                                               |
+| RealGrid | 103 ms           | 168 ms              | 130.9 ms                                               |
 
 _Note: those results are for the v2025.3.2 version_
 
 ## Security analysis benchmark
-
-### Manual security analysis benchmark (deprecated)
-
-Security analysis benchmark has been done with RTE 1888 buses and RTE 6515 buses. The same basic and standard load flow 
-parameters sets as for load flow benchmark have been used. 1000 contingencies have been sequentially simulated for each of the analyses 
-(taking the first 1000 lines of the network).
-
-| Network  | Basic parameters    | Standard parameters |
-|----------|---------------------|---------------------|
-| RTE 1888 | 5 ms / contingency  | 8 ms / contingency  |
-| RTE 6515 | 18 ms / contingency | 29 ms / contingency |
-
-Another run has been done using i7-10610U CPU, and 32 Go RAM. CGMES Real grid 6051 network with basic parameter has been added to the run.
-
-| Network       | Basic parameters    | Standard parameters  |
-|---------------|---------------------|----------------------|
-| RTE 1888      | 18 ms / contingency | 23 ms / contingency  |
-| RTE 6515      | 74 ms / contingency | 111 ms / contingency |
-| RealGrid 6051 | 71 ms / contingency | -                    |
-
-_Note: those results are for the v2025.3.2 version_
 
 ### Mono-thread security analysis benchmark
 
@@ -73,12 +52,12 @@ The results here are the duration per contingency.
 
 | Network  | Contincencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 49 µs            | 83 µs               | 16 µs                                                  |
-| IEEE 118 | 177           | 221 µs           | 468 µs              | 43 µs                                                  |
-| IEEE 300 | 304           | 851 µs           | 1.9 ms              | 141 µs                                                 |
-| RTE 1888 | 1000          | 5 ms             | 8 ms                | 1.2 ms                                                 |
-| RTE 6515 | 1000          | 18 ms            | 29.85 ms            | 7 ms                                                   |
-| RealGrid | 1000          | 704 ms           | 696 ms              | 626 ms                                                 |
+| IEEE 14  | 17            | 49 µs            | 83 µs               | 56 µs                                                  |
+| IEEE 118 | 177           | 221 µs           | 468 µs              | 266 µs                                                 |
+| IEEE 300 | 304           | 851 µs           | 1.9 ms              | 1.1 ms                                                 |
+| RTE 1888 | 1000          | 5 ms             | 8 ms                | 5.5 ms                                                 |
+| RTE 6515 | 1000          | 18 ms            | 29.85 ms            | 20.6 ms                                                |
+| RealGrid | 1000          | 704 ms           | 696 ms              | 715 ms                                                 |
 
 _Note: those results are for the v2025.3.2 version_
 
@@ -129,12 +108,12 @@ This table presents the average execution time per contingency and factors for a
 
 | Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 68 µs            | 102 µs              | 19 µs                                                  |
-| IEEE 118 | 177           | 3.4 ms           | 3.8 ms              | 2.9 ms                                                 |
-| IEEE 300 | 304           | 3.9 ms           | 5.0 ms              | 2.7 ms                                                 |
-| RTE 1888 | 1000          | 9.3 ms           | 12.2 ms             | 3.7 ms                                                 |
-| RTE 6515 | 1000          | 25.0 ms          | 35.4 ms             | 4.9 ms                                                 |
-| RealGrid | 1000          | 23.2 ms          | 27.1 ms             | 5.1 ms                                                 |
+| IEEE 14  | 17            | 68 µs            | 102 µs              | 84 µs                                                  |
+| IEEE 118 | 177           | 3.4 ms           | 3.8 ms              | 4.5 ms                                                 |
+| IEEE 300 | 304           | 3.9 ms           | 5.0 ms              | 5.2 ms                                                 |
+| RTE 1888 | 1000          | 9.3 ms           | 12.2 ms             | 11.8 ms                                                |
+| RTE 6515 | 1000          | 25.0 ms          | 35.4 ms             | 31.2 ms                                                |
+| RealGrid | 1000          | 23.2 ms          | 27.1 ms             | 28.8 ms                                                |
 
 _Note: those results are for the v2025.3.2 version_
 
@@ -219,11 +198,4 @@ To run only the benchmarks used for the release, use the following command:
 
 ```
 java -jar target/benchmark.jar --release
-```
-
-### Deprecated benchmarks (to be removed)
-To run the manual Security Analysis benchmark, use the following command:
-
-```
-java -cp target/benchmark.jar com.powsybl.benchmark.security.ManualSecurityAnalysisBenchmark
 ```
