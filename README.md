@@ -123,7 +123,7 @@ This table presents the average execution time per contingency and factors for a
 | RTE 6515 | 1000          | 25.0 ms          | 35.4 ms             | 27.4 ms                                                |
 | RealGrid | 1000          | 23.2 ms          | 27.1 ms             | 21.9 ms                                                |
 
-_Note: those results are for the v2025.3.2 version_
+_Note: those results are for the v2026.0.0 version_
 
 ## Serialization benchmark
 
