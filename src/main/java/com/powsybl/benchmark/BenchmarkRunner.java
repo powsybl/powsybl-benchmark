@@ -6,7 +6,9 @@
  */
 package com.powsybl.benchmark;
 
+import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.commons.PowsyblException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +16,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
@@ -29,20 +33,50 @@ public final class BenchmarkRunner {
     private BenchmarkRunner() {
     }
 
-    public static void main(String[] args) throws Exception {
-        // If "--release" is the first argument, discover all @ReleaseBenchmark classes
-        // and replace args with the generated regex
-        if (args.length > 0 && "--release".equals(args[0])) {
-            String regex = buildReleaseBenchmarkRegex();
-            LOGGER.info("Running release benchmarks matching: {}", regex);
-            // Pass remaining args after "--release", prepending the regex
-            String[] remainingArgs = new String[args.length]; // same length
-            remainingArgs[0] = regex;
-            System.arraycopy(args, 1, remainingArgs, 1, args.length - 1);
-            org.openjdk.jmh.Main.main(remainingArgs);
+    public static void main(String[] args) throws IOException {
+        String[] benchmarkArgs = buildBenchmarkArgs(args);
+        if (List.of(benchmarkArgs).contains("--list")) {
+            LOGGER.info("Selected benchmarks:");
+            for (String arg : benchmarkArgs) {
+                if ("--list".equals(arg)) {
+                    continue;
+                }
+                for (String s : arg.split("\\|")) {
+                    String value = s.replace("\\.", ".");
+                    LOGGER.info(value);
+                }
+            }
         } else {
-            org.openjdk.jmh.Main.main(args);
+            org.openjdk.jmh.Main.main(benchmarkArgs);
         }
+    }
+
+    private static String[] buildBenchmarkArgs(String[] args) {
+        if (args.length < 1) {
+            return args;
+        }
+
+        return switch (args[0]) {
+            // If "--release" is the first argument, discover all @ReleaseBenchmark classes
+            // and replace args with the generated regex
+            case "--release" -> buildBenchmarkSuiteRegex(args, "release",
+                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
+            // If "--full" is the first argument, discover all @FullBenchmark classes
+            // and replace args with the generated regex
+            case "--full" -> buildBenchmarkSuiteRegex(args, "full",
+                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
+            default -> args;
+        };
+    }
+
+    private static String[] buildBenchmarkSuiteRegex(String[] args, String benchmarkSuite, Supplier<String> regexSupplier) {
+        String regex = regexSupplier.get();
+        LOGGER.info("Running {} benchmarks matching: {}", benchmarkSuite, regex);
+        // Pass remaining args after "--release", prepending the regex
+        String[] remainingArgs = new String[args.length]; // same length
+        remainingArgs[0] = regex;
+        System.arraycopy(args, 1, remainingArgs, 1, args.length - 1);
+        return remainingArgs;
     }
 
     /**
@@ -51,19 +85,23 @@ public final class BenchmarkRunner {
      * - Class-level annotation: matches all benchmark methods in that class.
      * - Method-level annotation: matches only that specific benchmark method.
      */
-    private static String buildReleaseBenchmarkRegex() throws IOException {
+    @SafeVarargs
+    private static String buildBenchmarkSuiteRegexFromAnnotation(Class<? extends Annotation>... annotationClasses) {
         List<String> matchingPatterns = new ArrayList<>();
 
         try (InputStream is = Objects.requireNonNull(BenchmarkRunner.class.getResourceAsStream("/META-INF/BenchmarkList"));
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                processLine(line, matchingPatterns);
+                processLine(line, matchingPatterns, annotationClasses);
             }
+        } catch (IOException e) {
+            throw new PowsyblException("Failed to read BenchmarkList", e);
         }
 
         if (matchingPatterns.isEmpty()) {
-            throw new IllegalStateException("No benchmarks found with @ReleaseBenchmark annotation");
+            String classes = String.join(", ", Arrays.stream(annotationClasses).map(Class::getSimpleName).toArray(String[]::new));
+            throw new IllegalStateException(String.format("No benchmarks found with @%s annotations", classes));
         }
 
         return String.join("|", matchingPatterns);
@@ -71,12 +109,13 @@ public final class BenchmarkRunner {
 
     /**
      * Processes a single line from the JMH BenchmarkList file and adds a matching
-     * pattern to the list if the corresponding class or method is annotated with @ReleaseBenchmark.
+     * pattern to the list if the corresponding class or method is annotated with {@code annotationClass}.
      * <p>
      * The JMH BenchmarkList binary format starts with:
      * {@code JMH S <len> <userClass> S <len> <generatedClass> S <len> <methodName> ...}
      */
-    private static void processLine(String line, List<String> matchingPatterns) {
+    @SafeVarargs
+    private static void processLine(String line, List<String> matchingPatterns, Class<? extends Annotation>... annotationClasses) {
         // Tokens are space-separated; strings are preceded by "S <length>"
         String[] tokens = line.trim().split("\\s+");
         // Minimum: "JMH", "S", <userClass>, "S", <generatedClass>, "S", <methodName>
@@ -90,7 +129,7 @@ public final class BenchmarkRunner {
         String methodName = tokens[9];
         try {
             Class<?> clazz = Class.forName(className);
-            if (isReleaseBenchmark(clazz, methodName)) {
+            if (isReleaseBenchmark(clazz, methodName, annotationClasses)) {
                 matchingPatterns.add(clazz.getSimpleName() + "\\." + methodName);
             }
         } catch (ClassNotFoundException ignored) {
@@ -99,16 +138,19 @@ public final class BenchmarkRunner {
     }
 
     /**
-     * Returns true if the given method should be included in the release benchmark suite,
-     * either because its class is annotated with @ReleaseBenchmark, or because the specific
+     * Returns true if the given method should be included in the benchmark suite,
+     * either because its class is annotated with {@code annotationClass}, or because the specific
      * method is.
      */
-    private static boolean isReleaseBenchmark(Class<?> clazz, String methodName) {
-        if (clazz.isAnnotationPresent(ReleaseBenchmark.class)) {
-            return true;
+    @SafeVarargs
+    private static boolean isReleaseBenchmark(Class<?> clazz, String methodName, Class<? extends Annotation>... annotationClasses) {
+        for (Class<? extends Annotation> annotationClass : annotationClasses) {
+            if (clazz.isAnnotationPresent(annotationClass) || Arrays.stream(clazz.getMethods())
+                .anyMatch(method -> method.getName().equals(methodName)
+                    && method.isAnnotationPresent(annotationClass))) {
+                return true;
+            }
         }
-        return Arrays.stream(clazz.getMethods())
-            .anyMatch(method -> method.getName().equals(methodName)
-                && method.isAnnotationPresent(ReleaseBenchmark.class));
+        return false;
     }
 }

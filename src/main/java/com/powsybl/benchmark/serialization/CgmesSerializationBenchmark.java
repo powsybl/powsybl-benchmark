@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.serialization;
 
+import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.serialization.state.CgmesSerializationState;
 import com.powsybl.iidm.network.Network;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Warmup(iterations = 4, time = 10)
 @Measurement(iterations = 8, time = 10)
 @Fork(1)
+@FullBenchmark
 public class CgmesSerializationBenchmark {
 
     @Benchmark
