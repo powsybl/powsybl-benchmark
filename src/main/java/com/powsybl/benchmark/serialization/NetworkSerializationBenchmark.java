@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.serialization;
 
+import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.serialization.state.IidmSerializationState;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.iidm.serde.NetworkSerDe;
@@ -29,9 +30,10 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 4, time = 2)
-@Measurement(iterations = 8, time = 2)
+@Warmup(iterations = 4, time = 3)
+@Measurement(iterations = 8, time = 3)
 @Fork(2)
+@FullBenchmark
 public class NetworkSerializationBenchmark {
 
     @Benchmark
