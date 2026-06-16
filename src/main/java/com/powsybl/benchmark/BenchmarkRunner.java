@@ -59,22 +59,12 @@ public final class BenchmarkRunner {
         return switch (args[0]) {
             // If "--release" is the first argument, discover all @ReleaseBenchmark classes
             // and replace args with the generated regex
-            case "--release" -> buildBenchmarkSuiteRegex(args, "release", () -> {
-                try {
-                    return buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class);
-                } catch (IOException e) {
-                    throw new PowsyblException(e);
-                }
-            });
+            case "--release" -> buildBenchmarkSuiteRegex(args, "release",
+                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
             // If "--full" is the first argument, discover all @FullBenchmark classes
             // and replace args with the generated regex
-            case "--full" -> buildBenchmarkSuiteRegex(args, "full", () -> {
-                try {
-                    return buildBenchmarkSuiteRegexFromAnnotation(FullBenchmark.class);
-                } catch (IOException e) {
-                    throw new PowsyblException(e);
-                }
-            });
+            case "--full" -> buildBenchmarkSuiteRegex(args, "full",
+                () -> buildBenchmarkSuiteRegexFromAnnotation(FullBenchmark.class));
             default -> args;
         };
     }
@@ -95,7 +85,7 @@ public final class BenchmarkRunner {
      * - Class-level annotation: matches all benchmark methods in that class.
      * - Method-level annotation: matches only that specific benchmark method.
      */
-    private static String buildBenchmarkSuiteRegexFromAnnotation(Class<? extends Annotation> annotationClass) throws IOException {
+    private static String buildBenchmarkSuiteRegexFromAnnotation(Class<? extends Annotation> annotationClass) {
         List<String> matchingPatterns = new ArrayList<>();
 
         try (InputStream is = Objects.requireNonNull(BenchmarkRunner.class.getResourceAsStream("/META-INF/BenchmarkList"));
@@ -104,6 +94,8 @@ public final class BenchmarkRunner {
             while ((line = reader.readLine()) != null) {
                 processLine(line, matchingPatterns, annotationClass);
             }
+        } catch (IOException e) {
+            throw new PowsyblException("Failed to read BenchmarkList", e);
         }
 
         if (matchingPatterns.isEmpty()) {
