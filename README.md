@@ -32,14 +32,14 @@ Three different load flow parameters sets have been tested:
 
 | Network  | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 156 µs           | 158 µs              | 153 µs                                                 |
-| IEEE 118 | 1.16 ms          | 1.54 ms             | 1.26 µs                                                |
-| IEEE 300 | 2.75 ms          | 4.96 ms             | 3.57 ms                                                |
-| RTE 1888 | 20.5 ms          | 24.8 ms             | 22.8 ms                                                |
-| RTE 6515 | 102 ms           | 144 ms              | 112 ms                                                 |
-| RealGrid | 97.1 ms          | 165 ms              | 110 ms                                                 |
+| IEEE 14  | 162 µs           | 155 µs              | 149 µs                                                 |
+| IEEE 118 | 1.10 ms          | 1.48 ms             | 1.19 ms                                                |
+| IEEE 300 | 2.61 ms          | 4.42 ms             | 3.43 ms                                                |
+| RTE 1888 | 21.3 ms          | 24.5 ms             | 23.1 ms                                                |
+| RTE 6515 | 90.6 ms          | 143 ms              | 112 ms                                                 |
+| RealGrid | 99.7 ms          | 153 ms              | 121 ms                                                 |
 
-_Note: those results are for the v2026.0.0 version_
+_Note: those results are for the v2026.1.0 version_
 
 ## Security analysis benchmark
 
