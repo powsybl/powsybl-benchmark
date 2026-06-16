@@ -7,7 +7,6 @@
  */
 package com.powsybl.benchmark.security;
 
-import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.security.state.MonoThreadSecurityAnalysisState;
 import com.powsybl.benchmark.security.state.ReleaseMonoThreadSecurityAnalysisState;
@@ -53,7 +52,6 @@ public class MonoThreadSecurityAnalysisBenchmark {
     @Benchmark
     @Fork(FORKS)
     @ReleaseBenchmark
-    @FullBenchmark
     public void benchmarkMonoThreadSecurityAnalysisWithoutRealGrid(Blackhole blackhole,
                                                                    ReleaseMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())

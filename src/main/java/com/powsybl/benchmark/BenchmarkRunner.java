@@ -64,7 +64,7 @@ public final class BenchmarkRunner {
             // If "--full" is the first argument, discover all @FullBenchmark classes
             // and replace args with the generated regex
             case "--full" -> buildBenchmarkSuiteRegex(args, "full",
-                () -> buildBenchmarkSuiteRegexFromAnnotation(FullBenchmark.class));
+                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
             default -> args;
         };
     }
@@ -85,21 +85,23 @@ public final class BenchmarkRunner {
      * - Class-level annotation: matches all benchmark methods in that class.
      * - Method-level annotation: matches only that specific benchmark method.
      */
-    private static String buildBenchmarkSuiteRegexFromAnnotation(Class<? extends Annotation> annotationClass) {
+    @SafeVarargs
+    private static String buildBenchmarkSuiteRegexFromAnnotation(Class<? extends Annotation>... annotationClasses) {
         List<String> matchingPatterns = new ArrayList<>();
 
         try (InputStream is = Objects.requireNonNull(BenchmarkRunner.class.getResourceAsStream("/META-INF/BenchmarkList"));
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                processLine(line, matchingPatterns, annotationClass);
+                processLine(line, matchingPatterns, annotationClasses);
             }
         } catch (IOException e) {
             throw new PowsyblException("Failed to read BenchmarkList", e);
         }
 
         if (matchingPatterns.isEmpty()) {
-            throw new IllegalStateException(String.format("No benchmarks found with @%s annotation", annotationClass.getSimpleName()));
+            String classes = String.join(", ", Arrays.stream(annotationClasses).map(Class::getSimpleName).toArray(String[]::new));
+            throw new IllegalStateException(String.format("No benchmarks found with @%s annotations", classes));
         }
 
         return String.join("|", matchingPatterns);
@@ -112,7 +114,8 @@ public final class BenchmarkRunner {
      * The JMH BenchmarkList binary format starts with:
      * {@code JMH S <len> <userClass> S <len> <generatedClass> S <len> <methodName> ...}
      */
-    private static void processLine(String line, List<String> matchingPatterns, Class<? extends Annotation> annotationClass) {
+    @SafeVarargs
+    private static void processLine(String line, List<String> matchingPatterns, Class<? extends Annotation>... annotationClasses) {
         // Tokens are space-separated; strings are preceded by "S <length>"
         String[] tokens = line.trim().split("\\s+");
         // Minimum: "JMH", "S", <userClass>, "S", <generatedClass>, "S", <methodName>
@@ -126,7 +129,7 @@ public final class BenchmarkRunner {
         String methodName = tokens[9];
         try {
             Class<?> clazz = Class.forName(className);
-            if (isReleaseBenchmark(clazz, methodName, annotationClass)) {
+            if (isReleaseBenchmark(clazz, methodName, annotationClasses)) {
                 matchingPatterns.add(clazz.getSimpleName() + "\\." + methodName);
             }
         } catch (ClassNotFoundException ignored) {
@@ -139,12 +142,15 @@ public final class BenchmarkRunner {
      * either because its class is annotated with {@code annotationClass}, or because the specific
      * method is.
      */
-    private static boolean isReleaseBenchmark(Class<?> clazz, String methodName, Class<? extends Annotation> annotationClass) {
-        if (clazz.isAnnotationPresent(annotationClass)) {
-            return true;
+    @SafeVarargs
+    private static boolean isReleaseBenchmark(Class<?> clazz, String methodName, Class<? extends Annotation>... annotationClasses) {
+        for (Class<? extends Annotation> annotationClass : annotationClasses) {
+            if (clazz.isAnnotationPresent(annotationClass) || Arrays.stream(clazz.getMethods())
+                .anyMatch(method -> method.getName().equals(methodName)
+                    && method.isAnnotationPresent(annotationClass))) {
+                return true;
+            }
         }
-        return Arrays.stream(clazz.getMethods())
-            .anyMatch(method -> method.getName().equals(methodName)
-                && method.isAnnotationPresent(annotationClass));
+        return false;
     }
 }
