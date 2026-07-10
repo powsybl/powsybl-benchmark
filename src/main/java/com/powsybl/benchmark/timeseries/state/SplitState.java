@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.timeserie.state;
+package com.powsybl.benchmark.timeseries.state;
 
 import com.powsybl.timeseries.*;
 import org.openjdk.jmh.annotations.*;

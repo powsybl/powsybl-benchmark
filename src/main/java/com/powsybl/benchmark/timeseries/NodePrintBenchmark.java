@@ -5,10 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.timeserie;
+package com.powsybl.benchmark.timeseries;
 
-import com.powsybl.benchmark.commons.FullBenchmark;
-import com.powsybl.benchmark.timeserie.state.NodePrintState;
+import com.powsybl.benchmark.timeseries.state.NodePrintState;
 import com.powsybl.timeseries.ast.*;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
@@ -20,8 +19,8 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 4, time = 10)
-@Measurement(iterations = 8, time = 10)
+@Warmup(iterations = 4, time = 10, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 8, time = 10, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 public class NodePrintBenchmark {
 
