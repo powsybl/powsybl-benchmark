@@ -12,6 +12,8 @@ import org.openjdk.jmh.annotations.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,21 +23,37 @@ import java.util.List;
 @State(Scope.Thread)
 public class SplitState {
 
-    @Param({"100000", "200000", "400000"})
+    @Param({"1000", "10000", "100000"})
     private int size;
-    private List<DoubleTimeSeries> timeSeriesList;
+    @Param({"100", "1000"})
     private int newChunkSize;
+    @Param({"SINGLE_CHUNK", "FRAGMENTED"})
+    private String layout;
+    private List<DoubleTimeSeries> timeSeriesList;
 
     @Setup(Level.Trial)
     public void setup() {
-        TimeSeriesIndex index = new RegularTimeSeriesIndex(Instant.ofEpochMilli(0), Instant.ofEpochMilli(size - 1), Duration.ofMillis(1));
+        TimeSeriesIndex index = new RegularTimeSeriesIndex(Instant.ofEpochMilli(0), Instant.ofEpochMilli(size - 1L), Duration.ofMillis(1));
         TimeSeriesMetadata metadata = new TimeSeriesMetadata("ts1", TimeSeriesDataType.DOUBLE, Collections.emptyMap(), index);
-        DoubleDataChunk[] chunks = new DoubleDataChunk[size];
-        for (int i = 0; i < chunks.length; i++) {
-            chunks[i] = new UncompressedDoubleDataChunk(i, new double[] {i});
-        }
+
+        List<DoubleDataChunk> chunks = switch (layout) {
+            // single large uncompressed chunk
+            case "SINGLE_CHUNK" -> {
+                double[] values = new double[size];
+                Arrays.fill(values, 1.0);
+                yield List.of(new UncompressedDoubleDataChunk(0, values));
+            }
+            // many single uncompressed chunks
+            case "FRAGMENTED" -> {
+                List<DoubleDataChunk> list = new ArrayList<>(size);
+                for (int i = 0; i < size; i++) {
+                    list.add(new UncompressedDoubleDataChunk(i, new double[] {i}));
+                }
+                yield list;
+            }
+            default -> throw new IllegalArgumentException("Unknown layout: " + layout);
+        };
         timeSeriesList = Collections.singletonList(new StoredDoubleTimeSeries(metadata, chunks));
-        newChunkSize = size;
     }
 
     public List<DoubleTimeSeries> getTimeSeriesList() {
