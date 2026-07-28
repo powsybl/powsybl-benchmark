@@ -1,14 +1,21 @@
 /**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.runcomparison.BenchmarkResultSerDe;
 import com.powsybl.commons.PowsyblException;
+import org.openjdk.jmh.results.RunResult;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
+import org.openjdk.jmh.runner.options.CommandLineOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -33,7 +37,7 @@ public final class BenchmarkRunner {
     private BenchmarkRunner() {
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws CommandLineOptionException, RunnerException {
         String[] benchmarkArgs = buildBenchmarkArgs(args);
         if (List.of(benchmarkArgs).contains("--list")) {
             LOGGER.info("Selected benchmarks:");
@@ -47,7 +51,14 @@ public final class BenchmarkRunner {
                 }
             }
         } else {
-            org.openjdk.jmh.Main.main(benchmarkArgs);
+            CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
+            try {
+                Collection<RunResult> results = new Runner(opts).run();
+                //TODO add option to not always write results
+                BenchmarkResultSerDe.writeAll(results);
+            } catch (RunnerException e) {
+                System.exit(1);
+            }
         }
     }
 
