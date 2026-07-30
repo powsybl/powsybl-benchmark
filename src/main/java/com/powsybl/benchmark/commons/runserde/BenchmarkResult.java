@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.commons.runcomparison;
+package com.powsybl.benchmark.commons.runserde;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.openjdk.jmh.annotations.Mode;
@@ -32,7 +32,7 @@ public record BenchmarkResult(
     public BenchmarkResult(RunResult result) {
         this(
             result.getParams().getBenchmark(),
-            buildParamatersMap(result.getParams()),
+            buildParametersMap(result.getParams()),
             result.getParams().getMode(),
             result.getPrimaryResult().getScore(),
             result.getPrimaryResult().getScoreError(),
@@ -40,7 +40,7 @@ public record BenchmarkResult(
         );
     }
 
-    private static Map<String, String> buildParamatersMap(BenchmarkParams parameters) {
+    private static Map<String, String> buildParametersMap(BenchmarkParams parameters) {
         Map<String, String> parametersMap = new TreeMap<>();
         for (String key : parameters.getParamsKeys()) {
             parametersMap.put(key, parameters.getParam(key));
