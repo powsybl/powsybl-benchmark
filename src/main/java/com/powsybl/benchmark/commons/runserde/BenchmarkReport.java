@@ -11,6 +11,7 @@ import com.powsybl.openloadflow.util.PowsyblOpenLoadFlowVersion;
 import com.powsybl.tools.PowsyblCoreVersion;
 import org.openjdk.jmh.results.RunResult;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +34,7 @@ public record BenchmarkReport(
             benchmarkClass,
             new PowsyblCoreVersion().getMavenProjectVersion(),
             new PowsyblOpenLoadFlowVersion().getMavenProjectVersion(),
-            java.time.LocalDateTime.now(ZoneOffset.UTC).toString(),
+            LocalDateTime.now(ZoneOffset.UTC).toString(),
             runResultsForThatClass.stream().map(BenchmarkResult::new).toList()
         );
     }
