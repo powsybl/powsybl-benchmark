@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Result per benchmark. For a given set of parameters,
+ * Result per benchmark function. For a given set of parameters,
  * this is the aggregated score across all the runs for this set of parameters.
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */

@@ -17,16 +17,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Results of all benchmarks for a given class.
+ * Results of all benchmarks for a given class. This aggregates all the BenchmarkResult of each benchmarked function
+ * in that class.
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public record BenchmarkReport(
     String benchmarkClass,
     //TODO can we make this better by having a Map<String, String> with name and version -> provided by each benchmark class ?
-    // that we we only need to specify the libraries that are used, and it's extendable
+    // that way, we only need to specify the libraries that are used, and it's extendable
     String powsyblCoreVersion,
     String openLoadFlowVersion,
-    String date,
+    String datetime,
     List<BenchmarkResult> results
 ) {
     public BenchmarkReport(String benchmarkClass, Collection<RunResult> runResultsForThatClass) {
@@ -34,7 +35,7 @@ public record BenchmarkReport(
             benchmarkClass,
             new PowsyblCoreVersion().getMavenProjectVersion(),
             new PowsyblOpenLoadFlowVersion().getMavenProjectVersion(),
-            java.time.LocalDate.now(ZoneOffset.UTC).toString(),
+            java.time.LocalDateTime.now(ZoneOffset.UTC).toString(),
             runResultsForThatClass.stream().map(BenchmarkResult::new).toList()
         );
     }

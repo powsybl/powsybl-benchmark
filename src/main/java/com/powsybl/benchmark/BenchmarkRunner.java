@@ -56,7 +56,8 @@ public final class BenchmarkRunner {
                 Collection<RunResult> results = new Runner(opts).run();
                 //TODO add option to not always write results
                 BenchmarkResultSerDe.writeAll(results);
-            } catch (RunnerException e) {
+            } catch (RunnerException | IOException e) {
+                LOGGER.error("Error writing benchmark results", e);
                 System.exit(1);
             }
         }
