@@ -24,21 +24,10 @@ import java.util.List;
 public final class BenchmarkResultSerDe {
     //used to be able to provide a default value in the Javadoc (cannot be done with a Path.of)
     public static final String BENCHMARK_PATH_STRING = "benchmark_results";
-    private static final Path BENCHMARK_PATH = Path.of(BENCHMARK_PATH_STRING);
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
     private BenchmarkResultSerDe() {
         //no instancing on util class
-    }
-
-    /**
-     * Write the results of all the provided benchmarks RunResult to the default directory path of {@value BENCHMARK_PATH_STRING}
-     * in JSON format.
-     * @param runResults all the <code>RunResult</code> to write
-     * @throws IOException if the default directory path of {@value BENCHMARK_PATH_STRING} cannot be created
-     */
-    public static void writeAll(Collection<RunResult> runResults) throws IOException {
-        writeAll(runResults, BENCHMARK_PATH);
     }
 
     public static void writeAll(Collection<RunResult> runResults, Path benchmarkOutputPath) throws IOException {
