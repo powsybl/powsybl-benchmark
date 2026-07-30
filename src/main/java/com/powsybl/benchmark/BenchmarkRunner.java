@@ -37,7 +37,7 @@ public final class BenchmarkRunner {
     private BenchmarkRunner() {
     }
 
-    public static void main(String[] args) throws CommandLineOptionException, RunnerException {
+    public static void main(String[] args) throws CommandLineOptionException {
         String[] benchmarkArgs = buildBenchmarkArgs(args);
         if (List.of(benchmarkArgs).contains("--list")) {
             LOGGER.info("Selected benchmarks:");
@@ -51,11 +51,15 @@ public final class BenchmarkRunner {
                 }
             }
         } else {
+            //Serializer benchmarks by default unless stated otherwise
+            boolean serde = !List.of(benchmarkArgs).contains("--no-serde");
+            benchmarkArgs = Arrays.stream(benchmarkArgs).filter(arg -> !arg.equals("--no-serde")).toArray(String[]::new);
             CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
             try {
                 Collection<RunResult> results = new Runner(opts).run();
-                //TODO add option to not always write results
-                BenchmarkResultSerDe.writeAll(results);
+                if (serde) {
+                    BenchmarkResultSerDe.writeAll(results);
+                }
             } catch (RunnerException | IOException e) {
                 LOGGER.error("Error writing benchmark results", e);
                 System.exit(1);
