@@ -23,7 +23,7 @@ import java.util.List;
  */
 public final class BenchmarkResultSerDe {
     //used to be able to provide a default value in the Javadoc (cannot be done with a Path.of)
-    private static final String BENCHMARK_PATH_STRING = "benchmark_results";
+    public static final String BENCHMARK_PATH_STRING = "benchmark_results";
     private static final Path BENCHMARK_PATH = Path.of(BENCHMARK_PATH_STRING);
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 

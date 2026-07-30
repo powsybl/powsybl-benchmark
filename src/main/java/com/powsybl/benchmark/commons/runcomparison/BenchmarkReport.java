@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
  */
 public record BenchmarkReport(
     String benchmarkClass,
-    //TODO can we make this better by having a Map<String, String> with name and version -> provided by each benchmark class ?
-    // that way, we only need to specify the libraries that are used, and it's extendable
     String powsyblCoreVersion,
     String openLoadFlowVersion,
     String datetime,
@@ -42,7 +40,8 @@ public record BenchmarkReport(
 
     private static String getClassOfBenchmark(RunResult runResult) {
         String bench = runResult.getParams().getBenchmark();
-        String[] parts = bench.split("\\.");
+        String nameSplitter = "\\.";
+        String[] parts = bench.split(nameSplitter);
         //bench is com.powsybl.something.ClassName.BenchName
         //to get the class name, it's the second-to-last part
         return parts[parts.length - 2];

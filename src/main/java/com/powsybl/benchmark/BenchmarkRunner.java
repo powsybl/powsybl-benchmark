@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -39,7 +40,8 @@ public final class BenchmarkRunner {
 
     public static void main(String[] args) throws CommandLineOptionException {
         String[] benchmarkArgs = buildBenchmarkArgs(args);
-        if (List.of(benchmarkArgs).contains("--list")) {
+        List<String> benchmarkArgsList = List.of(benchmarkArgs);
+        if (benchmarkArgsList.contains("--list")) {
             LOGGER.info("Selected benchmarks:");
             for (String arg : benchmarkArgs) {
                 if ("--list".equals(arg)) {
@@ -52,13 +54,19 @@ public final class BenchmarkRunner {
             }
         } else {
             //Serializer benchmarks by default unless stated otherwise
-            boolean serde = !List.of(benchmarkArgs).contains("--no-serde");
-            benchmarkArgs = Arrays.stream(benchmarkArgs).filter(arg -> !arg.equals("--no-serde")).toArray(String[]::new);
+            boolean serde = !benchmarkArgsList.contains("--no-serde");
+            String serdePathKey = "--serde-path";
+            String serdePathString = BenchmarkResultSerDe.BENCHMARK_PATH_STRING;
+            if (benchmarkArgsList.contains(serdePathKey)) {
+                //get path
+                serdePathString = benchmarkArgsList.get(benchmarkArgsList.indexOf(serdePathKey) + 1);
+            }
+            benchmarkArgs = removeArguments(benchmarkArgs, "--no-serde", serdePathKey, serdePathString);
             CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
             try {
                 Collection<RunResult> results = new Runner(opts).run();
                 if (serde) {
-                    BenchmarkResultSerDe.writeAll(results);
+                    BenchmarkResultSerDe.writeAll(results, Path.of(serdePathString));
                 }
             } catch (RunnerException | IOException e) {
                 LOGGER.error("Error writing benchmark results", e);
@@ -83,6 +91,13 @@ public final class BenchmarkRunner {
                 () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
             default -> args;
         };
+    }
+
+    private static String[] removeArguments(String[] args, String... argumentsToRemove) {
+        List<String> argsToRemove = Arrays.asList(argumentsToRemove);
+        return Arrays.stream(args)
+            .filter(arg -> !argsToRemove.contains(arg))
+            .toArray(String[]::new);
     }
 
     private static String[] buildBenchmarkSuiteRegex(String[] args, String benchmarkSuite, Supplier<String> regexSupplier) {
