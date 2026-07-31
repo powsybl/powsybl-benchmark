@@ -1,8 +1,9 @@
 /**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 package com.powsybl.benchmark;
 
@@ -11,11 +12,10 @@ import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.commons.PowsyblException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,57 +26,96 @@ import java.util.function.Supplier;
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-public final class BenchmarkRunner {
+@Command(name = "benchmark", version = "2026.1.0-SNAPSHOT", mixinStandardHelpOptions = true)
+public final class BenchmarkRunner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkRunner.class);
+
+    @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
+    private boolean listBenchmarks = false;
+
+    @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
+    private BenchmarkSuite benchmarkSuite;
+
+    private static final class BenchmarkSuite {
+
+        @CommandLine.Option(names = {"--release"}, description = "Run benchmarks tagged as release")
+        private boolean release;
+
+        @CommandLine.Option(names = {"--full"}, description = "Run all benchmarks tagged as full (that includes release benchmarks)")
+        private boolean full;
+    }
+
+    @CommandLine.Parameters(paramLabel = "<benchmarks>", description = "List of benchmarks to run, separated by spaces")
+    private String[] benchmarks;
 
     private BenchmarkRunner() {
     }
 
-    public static void main(String[] args) throws IOException {
-        String[] benchmarkArgs = buildBenchmarkArgs(args);
-        if (List.of(benchmarkArgs).contains("--list")) {
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new BenchmarkRunner()).execute(args);
+        System.exit(exitCode);
+    }
+
+    @Override
+    public void run() {
+        String[] benchmarkArgs = buildBenchmarkArgs();
+        if (listBenchmarks) {
             LOGGER.info("Selected benchmarks:");
-            for (String arg : benchmarkArgs) {
-                if ("--list".equals(arg)) {
-                    continue;
-                }
-                for (String s : arg.split("\\|")) {
+            for (String bench : benchmarkArgs) {
+                for (String s : bench.split("\\|")) {
                     String value = s.replace("\\.", ".");
                     LOGGER.info(value);
                 }
             }
         } else {
-            org.openjdk.jmh.Main.main(benchmarkArgs);
+            try {
+                org.openjdk.jmh.Main.main(benchmarkArgs);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
         }
     }
 
-    private static String[] buildBenchmarkArgs(String[] args) {
-        if (args.length < 1) {
-            return args;
+    /**
+     * Build benchmarks to be passed to JMH. This is a mix of regex and class names.
+     * The returned regex depends on the value of the {@link BenchmarkSuite}.
+     * @return an array, where the first element is a potential JMH regex, and the remaining elements are the names in {@link #benchmarks} (if any).
+     */
+    private String[] buildBenchmarkArgs() {
+        if (benchmarkSuite != null) {
+            if (benchmarkSuite.release) {
+                //discover all @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
+                return buildBenchmarkSuiteRegex(benchmarks, "release",
+                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
+            } else if (benchmarkSuite.full) {
+                //discover all @FullBenchmark and @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
+                return buildBenchmarkSuiteRegex(benchmarks, "full",
+                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
+            }
         }
-
-        return switch (args[0]) {
-            // If "--release" is the first argument, discover all @ReleaseBenchmark classes
-            // and replace args with the generated regex
-            case "--release" -> buildBenchmarkSuiteRegex(args, "release",
-                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
-            // If "--full" is the first argument, discover all @FullBenchmark classes
-            // and replace args with the generated regex
-            case "--full" -> buildBenchmarkSuiteRegex(args, "full",
-                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
-            default -> args;
-        };
+        return benchmarks;
     }
 
-    private static String[] buildBenchmarkSuiteRegex(String[] args, String benchmarkSuite, Supplier<String> regexSupplier) {
+    /**
+     * Build the list of benchmarks to be run by JMH using a regex and additionally provided benchmark names.
+     * @param benchmarks the named benchmarks to run (might be empty or null)
+     * @param benchmarkSuite the name of the benchmark suite
+     * @param regexSupplier a supplier of the regex corresponding to the benchmark suite (related to annotation classes)
+     * @return an array starting with the string corresponding to the JMH regex (classes separated by <code>|</code>), and
+     * the remaining elements are the names of the benchmarks to run named directly inside <code>benchmarks</code> (if any).
+     */
+    private static String[] buildBenchmarkSuiteRegex(String[] benchmarks, String benchmarkSuite, Supplier<String> regexSupplier) {
         String regex = regexSupplier.get();
         LOGGER.info("Running {} benchmarks matching: {}", benchmarkSuite, regex);
-        // Pass remaining args after "--release", prepending the regex
-        String[] remainingArgs = new String[args.length]; // same length
-        remainingArgs[0] = regex;
-        System.arraycopy(args, 1, remainingArgs, 1, args.length - 1);
-        return remainingArgs;
+        // The complete list of benchmarks to run is the benchmarks from the regex + benchmarks that are named individually
+        int benchmarksArgNumber = benchmarks != null ? benchmarks.length + 1 : 1;
+        String[] allBenchmarks = new String[benchmarksArgNumber]; // same length
+        allBenchmarks[0] = regex;
+        if (benchmarks != null) {
+            System.arraycopy(benchmarks, 0, allBenchmarks, 1, benchmarks.length);
+        }
+        return allBenchmarks;
     }
 
     /**
