@@ -21,11 +21,11 @@ import java.util.List;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public final class BenchmarkResultJsonSerDe {
-    public static final String BENCHMARK_PATH_STRING = "benchmark_results";
+public final class BenchmarkReportJsonSerDe {
+    public static final String BENCHMARK_PATH_STRING = "benchmark_reports";
     private static final ObjectMapper MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
-    private BenchmarkResultJsonSerDe() {
+    private BenchmarkReportJsonSerDe() {
         //no instancing on util class
     }
 

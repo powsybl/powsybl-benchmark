@@ -9,7 +9,7 @@ package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
-import com.powsybl.benchmark.commons.runserde.BenchmarkResultJsonSerDe;
+import com.powsybl.benchmark.commons.runserde.BenchmarkReportJsonSerDe;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -56,7 +56,7 @@ public final class BenchmarkRunner {
             //Serializer benchmarks by default unless stated otherwise
             boolean serde = !benchmarkArgsList.contains("--no-serde");
             String serdePathKey = "--serde-path";
-            String serdePathString = BenchmarkResultJsonSerDe.BENCHMARK_PATH_STRING;
+            String serdePathString = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
             if (benchmarkArgsList.contains(serdePathKey)) {
                 //get path
                 serdePathString = benchmarkArgsList.get(benchmarkArgsList.indexOf(serdePathKey) + 1);
@@ -66,7 +66,7 @@ public final class BenchmarkRunner {
             try {
                 Collection<RunResult> results = new Runner(opts).run();
                 if (serde) {
-                    BenchmarkResultJsonSerDe.writeAll(results, Path.of(serdePathString));
+                    BenchmarkReportJsonSerDe.writeAll(results, Path.of(serdePathString));
                 }
             } catch (RunnerException | IOException e) {
                 LOGGER.error("Error writing benchmark results", e);
