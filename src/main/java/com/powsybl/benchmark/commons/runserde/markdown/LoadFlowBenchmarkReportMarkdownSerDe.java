@@ -8,7 +8,6 @@
 package com.powsybl.benchmark.commons.runserde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
-import com.powsybl.benchmark.commons.runserde.BenchmarkReport;
 import com.powsybl.benchmark.commons.runserde.BenchmarkResult;
 
 import java.util.*;
@@ -16,7 +15,7 @@ import java.util.*;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public class LoadFlowBenchmarkReportMarkdownSerDe extends AbstractBenchmarkReportMarkdownSerDe {
+public class LoadFlowBenchmarkReportMarkdownSerDe extends AbstractByNetworkBenchmarkReportMarkdownSerDe {
 
     @Override
     protected String[] columnNames() {
@@ -30,16 +29,7 @@ public class LoadFlowBenchmarkReportMarkdownSerDe extends AbstractBenchmarkRepor
     }
 
     @Override
-    protected String[][] valuesByLine(BenchmarkReport report) {
-        List<List<BenchmarkResult>> resultsByNetwork = getResultsByNetwork(report);
-        String[][] valuesByLine = new String[resultsByNetwork.size()][columnNames().length];
-        for (int i = 0; i < resultsByNetwork.size(); ++i) {
-            valuesByLine[i] = getLine(resultsByNetwork.get(i));
-        }
-        return valuesByLine;
-    }
-
-    private String[] getLine(List<BenchmarkResult> resultsForNetwork) {
+    protected String[] getLine(List<BenchmarkResult> resultsForNetwork) {
         return new String[]{
             Constants.getPrettyNetworkName(resultsForNetwork.get(0).parameters().get("networkName")),
             getFormattedScore(resultsForNetwork.get(0)),
@@ -47,14 +37,4 @@ public class LoadFlowBenchmarkReportMarkdownSerDe extends AbstractBenchmarkRepor
             getFormattedScore(resultsForNetwork.get(2))
         };
     }
-
-    private List<List<BenchmarkResult>> getResultsByNetwork(BenchmarkReport report) {
-        LinkedHashMap<String, List<BenchmarkResult>> byNetwork = new LinkedHashMap<>();
-        for (BenchmarkResult result : report.results()) {
-            String networkName = result.parameters().get("networkName");
-            byNetwork.computeIfAbsent(networkName, k -> new ArrayList<>()).add(result);
-        }
-        return new ArrayList<>(byNetwork.values());
-    }
-
 }
