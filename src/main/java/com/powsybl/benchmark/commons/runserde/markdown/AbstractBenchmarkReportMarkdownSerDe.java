@@ -7,6 +7,13 @@
  */
 package com.powsybl.benchmark.commons.runserde.markdown;
 
+import com.powsybl.benchmark.commons.runserde.BenchmarkReport;
+import com.powsybl.benchmark.commons.runserde.BenchmarkResult;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
@@ -24,12 +31,18 @@ public abstract class AbstractBenchmarkReportMarkdownSerDe {
      * (as defined by {@link #columnNames()}).
      * @return values of columns, each stream will correspond to a column
      */
-    protected abstract String[][] valuesByLine();
+    protected abstract String[][] valuesByLine(BenchmarkReport report);
 
-    public String serialize() {
+    public String serialize(BenchmarkReport report, Path filePath) throws IOException {
+        String serializedReport = reportToString(report);
+        Files.writeString(filePath.resolve(report.benchmarkClass() + ".md"), serializedReport);
+        return serializedReport;
+    }
+
+    private String reportToString(BenchmarkReport report) {
         StringBuilder tableBuilder = new StringBuilder();
         String[] columnNames = columnNames();
-        String[][] valuesByLine = valuesByLine();
+        String[][] valuesByLine = valuesByLine(report);
         int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
         buildHeader(tableBuilder, columnNames, widthByColumn);
         for (String[] lineValues : valuesByLine) {
@@ -45,9 +58,10 @@ public abstract class AbstractBenchmarkReportMarkdownSerDe {
             //add 2 so there is at least one space on each side of each string
             widthByColumn[i] = columnNames[i].length() + 2;
         }
-        for (int columnIndex = 0; columnIndex < columnNames.length; ++columnIndex) {
-            for (String[] strings : valuesByLine) {
-                widthByColumn[columnIndex] = Math.max(widthByColumn[columnIndex], strings[columnIndex].length() + 2);
+        for (String[] lineValues : valuesByLine) {
+            for (int columnIndex = 0; columnIndex < columnNames.length; ++columnIndex) {
+                int stringSize = lineValues[columnIndex] != null ? lineValues[columnIndex].length() : 0;
+                widthByColumn[columnIndex] = Math.max(widthByColumn[columnIndex], stringSize + 2);
             }
         }
         return widthByColumn;
@@ -58,8 +72,8 @@ public abstract class AbstractBenchmarkReportMarkdownSerDe {
         for (int width : widthByColumn) {
             tableBuilder.append("|");
             tableBuilder.repeat("-", width);
-            tableBuilder.append("|");
         }
+        tableBuilder.append("|");
         tableBuilder.append("\n");
     }
 
@@ -73,5 +87,9 @@ public abstract class AbstractBenchmarkReportMarkdownSerDe {
             tableBuilder.append("|");
         }
         tableBuilder.append("\n");
+    }
+
+    protected String getFormattedScore(BenchmarkResult result) {
+        return String.format("%.2f %s", result.score(), result.scoreUnit());
     }
 }

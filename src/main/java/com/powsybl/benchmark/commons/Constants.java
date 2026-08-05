@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -22,4 +22,16 @@ public final class Constants {
     public static final String REAL_GRID = "RealGrid";
     public static final String RTE_1888 = "case1888rte";
     public static final String RTE_6515 = "case6515rte";
+
+    public static String getPrettyNetworkName(String networkName) {
+        return switch (networkName) {
+            case IEEE_14 -> "IEEE 14";
+            case IEEE_118 -> "IEEE 118";
+            case IEEE_300 -> "IEEE 300";
+            case REAL_GRID -> "RealGrid";
+            case RTE_1888 -> "RTE 1888";
+            case RTE_6515 -> "RTE 6515";
+            default -> networkName;
+        };
+    }
 }
