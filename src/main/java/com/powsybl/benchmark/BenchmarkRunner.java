@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-@Command(name = "benchmark", version = "2026.1.0-SNAPSHOT", mixinStandardHelpOptions = true)
+@Command(name = "benchmark", mixinStandardHelpOptions = true)
 public final class BenchmarkRunner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkRunner.class);
