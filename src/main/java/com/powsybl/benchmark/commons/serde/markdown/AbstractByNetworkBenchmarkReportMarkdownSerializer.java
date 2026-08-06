@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public abstract class AbstractByNetworkBenchmarkReportMarkdownSerDe extends AbstractBenchmarkReportMarkdownSerDe {
+public abstract class AbstractByNetworkBenchmarkReportMarkdownSerializer extends AbstractBenchmarkReportMarkdownSerializer {
 
     @Override
     protected String[][] valuesByLine(BenchmarkReport report) {

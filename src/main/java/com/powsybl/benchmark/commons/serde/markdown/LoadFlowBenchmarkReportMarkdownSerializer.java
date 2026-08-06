@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public class LoadFlowBenchmarkReportMarkdownSerDe extends AbstractByNetworkBenchmarkReportMarkdownSerDe {
+public class LoadFlowBenchmarkReportMarkdownSerializer extends AbstractByNetworkBenchmarkReportMarkdownSerializer {
 
     @Override
     protected String[] columnNames() {
