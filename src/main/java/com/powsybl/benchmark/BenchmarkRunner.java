@@ -9,7 +9,7 @@ package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
-import com.powsybl.benchmark.commons.runserde.BenchmarkReportJsonSerDe;
+import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
