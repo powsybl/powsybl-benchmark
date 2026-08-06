@@ -17,7 +17,7 @@ import java.nio.file.Path;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public abstract class AbstractBenchmarkReportMarkdownSerDe {
+public abstract class AbstractBenchmarkReportMarkdownSerializer {
 
     /**
      * Return the names of the columns to be put in the first line of the Markdown table.
