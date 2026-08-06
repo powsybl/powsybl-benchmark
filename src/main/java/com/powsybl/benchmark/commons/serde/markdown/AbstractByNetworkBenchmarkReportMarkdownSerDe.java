@@ -5,10 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.commons.runserde.markdown;
+package com.powsybl.benchmark.commons.serde.markdown;
 
-import com.powsybl.benchmark.commons.runserde.BenchmarkReport;
-import com.powsybl.benchmark.commons.runserde.BenchmarkResult;
+import com.powsybl.benchmark.commons.serde.BenchmarkReport;
+import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
