@@ -20,18 +20,7 @@ import java.util.List;
 public abstract class AbstractByNetworkBenchmarkReportMarkdownSerializer extends AbstractBenchmarkReportMarkdownSerializer {
 
     @Override
-    protected String[][] valuesByLine(BenchmarkReport report) {
-        List<List<BenchmarkResult>> resultsByNetwork = getResultsByNetwork(report);
-        String[][] valuesByLine = new String[resultsByNetwork.size()][columnNames().length];
-        for (int i = 0; i < resultsByNetwork.size(); ++i) {
-            valuesByLine[i] = getLine(resultsByNetwork.get(i));
-        }
-        return valuesByLine;
-    }
-
-    protected abstract String[] getLine(List<BenchmarkResult> resultsForNetwork);
-
-    private List<List<BenchmarkResult>> getResultsByNetwork(BenchmarkReport report) {
+    protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
         LinkedHashMap<String, List<BenchmarkResult>> byNetwork = new LinkedHashMap<>();
         for (BenchmarkResult result : report.results()) {
             String networkName = result.parameters().get("networkName");

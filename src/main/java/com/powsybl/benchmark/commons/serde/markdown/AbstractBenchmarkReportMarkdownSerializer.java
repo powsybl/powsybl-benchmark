@@ -10,9 +10,7 @@ package com.powsybl.benchmark.commons.serde.markdown;
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -26,20 +24,22 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     protected abstract String[] columnNames();
 
     /**
-     * Return the values of each line to be put in the Markdown table.
-     * Each <code>String[]</code> should contain the same number of values as there are columns
+     * Return a formatted array of string, extracting the relevant values from the benchmark results.
+     * The returned <code>String[]</code> should contain the same number of values as there are columns
      * (as defined by {@link #columnNames()}).
-     * @return values of columns, each stream will correspond to a column
+     * @return an array of string, each element corresponding to the column whose order is defined by {@link #columnNames()}
      */
-    protected abstract String[][] valuesByLine(BenchmarkReport report);
+    protected abstract String[] getLine(List<BenchmarkResult> results);
 
-    public String serialize(BenchmarkReport report, Path filePath) throws IOException {
-        String serializedReport = reportToString(report);
-        Files.writeString(filePath.resolve(report.benchmarkClass() + ".md"), serializedReport);
-        return serializedReport;
-    }
+    /**
+     * Sort all the benchmark results of the report by the relevant information per line.
+     * @param report the report of a given class
+     * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
+     * and should contain the same number of results as there are columns (as defined by {@link #columnNames()}).
+     */
+    protected abstract List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report);
 
-    private String reportToString(BenchmarkReport report) {
+    public String reportToString(BenchmarkReport report) {
         StringBuilder tableBuilder = new StringBuilder();
         String[] columnNames = columnNames();
         String[][] valuesByLine = valuesByLine(report);
@@ -77,6 +77,15 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         tableBuilder.append("\n");
     }
 
+    private String[][] valuesByLine(BenchmarkReport report) {
+        List<List<BenchmarkResult>> resultsByNetwork = getResultsByTableLine(report);
+        String[][] valuesByLine = new String[resultsByNetwork.size()][columnNames().length];
+        for (int i = 0; i < resultsByNetwork.size(); ++i) {
+            valuesByLine[i] = getLine(resultsByNetwork.get(i));
+        }
+        return valuesByLine;
+    }
+
     private static void buildLine(StringBuilder tableBuilder, String[] lineValues, int[] widthByColumn) {
         tableBuilder.append("|");
         for (int i = 0; i < lineValues.length; ++i) {
@@ -89,7 +98,7 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         tableBuilder.append("\n");
     }
 
-    protected String getFormattedScore(BenchmarkResult result) {
+    public static String getFormattedScore(BenchmarkResult result) {
         return String.format("%.2f %s", result.score(), result.scoreUnit());
     }
 }

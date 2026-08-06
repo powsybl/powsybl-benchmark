@@ -5,10 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.commons.serde.markdown;
+package com.powsybl.benchmark.commons.serde.markdown.loadflow;
 
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+import com.powsybl.benchmark.commons.serde.markdown.AbstractByNetworkBenchmarkReportMarkdownSerializer;
 
 import java.util.*;
 
@@ -30,6 +31,7 @@ public class LoadFlowBenchmarkReportMarkdownSerializer extends AbstractByNetwork
 
     @Override
     protected String[] getLine(List<BenchmarkResult> resultsForNetwork) {
+        //TODO there is no guarantee that 0, 1 and 2 correspond to basic, standard and without reactive limits in that order, need to sort them first
         return new String[]{
             Constants.getPrettyNetworkName(resultsForNetwork.get(0).parameters().get("networkName")),
             getFormattedScore(resultsForNetwork.get(0)),
