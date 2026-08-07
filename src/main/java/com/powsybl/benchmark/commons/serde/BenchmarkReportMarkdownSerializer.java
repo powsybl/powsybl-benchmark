@@ -8,8 +8,8 @@
 package com.powsybl.benchmark.commons.serde;
 
 import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
+import com.powsybl.benchmark.commons.serde.markdown.ContingenciesBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.loadflow.LoadFlowBenchmarkReportMarkdownSerializer;
-import com.powsybl.benchmark.commons.serde.markdown.security.MonoThreadSecurityAnalysisBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.security.MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public final class BenchmarkReportMarkdownSerializer {
     private static AbstractBenchmarkReportMarkdownSerializer chooseSerializer(String className) {
         return switch (className) {
             case "LoadFlowBenchmark" -> new LoadFlowBenchmarkReportMarkdownSerializer();
-            case "MonoThreadSecurityAnalysisBenchmark" -> new MonoThreadSecurityAnalysisBenchmarkReportMarkdownSerializer();
+            case "MonoThreadSecurityAnalysisBenchmark", "SensitivityAnalysisBenchmark" -> new ContingenciesBenchmarkReportMarkdownSerializer();
             case "MultiThreadSecurityAnalysisBenchmark" -> new MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer();
             default -> null;
         };
