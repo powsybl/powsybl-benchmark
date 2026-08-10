@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,6 +8,7 @@
 package com.powsybl.benchmark.sensitivity;
 
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.state.ContingenciesCounter;
 import com.powsybl.benchmark.sensitivity.state.SensitivityAnalysisState;
 import com.powsybl.sensitivity.SensitivityAnalysis;
 import com.powsybl.sensitivity.SensitivityAnalysisResult;
@@ -37,7 +38,10 @@ public class SensitivityAnalysisBenchmark {
     @Fork(FORKS)
     @Benchmark
     public void benchmarkSensitivityAnalysis(Blackhole blackhole,
-                                             SensitivityAnalysisState sensitivityAnalysisState) {
+                                             SensitivityAnalysisState sensitivityAnalysisState,
+                                             ContingenciesCounter contingenciesCounter) {
+        //TODO this is technically very short compared to the sensi benchmark, but is there a way to do that in the setup ?
+        contingenciesCounter.numberOfContingencies = sensitivityAnalysisState.getNumberOfContingencies();
         SensitivityAnalysisResult result = SensitivityAnalysis.find(sensitivityAnalysisState.getProvider())
             .run(sensitivityAnalysisState.getNetwork(),
                 sensitivityAnalysisState.getFactors(),

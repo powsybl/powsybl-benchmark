@@ -11,6 +11,7 @@ import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
 /**
@@ -30,16 +31,18 @@ public class ContingenciesBenchmarkReportMarkdownSerializer extends AbstractByNe
 
     @Override
     protected String[] getLine(List<BenchmarkResult> results) {
-        Function<BenchmarkResult, String> contingenciesNumberGetter = r -> r.parameters().get("contingencies");
-        String contingenciesNumber = contingenciesNumberGetter.apply(results.get(0));
+        //this is formatted like a double in the string, but it's an int, get the integer part with the split
+        Function<BenchmarkResult, Integer> contingenciesNumberGetter = r -> Integer.valueOf(r.parameters().get("numberOfContingencies").split("\\.")[0]);
+        int contingenciesNumber = contingenciesNumberGetter.apply(results.get(0));
+        DoubleUnaryOperator scorePerContingency = d -> d / contingenciesNumber;
         //check that all results for a given network have the same number of contingencies
-        if (results.stream().allMatch(r -> contingenciesNumber.equals(contingenciesNumberGetter.apply(r)))) {
+        if (results.stream().allMatch(r -> contingenciesNumber == contingenciesNumberGetter.apply(r))) {
             return new String[]{
                 Constants.getPrettyNetworkName(results.get(0).parameters().get("networkName")),
-                results.get(0).parameters().get("contingencies"),
-                getFormattedScore(results.get(0)),
-                getFormattedScore(results.get(1)),
-                getFormattedScore(results.get(2))
+                String.valueOf(contingenciesNumber),
+                getFormattedScore(results.get(0), scorePerContingency),
+                getFormattedScore(results.get(1), scorePerContingency),
+                getFormattedScore(results.get(2), scorePerContingency)
             };
         } else {
             throw new IllegalStateException("All results for a given network must have the same number of contingencies");

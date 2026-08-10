@@ -10,6 +10,7 @@ package com.powsybl.benchmark;
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
+import com.powsybl.benchmark.commons.serde.BenchmarkReportMarkdownSerializer;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -87,7 +88,9 @@ public final class BenchmarkRunner implements Runnable {
                 CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
                 Collection<RunResult> results = new Runner(opts).run();
                 if (!noSerde) {
-                    BenchmarkReportJsonSerDe.writeAll(results, Path.of(serdePath));
+                    Path benchmarkOutputPath = Path.of(serdePath);
+                    BenchmarkReportJsonSerDe.writeAll(results, benchmarkOutputPath);
+                    BenchmarkReportMarkdownSerializer.serialize(results, benchmarkOutputPath);
                 }
             } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);
