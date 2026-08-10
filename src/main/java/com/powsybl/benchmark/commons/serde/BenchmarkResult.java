@@ -32,7 +32,7 @@ public record BenchmarkResult(
     public BenchmarkResult(RunResult result) {
         this(
             result.getParams().getBenchmark(),
-            buildParametersMap(result.getParams()),
+            buildParametersMap(result),
             result.getParams().getMode(),
             result.getPrimaryResult().getScore(),
             result.getPrimaryResult().getScoreError(),
@@ -40,10 +40,14 @@ public record BenchmarkResult(
         );
     }
 
-    private static Map<String, String> buildParametersMap(BenchmarkParams parameters) {
+    private static Map<String, String> buildParametersMap(RunResult result) {
+        BenchmarkParams parameters = result.getParams();
         Map<String, String> parametersMap = new TreeMap<>();
         for (String key : parameters.getParamsKeys()) {
             parametersMap.put(key, parameters.getParam(key));
+        }
+        for (String key : result.getSecondaryResults().keySet()) {
+            parametersMap.put(key, String.valueOf(result.getSecondaryResults().get(key).getScore()));
         }
         return parametersMap;
     }

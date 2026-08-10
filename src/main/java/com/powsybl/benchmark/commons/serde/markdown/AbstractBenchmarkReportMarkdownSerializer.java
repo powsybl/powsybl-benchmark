@@ -10,7 +10,11 @@ package com.powsybl.benchmark.commons.serde.markdown;
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -32,12 +36,25 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     protected abstract String[] getLine(List<BenchmarkResult> results);
 
     /**
+     * Define the function that dictates how results should be grouped by line.
+     * @return a function that says which line of the resulting table a given benchmark result should be in, by providing a string that identifies the line
+     */
+    protected abstract Function<BenchmarkResult, String> getLineSorter();
+
+    /**
      * Sort all the benchmark results of the report by the relevant information per line.
      * @param report the report of a given class
      * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
      * and should contain the same number of results as there are columns (as defined by {@link #columnNames()}).
      */
-    protected abstract List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report);
+    private List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
+        LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();
+        Function<BenchmarkResult, String> lineSorter = getLineSorter();
+        for (BenchmarkResult result : report.results()) {
+            byLine.computeIfAbsent(lineSorter.apply(result), k -> new ArrayList<>()).add(result);
+        }
+        return new ArrayList<>(byLine.values());
+    }
 
     public String reportToString(BenchmarkReport report) {
         StringBuilder tableBuilder = new StringBuilder();
@@ -99,6 +116,10 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     }
 
     public static String getFormattedScore(BenchmarkResult result) {
-        return String.format("%.2f %s", result.score(), result.scoreUnit());
+        return getFormattedScore(result, DoubleUnaryOperator.identity());
+    }
+
+    public static String getFormattedScore(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
+        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 }

@@ -11,6 +11,8 @@ import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkd
 import com.powsybl.benchmark.commons.serde.markdown.ContingenciesBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.loadflow.LoadFlowBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.security.MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer;
+import com.powsybl.benchmark.commons.serde.markdown.serialization.NetworkSerializationBenchmarkReportMarkdownSerializer;
+import org.openjdk.jmh.results.RunResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,22 +37,23 @@ public final class BenchmarkReportMarkdownSerializer {
             case "LoadFlowBenchmark" -> new LoadFlowBenchmarkReportMarkdownSerializer();
             case "MonoThreadSecurityAnalysisBenchmark", "SensitivityAnalysisBenchmark" -> new ContingenciesBenchmarkReportMarkdownSerializer();
             case "MultiThreadSecurityAnalysisBenchmark" -> new MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer();
+            case "NetworkSerializationBenchmark" -> new NetworkSerializationBenchmarkReportMarkdownSerializer();
             default -> null;
         };
     }
 
-    public void serialize(BenchmarkReport report, Path filePath) throws IOException {
+    public static void serialize(BenchmarkReport report, Path filePath) throws IOException {
         AbstractBenchmarkReportMarkdownSerializer serializer = chooseSerializer(report.benchmarkClass());
         if (serializer == null) {
-            LOGGER.error("No serializer found for benchmark class {}", report.benchmarkClass());
+            LOGGER.warn("No serializer found for benchmark class {} : skipping markdown serialization", report.benchmarkClass());
         } else {
             String serializedReport = serializer.reportToString(report);
             Files.writeString(filePath.resolve(report.benchmarkClass() + ".md"), serializedReport);
         }
     }
 
-    public void serialize(Collection<BenchmarkReport> reports, Path filePath) throws IOException {
-        for (BenchmarkReport report : reports) {
+    public static void serialize(Collection<RunResult> results, Path filePath) throws IOException {
+        for (BenchmarkReport report : BenchmarkReport.buildAllReports(results)) {
             serialize(report, filePath);
         }
     }

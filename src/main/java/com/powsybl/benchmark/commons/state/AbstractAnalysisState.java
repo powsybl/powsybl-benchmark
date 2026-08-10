@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,11 +9,7 @@ package com.powsybl.benchmark.commons.state;
 
 import com.powsybl.contingency.Contingency;
 import com.powsybl.iidm.network.Network;
-import org.openjdk.jmh.annotations.Level;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +26,14 @@ public abstract class AbstractAnalysisState extends AbstractLoadFlowState {
     private int contingenciesLimit;
 
     protected List<Contingency> contingencies;
+    private int numberOfContingencies;
 
     @Override
     @Setup(Level.Trial)
     public void doSetup() {
         super.doSetup();
         contingencies = computeContingencies(network, contingenciesLimit);
+        numberOfContingencies = contingencies.size();
         LOGGER.warn("Contingencies : {}", contingencies.size());
     }
 
@@ -48,5 +46,9 @@ public abstract class AbstractAnalysisState extends AbstractLoadFlowState {
 
     public List<Contingency> getContingencies() {
         return contingencies;
+    }
+
+    public int getNumberOfContingencies() {
+        return numberOfContingencies;
     }
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,6 +8,7 @@
 package com.powsybl.benchmark.security;
 
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.state.ContingenciesCounter;
 import com.powsybl.benchmark.security.state.MonoThreadSecurityAnalysisState;
 import com.powsybl.benchmark.security.state.ReleaseMonoThreadSecurityAnalysisState;
 import com.powsybl.security.SecurityAnalysis;
@@ -37,7 +38,9 @@ public class MonoThreadSecurityAnalysisBenchmark {
     @Benchmark
     @Fork(FORKS)
     public void benchmarkMonoThreadSecurityAnalysisWithRealGrid(Blackhole blackhole,
-                                                    MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
+                                                                MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
+                                                                ContingenciesCounter contingenciesCounter) {
+        contingenciesCounter.numberOfContingencies = monoThreadSecurityAnalysisState.getNumberOfContingencies();
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
                 monoThreadSecurityAnalysisState.getContingencies(),
@@ -53,7 +56,9 @@ public class MonoThreadSecurityAnalysisBenchmark {
     @Fork(FORKS)
     @ReleaseBenchmark
     public void benchmarkMonoThreadSecurityAnalysisWithoutRealGrid(Blackhole blackhole,
-                                                                   ReleaseMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
+                                                                   ReleaseMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
+                                                                   ContingenciesCounter contingenciesCounter) {
+        contingenciesCounter.numberOfContingencies = monoThreadSecurityAnalysisState.getNumberOfContingencies();
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
                 monoThreadSecurityAnalysisState.getContingencies(),
