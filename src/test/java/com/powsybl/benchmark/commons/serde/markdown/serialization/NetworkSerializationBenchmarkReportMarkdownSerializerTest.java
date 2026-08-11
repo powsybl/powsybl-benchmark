@@ -32,31 +32,35 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest {
         String streamSerialization = benchClass + ".benchmark2NetworkStreamSerialization";
         String fileSerialization = benchClass + ".benchmark3NetworkFileSerialization";
         String copy = benchClass + ".benchmark4NetworkCopy";
+        Map<String, String> xiidmFormat = Map.of("format", "XIIDM");
+        Map<String, String> jiidmFormat = Map.of("format", "JIIDM");
+        Map<String, String> biidmFormat = Map.of("format", "BIIDM");
+        Map<String, String> cgmesFormat = Map.of("format", "CGMES");
 
         List<RunResult> runResults = List.of(
             // Deserialization
-            BenchmarkTestUtils.mockRunResult(deserialization, Map.of("format", "XIIDM"), 1.0),
-            BenchmarkTestUtils.mockRunResult(deserialization, Map.of("format", "JIIDM"), 2.0),
-            BenchmarkTestUtils.mockRunResult(deserialization, Map.of("format", "BIIDM"), 3.0),
-            BenchmarkTestUtils.mockRunResult(deserialization, Map.of("format", "CGMES"), 4.0),
+            BenchmarkTestUtils.mockRunResult(deserialization, xiidmFormat, 1.034),
+            BenchmarkTestUtils.mockRunResult(deserialization, jiidmFormat, 2.0),
+            BenchmarkTestUtils.mockRunResult(deserialization, biidmFormat, 3.0),
+            BenchmarkTestUtils.mockRunResult(deserialization, cgmesFormat, 4.0),
 
             // Stream Serialization
-            BenchmarkTestUtils.mockRunResult(streamSerialization, Map.of("format", "XIIDM"), 2.0),
-            BenchmarkTestUtils.mockRunResult(streamSerialization, Map.of("format", "JIIDM"), 1.0),
-            BenchmarkTestUtils.mockRunResult(streamSerialization, Map.of("format", "BIIDM"), 4.0),
-            BenchmarkTestUtils.mockRunResult(streamSerialization, Map.of("format", "CGMES"), 3.0),
+            BenchmarkTestUtils.mockRunResult(streamSerialization, xiidmFormat, 2.137),
+            BenchmarkTestUtils.mockRunResult(streamSerialization, jiidmFormat, 1.0),
+            BenchmarkTestUtils.mockRunResult(streamSerialization, biidmFormat, 4.0),
+            BenchmarkTestUtils.mockRunResult(streamSerialization, cgmesFormat, 3.0),
 
             // File Serialization
-            BenchmarkTestUtils.mockRunResult(fileSerialization, Map.of("format", "XIIDM"), 3.0),
-            BenchmarkTestUtils.mockRunResult(fileSerialization, Map.of("format", "JIIDM"), 2.0),
-            BenchmarkTestUtils.mockRunResult(fileSerialization, Map.of("format", "BIIDM"), 1.0),
-            BenchmarkTestUtils.mockRunResult(fileSerialization, Map.of("format", "CGMES"), 4.0),
+            BenchmarkTestUtils.mockRunResult(fileSerialization, xiidmFormat, 3.0),
+            BenchmarkTestUtils.mockRunResult(fileSerialization, jiidmFormat, 2.0002),
+            BenchmarkTestUtils.mockRunResult(fileSerialization, biidmFormat, 1.078),
+            BenchmarkTestUtils.mockRunResult(fileSerialization, cgmesFormat, 4.0),
 
             // Copy
-            BenchmarkTestUtils.mockRunResult(copy, Map.of("format", "XIIDM"), 4.0),
-            BenchmarkTestUtils.mockRunResult(copy, Map.of("format", "JIIDM"), 3.0),
-            BenchmarkTestUtils.mockRunResult(copy, Map.of("format", "BIIDM"), 2.0),
-            BenchmarkTestUtils.mockRunResult(copy, Map.of("format", "CGMES"), 1.0)
+            BenchmarkTestUtils.mockRunResult(copy, xiidmFormat, 4.0),
+            BenchmarkTestUtils.mockRunResult(copy, jiidmFormat, 3.0),
+            BenchmarkTestUtils.mockRunResult(copy, biidmFormat, 2.0),
+            BenchmarkTestUtils.mockRunResult(copy, cgmesFormat, 1.0)
         );
 
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
