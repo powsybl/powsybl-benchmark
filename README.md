@@ -208,3 +208,8 @@ To run only the benchmarks used for the release, use the following command:
 ```
 java -jar target/benchmark.jar --release
 ```
+
+To get a list of all available flags, run:
+```
+java -jar target/benchmark.jar --help
+```
