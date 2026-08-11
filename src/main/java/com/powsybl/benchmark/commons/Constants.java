@@ -28,7 +28,7 @@ public final class Constants {
             case IEEE_14 -> "IEEE 14";
             case IEEE_118 -> "IEEE 118";
             case IEEE_300 -> "IEEE 300";
-            case REAL_GRID -> "RealGrid";
+            case REAL_GRID -> REAL_GRID;
             case RTE_1888 -> "RTE 1888";
             case RTE_6515 -> "RTE 6515";
             default -> networkName;

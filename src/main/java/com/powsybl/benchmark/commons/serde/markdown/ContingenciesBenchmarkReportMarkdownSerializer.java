@@ -12,7 +12,7 @@ import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -32,11 +32,11 @@ public class ContingenciesBenchmarkReportMarkdownSerializer extends AbstractByNe
     @Override
     protected String[] getLine(List<BenchmarkResult> results) {
         //this is formatted like a double in the string, but it's an int, get the integer part with the split
-        Function<BenchmarkResult, Integer> contingenciesNumberGetter = r -> Integer.valueOf(r.parameters().get("numberOfContingencies").split("\\.")[0]);
-        int contingenciesNumber = contingenciesNumberGetter.apply(results.get(0));
+        ToIntFunction<BenchmarkResult> contingenciesNumberGetter = r -> Integer.parseInt(r.parameters().get("numberOfContingencies").split("\\.")[0]);
+        int contingenciesNumber = contingenciesNumberGetter.applyAsInt(results.get(0));
         DoubleUnaryOperator scorePerContingency = d -> d / contingenciesNumber;
         //check that all results for a given network have the same number of contingencies
-        if (results.stream().allMatch(r -> contingenciesNumber == contingenciesNumberGetter.apply(r))) {
+        if (results.stream().allMatch(r -> contingenciesNumber == contingenciesNumberGetter.applyAsInt(r))) {
             return new String[]{
                 Constants.getPrettyNetworkName(results.get(0).parameters().get("networkName")),
                 String.valueOf(contingenciesNumber),
