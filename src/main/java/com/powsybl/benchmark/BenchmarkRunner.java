@@ -49,7 +49,7 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Parameters(paramLabel = "<benchmarks>", description = "List of benchmarks to run, separated by spaces")
     private String[] benchmarks;
 
-    private BenchmarkRunner() {
+    BenchmarkRunner() {
     }
 
     public static void main(String[] args) {
@@ -60,6 +60,10 @@ public final class BenchmarkRunner implements Runnable {
     @Override
     public void run() {
         String[] benchmarkArgs = buildBenchmarkArgs();
+        if (benchmarkArgs == null) {
+            LOGGER.warn("No benchmark provided");
+            return;
+        }
         if (listBenchmarks) {
             LOGGER.info("Selected benchmarks:");
             for (String bench : benchmarkArgs) {
