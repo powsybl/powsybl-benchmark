@@ -59,6 +59,6 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
             BenchmarkTestUtils.mockRunResult(copy, cgmesFormat, 1.0)
         );
 
-        testReportToString(benchClass, runResults, new NetworkSerializationBenchmarkReportMarkdownSerializer(), "/network-serialization-report.md");
+        testReportToString(benchClass, runResults, "/network-serialization-report.md");
     }
 }

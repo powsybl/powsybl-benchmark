@@ -39,7 +39,7 @@ class LoadFlowBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSeri
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 120.0)
         );
 
-        testReportToString(benchClass, runResults, new LoadFlowBenchmarkReportMarkdownSerializer(), "/load-flow-report.md");
+        testReportToString(benchClass, runResults, "/load-flow-report.md");
     }
 
     private Map<String, String> params(String networkName, String type) {

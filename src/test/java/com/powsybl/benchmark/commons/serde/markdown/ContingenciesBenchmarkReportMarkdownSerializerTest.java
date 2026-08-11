@@ -38,7 +38,7 @@ class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdow
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "100", "STANDARD_REACTIVE_LIMITS_NOT_USED"), 124.28)
         );
 
-        testReportToString(benchClass, runResults, new ContingenciesBenchmarkReportMarkdownSerializer(), "/contingencies-report.md");
+        testReportToString(benchClass, runResults, "/contingencies-report.md");
     }
 
     private Map<String, String> params(String networkName, String numberOfContingencies, String type) {
