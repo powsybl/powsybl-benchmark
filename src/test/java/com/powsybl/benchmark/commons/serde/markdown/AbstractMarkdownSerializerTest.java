@@ -27,8 +27,9 @@ public abstract class AbstractMarkdownSerializerTest {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
         String actual = serializer.reportToString(report);
 
-        String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream(resourcePath)).readAllBytes(), StandardCharsets.UTF_8);
+        String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream(resourcePath)).readAllBytes(), StandardCharsets.UTF_8)
+            .replace("\r\n", "\n");
 
-        assertEquals(expected, actual);
+        assertEquals(expected, actual.replace("\r\n", "\n"));
     }
 }
