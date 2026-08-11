@@ -12,7 +12,9 @@ import org.openjdk.jmh.infra.BenchmarkParams;
 import org.openjdk.jmh.results.Result;
 import org.openjdk.jmh.results.RunResult;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,6 +34,7 @@ public final class BenchmarkTestUtils {
 
         when(runResult.getParams()).thenReturn(params);
         when(runResult.getPrimaryResult()).thenReturn(primaryResult);
+        when(runResult.getSecondaryResults()).thenReturn(new TreeMap<>());
 
         when(params.getBenchmark()).thenReturn(benchmarkName);
         when(params.getMode()).thenReturn(mode);
@@ -47,8 +50,22 @@ public final class BenchmarkTestUtils {
         return runResult;
     }
 
+    public static RunResult mockRunResult(String benchmarkName, Map<String, String> parameters, double score) {
+        return mockRunResult(benchmarkName, parameters, Mode.AverageTime, score, 0.1, "ms/op");
+    }
+
     public static RunResult mockRunResult(String benchmarkName) {
-        return mockRunResult(benchmarkName, Map.of("param1", "value1"), Mode.AverageTime, 10.5, 0.1, "ms/op");
+        return mockRunResult(benchmarkName, Map.of("param1", "value1"), 10.5);
+    }
+
+    public static BenchmarkReport mockBenchmarkReport(String benchmarkClass, Collection<RunResult> runResults) {
+        return new BenchmarkReport(
+                benchmarkClass,
+                "1.0.0",
+                "1.0.0",
+                "2026-08-11T10:00:00Z",
+                runResults.stream().map(BenchmarkResult::new).toList()
+        );
     }
 
     public static void assertResultsEqual(BenchmarkResult expected, BenchmarkResult actual) {
