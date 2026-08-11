@@ -8,11 +8,15 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
+import com.powsybl.benchmark.commons.serde.BenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
+import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,13 +27,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public abstract class AbstractMarkdownSerializerTest {
 
-    protected void testReportToString(String benchClass, List<RunResult> runResults, AbstractBenchmarkReportMarkdownSerializer serializer, String resourcePath) throws IOException {
+    @TempDir
+    Path tempDir;
+
+    protected void testReportToString(String benchClass, List<RunResult> runResults, String resourcePath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        String actual = serializer.reportToString(report);
+        BenchmarkReportMarkdownSerializer.serialize(report, tempDir);
+
+        String actual = Files.readString(tempDir.resolve(benchClass + ".md"), StandardCharsets.UTF_8)
+            .replace("\r\n", "\n");
 
         String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream(resourcePath)).readAllBytes(), StandardCharsets.UTF_8)
             .replace("\r\n", "\n");
 
-        assertEquals(expected, actual.replace("\r\n", "\n"));
+        assertEquals(expected, actual);
     }
 }

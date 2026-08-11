@@ -46,7 +46,7 @@ class MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializerTest extends A
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "8"), 40.0)
         );
 
-        testReportToString(benchClass, runResults, new MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer(), "/multi-thread-security-analysis-report.md");
+        testReportToString(benchClass, runResults, "/multi-thread-security-analysis-report.md");
     }
 
     private Map<String, String> params(String networkName, String threadCount) {
