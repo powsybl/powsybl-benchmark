@@ -13,6 +13,7 @@ import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
@@ -57,6 +58,8 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     }
 
     public String reportToString(BenchmarkReport report) {
+        //ensure decimal separator is dot
+        Locale.setDefault(Locale.US);
         StringBuilder tableBuilder = new StringBuilder();
         String[] columnNames = columnNames();
         String[][] valuesByLine = valuesByLine(report);
