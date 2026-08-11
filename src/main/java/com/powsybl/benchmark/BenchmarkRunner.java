@@ -1,14 +1,21 @@
 /**
- * Copyright (c) 2022, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022-2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
  */
 package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
 import com.powsybl.commons.PowsyblException;
+import org.openjdk.jmh.results.RunResult;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
+import org.openjdk.jmh.runner.options.CommandLineOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -33,9 +38,10 @@ public final class BenchmarkRunner {
     private BenchmarkRunner() {
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws CommandLineOptionException {
         String[] benchmarkArgs = buildBenchmarkArgs(args);
-        if (List.of(benchmarkArgs).contains("--list")) {
+        List<String> benchmarkArgsList = List.of(benchmarkArgs);
+        if (benchmarkArgsList.contains("--list")) {
             LOGGER.info("Selected benchmarks:");
             for (String arg : benchmarkArgs) {
                 if ("--list".equals(arg)) {
@@ -47,7 +53,25 @@ public final class BenchmarkRunner {
                 }
             }
         } else {
-            org.openjdk.jmh.Main.main(benchmarkArgs);
+            //Serializer benchmarks by default unless stated otherwise
+            boolean serde = !benchmarkArgsList.contains("--no-serde");
+            String serdePathKey = "--serde-path";
+            String serdePathString = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
+            if (benchmarkArgsList.contains(serdePathKey)) {
+                //get path
+                serdePathString = benchmarkArgsList.get(benchmarkArgsList.indexOf(serdePathKey) + 1);
+            }
+            benchmarkArgs = removeArguments(benchmarkArgs, "--no-serde", serdePathKey, serdePathString);
+            CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
+            try {
+                Collection<RunResult> results = new Runner(opts).run();
+                if (serde) {
+                    BenchmarkReportJsonSerDe.writeAll(results, Path.of(serdePathString));
+                }
+            } catch (RunnerException | IOException e) {
+                LOGGER.error("Error writing benchmark results", e);
+                System.exit(1);
+            }
         }
     }
 
@@ -67,6 +91,13 @@ public final class BenchmarkRunner {
                 () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
             default -> args;
         };
+    }
+
+    private static String[] removeArguments(String[] args, String... argumentsToRemove) {
+        List<String> argsToRemove = Arrays.asList(argumentsToRemove);
+        return Arrays.stream(args)
+            .filter(arg -> !argsToRemove.contains(arg))
+            .toArray(String[]::new);
     }
 
     private static String[] buildBenchmarkSuiteRegex(String[] args, String benchmarkSuite, Supplier<String> regexSupplier) {
