@@ -44,19 +44,19 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
             BenchmarkTestUtils.mockRunResult(streamSerialization, xiidmFormat, 2.137),
             BenchmarkTestUtils.mockRunResult(streamSerialization, jiidmFormat, 1.0),
             BenchmarkTestUtils.mockRunResult(streamSerialization, biidmFormat, 4.0),
-            BenchmarkTestUtils.mockRunResult(streamSerialization, cgmesFormat, 3.0),
+            // no CGMES stream serialization
 
             // File Serialization
             BenchmarkTestUtils.mockRunResult(fileSerialization, xiidmFormat, 3.0),
             BenchmarkTestUtils.mockRunResult(fileSerialization, jiidmFormat, 2.0002),
             BenchmarkTestUtils.mockRunResult(fileSerialization, biidmFormat, 1.078),
-            BenchmarkTestUtils.mockRunResult(fileSerialization, cgmesFormat, 4.0),
+            BenchmarkTestUtils.mockRunResult(fileSerialization, cgmesFormat, 5.12),
 
             // Copy
             BenchmarkTestUtils.mockRunResult(copy, xiidmFormat, 4.0),
             BenchmarkTestUtils.mockRunResult(copy, jiidmFormat, 3.0),
-            BenchmarkTestUtils.mockRunResult(copy, biidmFormat, 2.0),
-            BenchmarkTestUtils.mockRunResult(copy, cgmesFormat, 1.0)
+            BenchmarkTestUtils.mockRunResult(copy, biidmFormat, 2.0)
+        //no CGMES network copy
         );
 
         testReportToString(benchClass, runResults, "/network-serialization-report.md");
