@@ -24,7 +24,7 @@ class BenchmarkResultTest {
     @Test
     void testConstructorFromRunResult() {
         Map<String, String> paramsMap = Map.of("param1", "value1", "param2", "value2");
-        RunResult runResult = mockRunResult("myBenchmark", paramsMap, Mode.AverageTime, 10.5, 0.1, "ms/op");
+        RunResult runResult = mockRunResult("myBenchmark", paramsMap, 10.5);
 
         BenchmarkResult benchmarkResult = new BenchmarkResult(runResult);
 
