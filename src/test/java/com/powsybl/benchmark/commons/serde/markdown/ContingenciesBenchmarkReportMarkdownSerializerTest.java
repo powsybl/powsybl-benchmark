@@ -8,28 +8,23 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
-import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-class ContingenciesBenchmarkReportMarkdownSerializerTest {
+class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
     @Test
     void testReportToString() throws IOException {
         String benchClass = "MonoThreadSecurityAnalysisBenchmark";
-        String benchName = "com.powsybl.benchmark.security.MonoThreadSecurityAnalysisBenchmark.benchmark";
+        String benchName = benchClass + ".benchmark";
 
         List<RunResult> runResults = List.of(
             // IEEE 14
@@ -43,13 +38,7 @@ class ContingenciesBenchmarkReportMarkdownSerializerTest {
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "100", "STANDARD_REACTIVE_LIMITS_NOT_USED"), 124.28)
         );
 
-        BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        ContingenciesBenchmarkReportMarkdownSerializer serializer = new ContingenciesBenchmarkReportMarkdownSerializer();
-        String actual = serializer.reportToString(report);
-
-        String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream("/contingencies-report.md")).readAllBytes(), StandardCharsets.UTF_8);
-
-        assertEquals(expected, actual);
+        testReportToString(benchClass, runResults, new ContingenciesBenchmarkReportMarkdownSerializer(), "/contingencies-report.md");
     }
 
     private Map<String, String> params(String networkName, String numberOfContingencies, String type) {

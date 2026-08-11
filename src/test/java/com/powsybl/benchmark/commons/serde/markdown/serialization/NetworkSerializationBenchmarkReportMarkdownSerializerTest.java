@@ -7,23 +7,19 @@
  */
 package com.powsybl.benchmark.commons.serde.markdown.serialization;
 
-import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
+import com.powsybl.benchmark.commons.serde.markdown.AbstractMarkdownSerializerTest;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-class NetworkSerializationBenchmarkReportMarkdownSerializerTest {
+class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
     @Test
     void testReportToString() throws IOException {
@@ -63,12 +59,6 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest {
             BenchmarkTestUtils.mockRunResult(copy, cgmesFormat, 1.0)
         );
 
-        BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        NetworkSerializationBenchmarkReportMarkdownSerializer serializer = new NetworkSerializationBenchmarkReportMarkdownSerializer();
-        String actual = serializer.reportToString(report);
-
-        String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream("/network-serialization-report.md")).readAllBytes(), StandardCharsets.UTF_8);
-
-        assertEquals(expected, actual);
+        testReportToString(benchClass, runResults, new NetworkSerializationBenchmarkReportMarkdownSerializer(), "/network-serialization-report.md");
     }
 }
