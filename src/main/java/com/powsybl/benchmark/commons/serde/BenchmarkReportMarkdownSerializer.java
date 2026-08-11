@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -47,8 +48,13 @@ public final class BenchmarkReportMarkdownSerializer {
         if (serializer == null) {
             LOGGER.warn("No serializer found for benchmark class {} : skipping markdown serialization", report.benchmarkClass());
         } else {
-            String serializedReport = serializer.reportToString(report);
-            Files.writeString(filePath.resolve(report.benchmarkClass() + ".md"), serializedReport);
+            Map<String, String> serializedReports = serializer.reportToStrings(report);
+            for (Map.Entry<String, String> table : serializedReports.entrySet()) {
+                Files.writeString(
+                    filePath.resolve(report.benchmarkClass() + table.getKey() + ".md"),
+                    table.getValue()
+                );
+            }
         }
     }
 

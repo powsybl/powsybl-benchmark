@@ -7,12 +7,14 @@
  */
 package com.powsybl.benchmark.commons.serde.markdown.serialization;
 
+import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -58,5 +60,26 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
             case "benchmark4NetworkCopy" -> "Copy";
             default -> shortName;
         };
+    }
+
+    @Override
+    protected String getTableName(BenchmarkReport report) {
+        return "_" + report.results().getFirst().parameters().get("networkName");
+    }
+
+    @Override
+    protected List<BenchmarkReport> splitReport(BenchmarkReport report) {
+        //split the results by network name, create new benchmark reports with those split results
+        return report.results().stream()
+            .collect(Collectors.groupingBy(r -> r.parameters().get("networkName")))
+            .values().stream()
+            .map(l -> new BenchmarkReport(
+                report.benchmarkClass(),
+                report.powsyblCoreVersion(),
+                report.openLoadFlowVersion(),
+                report.datetime(),
+                l
+            ))
+            .toList();
     }
 }

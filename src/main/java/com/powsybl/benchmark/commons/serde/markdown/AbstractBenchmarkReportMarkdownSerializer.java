@@ -10,9 +10,7 @@ package com.powsybl.benchmark.commons.serde.markdown;
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 
@@ -56,17 +54,44 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         return new ArrayList<>(byLine.values());
     }
 
-    public String reportToString(BenchmarkReport report) {
-        StringBuilder tableBuilder = new StringBuilder();
-        String[] columnNames = columnNames();
-        String[][] valuesByLine = valuesByLine(report);
-        int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
-        buildHeader(tableBuilder, columnNames, widthByColumn);
-        for (String[] lineValues : valuesByLine) {
-            buildLine(tableBuilder, lineValues, widthByColumn);
+    public Map<String, String> reportToStrings(BenchmarkReport report) {
+        List<BenchmarkReport> splitReports = splitReport(report);
+        Map<String, String> reportStrings = new HashMap<>();
+        for (BenchmarkReport partReport : splitReports) {
+            String tableName = getTableName(partReport);
+            StringBuilder tableBuilder = new StringBuilder();
+            String[] columnNames = columnNames();
+            String[][] valuesByLine = valuesByLine(partReport);
+            int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
+            buildHeader(tableBuilder, columnNames, widthByColumn);
+            for (String[] lineValues : valuesByLine) {
+                buildLine(tableBuilder, lineValues, widthByColumn);
+            }
+            reportStrings.put(tableName, tableBuilder.toString());
         }
+        return reportStrings;
+    }
 
-        return tableBuilder.toString();
+    /**
+     * Split a report into multiple reports, each one will get the same header but a different list of {@link org.openjdk.jmh.results.RunResult}.
+     * This is needed for benchmarks that need to display information in multiple tables (for example, when there are 3 or more variables).
+     * If overriding this, also provide different table names for each report with {@link #getTableName(BenchmarkReport)}.
+     * @param report the original report
+     * @return a list of reports, each one of those will get a separate table
+     */
+    protected List<BenchmarkReport> splitReport(BenchmarkReport report) {
+        return Collections.singletonList(report);
+    }
+
+    /**
+     * Return the name of the table to be used for the name of the markdown file.
+     * This is only useful if multiple tables have to be generated from a single starting report.
+     * @param report a part of the original report, which will be serialized to a table
+     * @return the name of the table, which will be put after the benchmark class name
+     */
+    @SuppressWarnings("java:S172")
+    protected String getTableName(BenchmarkReport report) {
+        return "";
     }
 
     private static int[] calculateWidthPerColumn(String[] columnNames, String[][] valuesByLine) {
@@ -95,10 +120,10 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     }
 
     private String[][] valuesByLine(BenchmarkReport report) {
-        List<List<BenchmarkResult>> resultsByNetwork = getResultsByTableLine(report);
-        String[][] valuesByLine = new String[resultsByNetwork.size()][columnNames().length];
-        for (int i = 0; i < resultsByNetwork.size(); ++i) {
-            valuesByLine[i] = getLine(resultsByNetwork.get(i));
+        List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(report);
+        String[][] valuesByLine = new String[resultsByLine.size()][columnNames().length];
+        for (int i = 0; i < resultsByLine.size(); ++i) {
+            valuesByLine[i] = getLine(resultsByLine.get(i));
         }
         return valuesByLine;
     }
