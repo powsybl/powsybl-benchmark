@@ -64,6 +64,17 @@ class BenchmarkRunnerTest {
             .anyMatch(s -> s.contains("NetworkSerializationBenchmark"));
     }
 
+    @Test
+    void benchmarkSuiteOnly() throws Exception {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        int exitCode = new CommandLine(runner).execute("--list", "--release");
+
+        assertEquals(0, exitCode);
+        assertThat(buildBenchmarkArgs(runner))
+            .hasSize(1)
+            .anyMatch(s -> s.contains("LoadFlowBenchmark"));
+    }
+
     //TODO is there any better way to test this than to use reflection ?
     private static String[] buildBenchmarkArgs(BenchmarkRunner runner) throws Exception {
         Method method = BenchmarkRunner.class.getDeclaredMethod("buildBenchmarkArgs");
