@@ -37,6 +37,10 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
             .map(r -> String.format("%.2f", r.score()))
             .toList()
         );
+        //missing CGMES case
+        if (line.size() == columnNames().length - 1) {
+            line.add("—");
+        }
         return line.toArray(new String[0]);
     }
 
