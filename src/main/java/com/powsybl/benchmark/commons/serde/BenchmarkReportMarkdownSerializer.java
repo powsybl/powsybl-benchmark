@@ -11,6 +11,7 @@ import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkd
 import com.powsybl.benchmark.commons.serde.markdown.ContingenciesBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.loadflow.LoadFlowBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.security.MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer;
+import com.powsybl.benchmark.commons.serde.markdown.serialization.ContingencySerializationBenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.markdown.serialization.NetworkSerializationBenchmarkReportMarkdownSerializer;
 import org.openjdk.jmh.results.RunResult;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ public final class BenchmarkReportMarkdownSerializer {
             case "MonoThreadSecurityAnalysisBenchmark", "SensitivityAnalysisBenchmark" -> new ContingenciesBenchmarkReportMarkdownSerializer();
             case "MultiThreadSecurityAnalysisBenchmark" -> new MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer();
             case "NetworkSerializationBenchmark" -> new NetworkSerializationBenchmarkReportMarkdownSerializer();
+            case "ContingencySerializationBenchmark" -> new ContingencySerializationBenchmarkReportMarkdownSerializer();
             default -> null;
         };
     }

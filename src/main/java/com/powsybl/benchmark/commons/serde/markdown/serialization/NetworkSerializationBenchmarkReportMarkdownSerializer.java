@@ -36,7 +36,7 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
         List<String> line = new ArrayList<>(columnNames().length);
         line.add(getPrettyOperationName(results.getFirst().benchmarkName()));
         line.addAll(results.stream()
-            .map(r -> String.format("%.2f", r.score()))
+            .map(AbstractBenchmarkReportMarkdownSerializer::getFormattedScore)
             .toList()
         );
         //missing CGMES case

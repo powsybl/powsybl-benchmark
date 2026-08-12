@@ -141,10 +141,14 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     }
 
     public static String getFormattedScore(BenchmarkResult result) {
-        return getFormattedScore(result, DoubleUnaryOperator.identity());
+        return String.format("%.2f", result.score());
     }
 
-    public static String getFormattedScore(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
+    public static String getFormattedScoreAndUnit(BenchmarkResult result) {
+        return getFormattedScoreAndUnit(result, DoubleUnaryOperator.identity());
+    }
+
+    public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
         return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 }

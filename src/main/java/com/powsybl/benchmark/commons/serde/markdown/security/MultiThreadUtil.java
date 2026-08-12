@@ -8,11 +8,10 @@
 package com.powsybl.benchmark.commons.serde.markdown.security;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
 
 import java.util.Comparator;
 import java.util.List;
-
-import static com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer.getFormattedScore;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -43,7 +42,7 @@ public final class MultiThreadUtil {
     }
 
     public static String getFormatedScoreAndEffectiveness(BenchmarkResult result, double timeOneThread, int threadCount) {
-        return getFormattedScore(result) + getFormattedParallelizationEfficiency(result, timeOneThread, threadCount);
+        return AbstractBenchmarkReportMarkdownSerializer.getFormattedScoreAndUnit(result) + getFormattedParallelizationEfficiency(result, timeOneThread, threadCount);
     }
 
     public static String getFormattedParallelizationEfficiency(BenchmarkResult result, double timeOneThread, int threadCount) {

@@ -28,7 +28,7 @@ public class MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializer extend
         double timeOneThread = MultiThreadUtil.sortColumnsAndGetOneThreadTime(resultsForNetwork);
         return new String[] {
             Constants.getPrettyNetworkName(resultsForNetwork.getFirst().parameters().get("networkName")),
-            getFormattedScore(resultsForNetwork.get(0)) + " (1.00)",
+            getFormattedScoreAndUnit(resultsForNetwork.get(0)) + " (1.00)",
             MultiThreadUtil.getFormatedScoreAndEffectiveness(resultsForNetwork.get(1), timeOneThread, 2),
             MultiThreadUtil.getFormatedScoreAndEffectiveness(resultsForNetwork.get(2), timeOneThread, 4),
             MultiThreadUtil.getFormatedScoreAndEffectiveness(resultsForNetwork.get(3), timeOneThread, 8)
