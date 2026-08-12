@@ -34,9 +34,9 @@ public class LoadFlowBenchmarkReportMarkdownSerializer extends AbstractByNetwork
         //TODO there is no guarantee that 0, 1 and 2 correspond to basic, standard and without reactive limits in that order, need to sort them first
         return new String[]{
             Constants.getPrettyNetworkName(resultsForNetwork.get(0).parameters().get("networkName")),
-            getFormattedScore(resultsForNetwork.get(0)),
-            getFormattedScore(resultsForNetwork.get(1)),
-            getFormattedScore(resultsForNetwork.get(2))
+            getFormattedScoreAndUnit(resultsForNetwork.get(0)),
+            getFormattedScoreAndUnit(resultsForNetwork.get(1)),
+            getFormattedScoreAndUnit(resultsForNetwork.get(2))
         };
     }
 }

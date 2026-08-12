@@ -40,9 +40,9 @@ public class ContingenciesBenchmarkReportMarkdownSerializer extends AbstractByNe
             return new String[]{
                 Constants.getPrettyNetworkName(results.get(0).parameters().get("networkName")),
                 String.valueOf(contingenciesNumber),
-                getFormattedScore(results.get(0), scorePerContingency),
-                getFormattedScore(results.get(1), scorePerContingency),
-                getFormattedScore(results.get(2), scorePerContingency)
+                getFormattedScoreAndUnit(results.get(0), scorePerContingency),
+                getFormattedScoreAndUnit(results.get(1), scorePerContingency),
+                getFormattedScoreAndUnit(results.get(2), scorePerContingency)
             };
         } else {
             throw new IllegalStateException("All results for a given network must have the same number of contingencies");
