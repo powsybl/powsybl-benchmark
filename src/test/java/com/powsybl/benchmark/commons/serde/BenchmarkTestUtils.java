@@ -28,13 +28,17 @@ public final class BenchmarkTestUtils {
     }
 
     public static RunResult mockRunResult(String benchmarkName, Map<String, String> parameters, Mode mode, double score, double scoreError, String scoreUnit) {
+        return mockRunResult(benchmarkName, parameters, mode, score, scoreError, scoreUnit, Map.of());
+    }
+
+    public static RunResult mockRunResult(String benchmarkName, Map<String, String> parameters, Mode mode, double score, double scoreError, String scoreUnit, Map<String, Result<?>> secondaryResults) {
         RunResult runResult = mock(RunResult.class);
         BenchmarkParams params = mock(BenchmarkParams.class);
         Result<?> primaryResult = mock(Result.class);
 
         when(runResult.getParams()).thenReturn(params);
         when(runResult.getPrimaryResult()).thenReturn(primaryResult);
-        when(runResult.getSecondaryResults()).thenReturn(new TreeMap<>());
+        when(runResult.getSecondaryResults()).thenReturn(new TreeMap<>(secondaryResults));
 
         when(params.getBenchmark()).thenReturn(benchmarkName);
         when(params.getMode()).thenReturn(mode);
@@ -56,6 +60,12 @@ public final class BenchmarkTestUtils {
 
     public static RunResult mockRunResult(String benchmarkName) {
         return mockRunResult(benchmarkName, Map.of("param1", "value1"), 10.5);
+    }
+
+    public static Result<?> mockResult(double score) {
+        Result<?> result = mock(Result.class);
+        when(result.getScore()).thenReturn(score);
+        return result;
     }
 
     public static BenchmarkReport mockBenchmarkReport(String benchmarkClass, Collection<RunResult> runResults) {

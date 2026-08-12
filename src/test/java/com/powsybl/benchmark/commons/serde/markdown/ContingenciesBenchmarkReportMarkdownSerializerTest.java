@@ -8,13 +8,17 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
-import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
 import org.junit.jupiter.api.Test;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.results.Result;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockResult;
+import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResult;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -28,20 +32,24 @@ class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdow
 
         List<RunResult> runResults = List.of(
             // IEEE 14
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_14, "10", "BASIC"), 10.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_14, "10", "STANDARD"), 15.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_14, "10", "STANDARD_REACTIVE_LIMITS_NOT_USED"), 12.0),
+            mockRunResult(benchName, paramNetwork(Constants.IEEE_14), Mode.AverageTime, 10.0, 0.1, "ms/op", paramSecondary(10.0)),
+            mockRunResult(benchName, paramNetwork(Constants.IEEE_14), Mode.AverageTime, 15.0, 0.1, "ms/op", paramSecondary(10.0)),
+            mockRunResult(benchName, paramNetwork(Constants.IEEE_14), Mode.AverageTime, 12.0, 0.1, "ms/op", paramSecondary(10.0)),
 
             // IEEE 118
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "100", "BASIC"), 103.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "100", "STANDARD"), 177.7),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "100", "STANDARD_REACTIVE_LIMITS_NOT_USED"), 124.28)
+            mockRunResult(benchName, paramNetwork(Constants.IEEE_118), Mode.AverageTime, 103.0, 0.1, "ms/op", paramSecondary(100.0)),
+            mockRunResult(benchName, paramNetwork(Constants.IEEE_118), Mode.AverageTime, 177.7, 0.1, "ms/op", paramSecondary(100.0)),
+            mockRunResult(benchName, paramNetwork(Constants.IEEE_118), Mode.AverageTime, 124.28, 0.1, "ms/op", paramSecondary(100.0))
         );
 
         testReportToString(benchClass, runResults, "/contingencies-report.md");
     }
 
-    private Map<String, String> params(String networkName, String numberOfContingencies, String type) {
-        return Map.of("networkName", networkName, "numberOfContingencies", numberOfContingencies, "type", type);
+    private Map<String, String> paramNetwork(String networkName) {
+        return Map.of("networkName", networkName);
+    }
+
+    private Map<String, Result<?>> paramSecondary(double numberOfContingencies) {
+        return Map.of("numberOfContingencies", mockResult(numberOfContingencies));
     }
 }
