@@ -10,8 +10,7 @@ package com.powsybl.benchmark.commons.serde.markdown.security;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -32,20 +31,24 @@ public final class MultiThreadUtil {
         };
     }
 
-    //TODO need to generalize the sorting in AbstractBenchmarkReportMarkdownSerializer as an abstract method
-    public static double sortColumnsAndGetOneThreadTime(List<BenchmarkResult> results) {
-        results.sort(Comparator.comparingInt(r -> Integer.parseInt(r.parameters().get("threadCount"))));
-        if (!results.getFirst().parameters().get("threadCount").equals("1")) {
-            throw new IllegalStateException("No result found for 1 thread");
-        }
-        return results.getFirst().score();
+    public static String getPrettyColumnName(int threadCount) {
+        return threadCount + " thread" + (threadCount > 1 ? "s" : "");
     }
 
-    public static String getFormatedScoreAndEffectiveness(BenchmarkResult result, double timeOneThread, int threadCount) {
+    public static int getThreadCount(BenchmarkResult result) {
+        return Integer.parseInt(result.parameters().get("threadCount"));
+    }
+
+    public static String getFormattedScoreAndEffectiveness(BenchmarkResult result, double timeOneThread, int threadCount) {
         return AbstractBenchmarkReportMarkdownSerializer.getFormattedScoreAndUnit(result) + getFormattedParallelizationEfficiency(result, timeOneThread, threadCount);
     }
 
     public static String getFormattedParallelizationEfficiency(BenchmarkResult result, double timeOneThread, int threadCount) {
         return String.format(" (%.2f)", timeOneThread / (result.score() * threadCount));
+    }
+
+    public static String getFormattedScoreAndEffectiveness(Map.Entry<Integer, BenchmarkResult> threadEntry, double timeOneThread) {
+        return AbstractBenchmarkReportMarkdownSerializer.getFormattedScoreAndUnit(threadEntry.getValue())
+            + getFormattedParallelizationEfficiency(threadEntry.getValue(), timeOneThread, threadEntry.getKey());
     }
 }

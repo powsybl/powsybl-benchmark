@@ -32,21 +32,21 @@ class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdow
 
         List<RunResult> runResults = List.of(
             // IEEE 14
-            mockRunResult(benchName, paramNetwork(Constants.IEEE_14), Mode.AverageTime, 10.0, 0.1, "ms/op", paramSecondary(10.0)),
-            mockRunResult(benchName, paramNetwork(Constants.IEEE_14), Mode.AverageTime, 15.0, 0.1, "ms/op", paramSecondary(10.0)),
-            mockRunResult(benchName, paramNetwork(Constants.IEEE_14), Mode.AverageTime, 12.0, 0.1, "ms/op", paramSecondary(10.0)),
+            mockRunResult(benchName, params(Constants.IEEE_14, "BASIC"), Mode.AverageTime, 10.0, 0.1, "ms/op", paramSecondary(10.0)),
+            mockRunResult(benchName, params(Constants.IEEE_14, "STANDARD"), Mode.AverageTime, 15.0, 0.1, "ms/op", paramSecondary(10.0)),
+            mockRunResult(benchName, params(Constants.IEEE_14, "STANDARD_REACTIVE_LIMITS_NOT_USED"), Mode.AverageTime, 12.0, 0.1, "ms/op", paramSecondary(10.0)),
 
             // IEEE 118
-            mockRunResult(benchName, paramNetwork(Constants.IEEE_118), Mode.AverageTime, 103.0, 0.1, "ms/op", paramSecondary(100.0)),
-            mockRunResult(benchName, paramNetwork(Constants.IEEE_118), Mode.AverageTime, 177.7, 0.1, "ms/op", paramSecondary(100.0)),
-            mockRunResult(benchName, paramNetwork(Constants.IEEE_118), Mode.AverageTime, 124.28, 0.1, "ms/op", paramSecondary(100.0))
+            mockRunResult(benchName, params(Constants.IEEE_118, "BASIC"), Mode.AverageTime, 103.0, 0.1, "ms/op", paramSecondary(100.0)),
+            mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD"), Mode.AverageTime, 177.7, 0.1, "ms/op", paramSecondary(100.0)),
+            mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD_REACTIVE_LIMITS_NOT_USED"), Mode.AverageTime, 124.28, 0.1, "ms/op", paramSecondary(100.0))
         );
 
         testReportToString(benchClass, runResults, "/contingencies-report.md");
     }
 
-    private Map<String, String> paramNetwork(String networkName) {
-        return Map.of("networkName", networkName);
+    private Map<String, String> params(String networkName, String type) {
+        return Map.of("networkName", networkName, "type", type);
     }
 
     private Map<String, Result<?>> paramSecondary(double numberOfContingencies) {

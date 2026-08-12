@@ -11,6 +11,7 @@ import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -26,11 +27,11 @@ public class ContingencySerializationBenchmarkReportMarkdownSerializer extends A
     }
 
     @Override
-    protected String[] getLine(List<BenchmarkResult> results) {
-        return new String[]{
-            getPrettyOperationName(results.getFirst().benchmarkName()),
-            getFormattedScore(results.getFirst())
-        };
+    protected Map<String, String> getLine(List<BenchmarkResult> results) {
+        return Map.of(
+            "Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()),
+            "Time (ms/op)", getFormattedScore(results.getFirst())
+        );
     }
 
     @Override
