@@ -29,14 +29,14 @@ class LoadFlowBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSeri
 
         List<RunResult> runResults = List.of(
             // IEEE 14
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_14, "BASIC"), 10.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_14, "STANDARD"), 15.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_14, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 12.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_300, "BASIC"), 10.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_300, "STANDARD"), 15.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_300, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 12.0),
 
             // IEEE 118
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "BASIC"), 100.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD"), 150.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 120.0)
+            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.REAL_GRID, "BASIC"), 100.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.REAL_GRID, "STANDARD"), 150.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params(Constants.REAL_GRID, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 120.0)
         );
 
         testReportToString(benchClass, runResults, "/load-flow-report.md");
