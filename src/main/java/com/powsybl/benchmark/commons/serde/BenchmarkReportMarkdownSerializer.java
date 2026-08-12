@@ -45,6 +45,13 @@ public final class BenchmarkReportMarkdownSerializer {
         };
     }
 
+    /**
+     * Serialize a benchmark report into one or more tables, and write them to one or more Markdown file.
+     * @param report the benchmark report
+     * @param filePath path to the directory where the Markdown files will be written.
+     *                 If multiple tables are generated, the path to each table will be <code>filePath/benchmarkName_tableName.md</code>
+     * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
+     */
     public static void serialize(BenchmarkReport report, Path filePath) throws IOException {
         AbstractBenchmarkReportMarkdownSerializer serializer = chooseSerializer(report.benchmarkClass());
         if (serializer == null) {
@@ -52,14 +59,25 @@ public final class BenchmarkReportMarkdownSerializer {
         } else {
             Map<String, String> serializedReports = serializer.reportToStrings(report);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
+                String fileName = String.format("%s%s%s.md",
+                    report.benchmarkClass(),
+                    table.getKey().isEmpty() ? "" : "_",
+                    table.getKey());
                 Files.writeString(
-                    filePath.resolve(report.benchmarkClass() + table.getKey() + ".md"),
+                    filePath.resolve(fileName),
                     table.getValue()
                 );
             }
         }
     }
 
+    /**
+     * Group all {@link RunResult} into reports, then serialize them in tables written to markdown files.
+     * @param results all the run results to serialize
+     * @param filePath path to the directory where the Markdown files will be written
+     * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
+     * @see BenchmarkReportMarkdownSerializer#serialize(BenchmarkReport, Path)
+     */
     public static void serialize(Collection<RunResult> results, Path filePath) throws IOException {
         for (BenchmarkReport report : BenchmarkReport.buildAllReports(results)) {
             serialize(report, filePath);

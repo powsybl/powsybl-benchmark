@@ -29,6 +29,7 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
      * Return a map where each key corresponds to a column name, and each value will be displayed in the table at the matching line and column
      * The returned <code>Map&lt;String, String&gt;</code> should contain the same number of entries as there are columns (and the keys should match)
      * (as defined by {@link #columnNames()}).
+     * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
      * @return a Map of strings, each key is a column name (as defined by {@link #columnNames()}), each value to be displayed on the line at that column
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
@@ -54,6 +55,13 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         return new ArrayList<>(byLine.values());
     }
 
+    /**
+     * Separate the report into multiple reports if needed (see {@link #splitReport(BenchmarkReport)}).
+     * For each of the split reports, transform it into the associated table (defined depending on the benchmark by the different classes that extend from
+     * this abstract class).
+     * @param report the original report to be transformed into one or more table
+     * @return a map where the key is a name related to the table, and the value is the corresponding table
+     */
     public Map<String, String> reportToStrings(BenchmarkReport report) {
         List<BenchmarkReport> splitReports = splitReport(report);
         Map<String, String> reportStrings = new HashMap<>();
@@ -143,18 +151,40 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         tableBuilder.append("\n");
     }
 
+    /**
+     * Format the score of a benchmark result.
+     * @param result the benchmark result
+     * @return the formatted score
+     */
     public static String getFormattedScore(BenchmarkResult result) {
         return String.format("%.2f", result.score());
     }
 
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     * @param result the benchmark result
+     * @return the formatted score with the associated unit
+     */
     public static String getFormattedScoreAndUnit(BenchmarkResult result) {
         return getFormattedScoreAndUnit(result, DoubleUnaryOperator.identity());
     }
 
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     * @param result the benchmark result
+     * @param scorePerOperationFormatter an operation to apply on the score before formatting
+     * @return the formatted score with the associated unit
+     */
     public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
         return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     * @param score the score
+     * @param unit the unit
+     * @return the formatted score with the associated unit
+     */
     public static String getFormattedScoreAndUnit(double score, String unit) {
         return String.format("%.2f %s", score, unit);
     }

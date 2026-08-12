@@ -62,7 +62,7 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
 
     @Override
     protected String getTableName(BenchmarkReport report) {
-        return "_" + report.results().getFirst().parameters().get("networkName");
+        return report.results().getFirst().parameters().get("networkName");
     }
 
     @Override
