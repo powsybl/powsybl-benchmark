@@ -86,7 +86,6 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
             case "XIIDM" -> "XML (XIIDM)";
             case "JIIDM" -> "JSON (JIIDM)";
             case "BIIDM" -> "Binary (BIIDM)";
-            case "CGMES" -> "CGMES";
             default -> format;
         };
     }
