@@ -9,8 +9,10 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.ToIntFunction;
 
@@ -30,22 +32,31 @@ public class ContingenciesBenchmarkReportMarkdownSerializer extends AbstractByNe
     }
 
     @Override
-    protected String[] getLine(List<BenchmarkResult> results) {
+    protected Map<String, String> getLine(List<BenchmarkResult> results) {
         //this is formatted like a double in the string, but it's an int, get the integer part with the split
         ToIntFunction<BenchmarkResult> contingenciesNumberGetter = r -> Integer.parseInt(r.parameters().get("numberOfContingencies").split("\\.")[0]);
-        int contingenciesNumber = contingenciesNumberGetter.applyAsInt(results.get(0));
+        //all results have the same number of contingencies, just get the first
+        int contingenciesNumber = contingenciesNumberGetter.applyAsInt(results.getFirst());
         DoubleUnaryOperator scorePerContingency = d -> d / contingenciesNumber;
         //check that all results for a given network have the same number of contingencies
         if (results.stream().allMatch(r -> contingenciesNumber == contingenciesNumberGetter.applyAsInt(r))) {
-            return new String[]{
-                Constants.getPrettyNetworkName(results.get(0).parameters().get("networkName")),
-                String.valueOf(contingenciesNumber),
-                getFormattedScoreAndUnit(results.get(0), scorePerContingency),
-                getFormattedScoreAndUnit(results.get(1), scorePerContingency),
-                getFormattedScoreAndUnit(results.get(2), scorePerContingency)
-            };
+            return Map.of(
+                "Network", Constants.getPrettyNetworkName(results.get(0).parameters().get("networkName")),
+                "Contingencies", String.valueOf(contingenciesNumber),
+                getPrettyColumnName(results.get(0)), getFormattedScoreAndUnit(results.get(0), scorePerContingency),
+                getPrettyColumnName(results.get(1)), getFormattedScoreAndUnit(results.get(1), scorePerContingency),
+                getPrettyColumnName(results.get(2)), getFormattedScoreAndUnit(results.get(2), scorePerContingency)
+            );
         } else {
             throw new IllegalStateException("All results for a given network must have the same number of contingencies");
         }
+    }
+
+    private String getPrettyColumnName(BenchmarkResult benchmarkResult) {
+        return switch (LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type"))) {
+            case BASIC -> "Basic parameters";
+            case STANDARD -> "Standard parameters";
+            case STANDARD_REACTIVE_LIMITS_NOT_USED -> "Standard parameters <br/>with reactive limits not used";
+        };
     }
 }

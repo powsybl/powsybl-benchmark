@@ -26,12 +26,12 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
     protected abstract String[] columnNames();
 
     /**
-     * Return a formatted array of string, extracting the relevant values from the benchmark results.
-     * The returned <code>String[]</code> should contain the same number of values as there are columns
+     * Return a map where each key corresponds to a column name, and each value will be displayed in the table at the matching line and column
+     * The returned <code>Map&lt;String, String&gt;</code> should contain the same number of entries as there are columns (and the keys should match)
      * (as defined by {@link #columnNames()}).
-     * @return an array of string, each element corresponding to the column whose order is defined by {@link #columnNames()}
+     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames()}), each value to be displayed on the line at that column
      */
-    protected abstract String[] getLine(List<BenchmarkResult> results);
+    protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
 
     /**
      * Define the function that dictates how results should be grouped by line.
@@ -123,7 +123,10 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(report);
         String[][] valuesByLine = new String[resultsByLine.size()][columnNames().length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
-            valuesByLine[i] = getLine(resultsByLine.get(i));
+            Map<String, String> lineValues = getLine(resultsByLine.get(i));
+            for (int j = 0; j < columnNames().length; ++j) {
+                valuesByLine[i][j] = lineValues.get(columnNames()[j]);
+            }
         }
         return valuesByLine;
     }
@@ -150,5 +153,9 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
 
     public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
         return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
+    }
+
+    public static String getFormattedScoreAndUnit(double score, String unit) {
+        return String.format("%.2f %s", score, unit);
     }
 }

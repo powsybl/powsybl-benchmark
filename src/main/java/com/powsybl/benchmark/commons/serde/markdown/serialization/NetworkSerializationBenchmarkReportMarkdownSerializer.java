@@ -11,8 +11,9 @@ import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,18 +33,15 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
     }
 
     @Override
-    protected String[] getLine(List<BenchmarkResult> results) {
-        List<String> line = new ArrayList<>(columnNames().length);
-        line.add(getPrettyOperationName(results.getFirst().benchmarkName()));
-        line.addAll(results.stream()
-            .map(AbstractBenchmarkReportMarkdownSerializer::getFormattedScore)
-            .toList()
-        );
-        //missing CGMES case
-        if (line.size() == columnNames().length - 1) {
-            line.add("—");
+    protected Map<String, String> getLine(List<BenchmarkResult> results) {
+        Map<String, String> line = new HashMap<>(columnNames().length, 1);
+        line.put("Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()));
+        for (BenchmarkResult result : results) {
+            line.put(getPrettyColumnName(result.parameters().get("format")), getFormattedScore(result));
         }
-        return line.toArray(new String[0]);
+        //missing CGMES case
+        line.putIfAbsent("CGMES", "—");
+        return line;
     }
 
     @Override
@@ -81,5 +79,15 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
                 l
             ))
             .toList();
+    }
+
+    private String getPrettyColumnName(String format) {
+        return switch (format) {
+            case "XIIDM" -> "XML (XIIDM)";
+            case "JIIDM" -> "JSON (JIIDM)";
+            case "BIIDM" -> "Binary (BIIDM)";
+            case "CGMES" -> "CGMES";
+            default -> format;
+        };
     }
 }

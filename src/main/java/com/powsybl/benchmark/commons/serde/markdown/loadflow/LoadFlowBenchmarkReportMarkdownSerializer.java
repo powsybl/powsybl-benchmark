@@ -10,6 +10,7 @@ package com.powsybl.benchmark.commons.serde.markdown.loadflow;
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.markdown.AbstractByNetworkBenchmarkReportMarkdownSerializer;
+import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 
 import java.util.*;
 
@@ -30,13 +31,20 @@ public class LoadFlowBenchmarkReportMarkdownSerializer extends AbstractByNetwork
     }
 
     @Override
-    protected String[] getLine(List<BenchmarkResult> resultsForNetwork) {
-        //TODO there is no guarantee that 0, 1 and 2 correspond to basic, standard and without reactive limits in that order, need to sort them first
-        return new String[]{
-            Constants.getPrettyNetworkName(resultsForNetwork.get(0).parameters().get("networkName")),
-            getFormattedScoreAndUnit(resultsForNetwork.get(0)),
-            getFormattedScoreAndUnit(resultsForNetwork.get(1)),
-            getFormattedScoreAndUnit(resultsForNetwork.get(2))
+    protected Map<String, String> getLine(List<BenchmarkResult> resultsForNetwork) {
+        return Map.of(
+            "Network", Constants.getPrettyNetworkName(resultsForNetwork.get(0).parameters().get("networkName")),
+            getPrettyColumnName(resultsForNetwork.get(0)), getFormattedScoreAndUnit(resultsForNetwork.get(0)),
+            getPrettyColumnName(resultsForNetwork.get(1)), getFormattedScoreAndUnit(resultsForNetwork.get(1)),
+            getPrettyColumnName(resultsForNetwork.get(2)), getFormattedScoreAndUnit(resultsForNetwork.get(2))
+        );
+    }
+
+    private String getPrettyColumnName(BenchmarkResult benchmarkResult) {
+        return switch (LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type"))) {
+            case BASIC -> "Basic parameters";
+            case STANDARD -> "Standard parameters";
+            case STANDARD_REACTIVE_LIMITS_NOT_USED -> "Standard parameters <br/>with reactive limits not used";
         };
     }
 }
