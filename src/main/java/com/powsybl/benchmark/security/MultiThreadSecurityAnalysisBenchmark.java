@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.security;
 
+import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.security.state.MultiThreadsSecurityAnalysisState;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 3, time = 30, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
+@FullBenchmark
 public class MultiThreadSecurityAnalysisBenchmark {
 
     private static final int FORKS = 1;
