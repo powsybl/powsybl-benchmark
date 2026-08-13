@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2026, RTE (https://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -8,6 +8,7 @@
 package com.powsybl.benchmark.serialization;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
+import com.powsybl.benchmark.serialization.state.CommonFormatsNetworkSerializationState;
 import com.powsybl.benchmark.serialization.state.IidmSerializationState;
 import com.powsybl.iidm.network.Network;
 import com.powsybl.iidm.serde.NetworkSerDe;
@@ -30,14 +31,14 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 4, time = 3)
-@Measurement(iterations = 8, time = 3)
+@Warmup(iterations = 1, time = 3)
+@Measurement(iterations = 2, time = 3)
 @Fork(2)
 @FullBenchmark
 public class NetworkSerializationBenchmark {
 
     @Benchmark
-    public void benchmark1NetworkDeserialization(Blackhole blackhole, IidmSerializationState serializationState) {
+    public void benchmark1NetworkDeserialization(Blackhole blackhole, CommonFormatsNetworkSerializationState serializationState) {
         Network network = Network.read(serializationState.getFilePath());
         blackhole.consume(network);
     }
@@ -51,7 +52,7 @@ public class NetworkSerializationBenchmark {
     }
 
     @Benchmark
-    public void benchmark3NetworkFileSerialization(Blackhole blackhole, IidmSerializationState serializationState) {
+    public void benchmark3NetworkFileSerialization(Blackhole blackhole, CommonFormatsNetworkSerializationState serializationState) {
         Path path = serializationState.getOutputPath();
         serializationState.getNetwork().write(serializationState.getFormat(), serializationState.getProperties(), path);
         blackhole.consume(path);

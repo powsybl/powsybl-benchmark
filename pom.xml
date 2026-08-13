@@ -28,6 +28,9 @@
         <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
         <powsybl-core.version>7.2.1</powsybl-core.version>
         <powsybl-open-loadflow.version>2.2.1</powsybl-open-loadflow.version>
+
+        <!-- Other variables -->
+        <enable-dynamic-agent-loading.argLine/>
     </properties>
 
     <build>
@@ -54,6 +57,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Argument added to set the default locale as en_US for unit tests run to be independent of the JVM locale -->
+                    <argLine>@{argLine} -Duser.language=en -Duser.region=US ${enable-dynamic-agent-loading.argLine}</argLine>
+                    <excludedGroups>dockerTests</excludedGroups>
+                </configuration>
             </plugin>
         </plugins>
     </build>
