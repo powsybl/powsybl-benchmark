@@ -9,10 +9,19 @@ package com.powsybl.benchmark.commons.serde.markdown.security;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
+import com.powsybl.benchmark.commons.serde.markdown.AbstractByNetworkBenchmarkReportMarkdownSerializer;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
+ * Make some code common between different multi-thread benchmark reports.
+ * This is done instead of an abstract class because some multi-thread benchmarks are {@link AbstractByNetworkBenchmarkReportMarkdownSerializer}
+ * whereas some are {@link AbstractBenchmarkReportMarkdownSerializer}
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public final class MultiThreadUtil {
@@ -29,6 +38,33 @@ public final class MultiThreadUtil {
             "4 threads",
             "8 threads"
         };
+    }
+
+    public static Map<Integer, BenchmarkResult> getTimePerThread(List<BenchmarkResult> results) {
+        return results.stream()
+           .collect(Collectors.toMap(MultiThreadUtil::getThreadCount, Function.identity()));
+    }
+
+    public static double getOneThreadTime(Map<Integer, BenchmarkResult> timePerThread) {
+        BenchmarkResult oneThread = timePerThread.get(1);
+        if (oneThread == null) {
+            throw new NoSuchElementException("There is no result for 1 thread");
+        }
+        return oneThread.score();
+    }
+
+    public static Map<String, String> buildTableLine(List<BenchmarkResult> results, String firstColumnName, Function<List<BenchmarkResult>, String> firstValueGetter) {
+        Map<Integer, BenchmarkResult> timePerThread = MultiThreadUtil.getTimePerThread(results);
+        double timeOneThread = MultiThreadUtil.getOneThreadTime(timePerThread);
+        Map<String, String> line = new HashMap<>();
+        line.put(firstColumnName, firstValueGetter.apply(results));
+        for (Map.Entry<Integer, BenchmarkResult> threadEntry : timePerThread.entrySet()) {
+            line.put(
+                MultiThreadUtil.getPrettyColumnName(threadEntry.getKey()),
+                MultiThreadUtil.getFormattedScoreAndEffectiveness(threadEntry, timeOneThread)
+            );
+        }
+        return line;
     }
 
     public static String getPrettyColumnName(int threadCount) {
