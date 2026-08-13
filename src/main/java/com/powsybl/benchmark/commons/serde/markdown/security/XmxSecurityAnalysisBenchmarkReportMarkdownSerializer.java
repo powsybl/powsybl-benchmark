@@ -76,6 +76,6 @@ public class XmxSecurityAnalysisBenchmarkReportMarkdownSerializer extends Abstra
     protected Function<BenchmarkResult, String> getLineSorter() {
         //this assumes that all XmX benchmarks are named runXmxVALUE
         //with VALUE being one of XMX_VALUES
-        return r -> r.benchmarkName().replace("runXmx", "");
+        return r -> r.benchmarkName().substring(r.benchmarkName().lastIndexOf('.') + 1).replace("runXmx", "");
     }
 }
