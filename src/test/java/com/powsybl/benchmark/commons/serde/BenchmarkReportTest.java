@@ -32,8 +32,8 @@ class BenchmarkReportTest {
         BenchmarkReport report = new BenchmarkReport(className, List.of(rr1, rr2));
 
         assertEquals(className, report.benchmarkClass());
-        assertEquals("7.2.1", report.powsyblCoreVersion());
-        assertEquals("2.2.1", report.openLoadFlowVersion());
+        assertEquals("7.3.0", report.powsyblCoreVersion());
+        assertEquals("2.3.0", report.openLoadFlowVersion());
         assertNotNull(report.datetime());
         assertEquals(2, report.results().size());
         assertResultsEqual(new BenchmarkResult(rr1), report.results().get(0));

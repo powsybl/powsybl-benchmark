@@ -26,8 +26,8 @@
 
         <jmh.version>1.37</jmh.version>
         <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
-        <powsybl-core.version>7.2.1</powsybl-core.version>
-        <powsybl-open-loadflow.version>2.2.1</powsybl-open-loadflow.version>
+        <powsybl-core.version>7.3.0</powsybl-core.version>
+        <powsybl-open-loadflow.version>2.3.0</powsybl-open-loadflow.version>
 
         <!-- Other variables -->
         <enable-dynamic-agent-loading.argLine/>
