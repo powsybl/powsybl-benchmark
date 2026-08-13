@@ -46,7 +46,7 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
      * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
      * and should contain the same number of results as there are columns (as defined by {@link #columnNames()}).
      */
-    private List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
+    protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
         LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();
         Function<BenchmarkResult, String> lineSorter = getLineSorter();
         for (BenchmarkResult result : report.results()) {
