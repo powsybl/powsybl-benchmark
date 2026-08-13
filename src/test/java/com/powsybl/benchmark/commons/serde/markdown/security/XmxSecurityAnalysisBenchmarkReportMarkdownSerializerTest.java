@@ -35,12 +35,12 @@ class XmxSecurityAnalysisBenchmarkReportMarkdownSerializerTest extends AbstractM
         // 256M - Only 1 thread present
         runResults.add(BenchmarkTestUtils.mockRunResult("runXmx256M", threadCount1, 110.0));
 
-        addRunResults(runResults, "runXmx512M", 120.0, 70.0, 50.0, 30.0);
-        addRunResults(runResults, "runXmx1G", 130.0, 80.0, 60.0, 40.0);
-        addRunResults(runResults, "runXmx2G", 140.0, 90.0, 70.0, 50.0);
-        addRunResults(runResults, "runXmx4G", 150.0, 100.0, 80.0, 60.0);
-        addRunResults(runResults, "runXmx8G", 160.0, 110.0, 90.0, 70.0);
-        addRunResults(runResults, "runXmxUndefined", 170.0, 120.0, 100.0, 80.0);
+        addRunResults(runResults, benchClass + "." + "runXmx512M", 120.0, 70.0, 50.0, 30.0);
+        addRunResults(runResults, benchClass + "." + "runXmx1G", 130.0, 80.0, 60.0, 40.0);
+        addRunResults(runResults, benchClass + "." + "runXmx2G", 140.0, 90.0, 70.0, 50.0);
+        addRunResults(runResults, benchClass + "." + "runXmx4G", 150.0, 100.0, 80.0, 60.0);
+        addRunResults(runResults, benchClass + "." + "runXmx8G", 160.0, 110.0, 90.0, 70.0);
+        addRunResults(runResults, benchClass + "." + "runXmxUndefined", 170.0, 120.0, 100.0, 80.0);
 
         testReportToString(benchClass, runResults, "/xmx-security-analysis-report.md");
     }
