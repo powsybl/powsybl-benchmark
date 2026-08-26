@@ -10,15 +10,19 @@ package com.powsybl.benchmark.commons.serde.markdown;
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public abstract class AbstractMarkdownResultsExporter implements ResultsExporter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMarkdownResultsExporter.class);
 
     private final List<String> supportedBenchmarkClasses;
 
@@ -92,6 +96,17 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
                                                   int decimals) {
         String format = "%." + decimals + "f %s";
         return String.format(format, scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
+    }
+
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     * @param score the score of the benchmark result
+     * @param unit the unit of the benchmark result
+     * @param scorePerOperationFormatter an operation to apply on the score before formatting
+     * @return the formatted score with the associated unit
+     */
+    public static String getFormattedScoreAndUnit(double score, String unit, DoubleUnaryOperator scorePerOperationFormatter) {
+        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(score), unit);
     }
 
     /**
@@ -171,8 +186,16 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * @param report the original report to be transformed into one or more table
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
-    public Map<String, String> exportReport(BenchmarkReport report) {
+    @Override
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline) {
+        if (baseline != null && !report.benchmarkClass().equals(baseline.benchmarkClass())) {
+            LOGGER.warn("Cannot compare reports with different benchmark classes: report {} and baseline {}", report.benchmarkClass(), baseline.benchmarkClass());
+            return Map.of();
+        }
         List<BenchmarkReport> splitReports = splitReport(report);
+        Map<String, BenchmarkReport> baselineMap = baseline == null ? Map.of()
+            : splitReport(baseline).stream()
+            .collect(Collectors.toMap(this::getTableName, Function.identity()));
         Map<String, String> reportStrings = new HashMap<>();
         for (BenchmarkReport partReport : splitReports) {
             // Get the results grouped by line, each line will be a row in the table
@@ -186,7 +209,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             String[] columnNames = columnNames(resultsByLine.getFirst());
 
             // Get the values for each line in the table
-            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames);
+            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames, baselineMap.get(tableName));
 
             // Calculate the width of each column based on the column names and the values in each line
             int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
@@ -223,6 +246,8 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * each value to be displayed on the line at that column
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
+
+    protected abstract Map<String, Double> getLineScores(List<BenchmarkResult> results);
 
     /**
      * Define the function that dictates how results should be grouped by line.
@@ -271,14 +296,34 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return "";
     }
 
-    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames) {
+    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames, BenchmarkReport baseline) {
+        List<List<BenchmarkResult>> baselineResultsByLine = baseline == null ? null : getResultsByTableLine(baseline);
         String[][] valuesByLine = new String[resultsByLine.size()][columnNames.length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
             Map<String, String> lineValues = getLine(resultsByLine.get(i));
+            Map<String, Double> lineScores = getLineScores(resultsByLine.get(i));
+            Map<String, Double> baselineLineScores = baselineResultsByLine == null ? Map.of() : getLineScores(baselineResultsByLine.get(i));
             for (int j = 0; j < columnNames.length; ++j) {
-                valuesByLine[i][j] = lineValues.get(columnNames[j]);
+                String columnName = columnNames[j];
+                valuesByLine[i][j] = lineValues.get(columnName) + getBaselineRelativeDifference(
+                    lineScores.get(columnName), baselineLineScores.get(columnName)
+                );
             }
         }
         return valuesByLine;
+    }
+
+    private String getBaselineRelativeDifference(Double resultScore, Double baselineScore) {
+        if (resultScore == null || baselineScore == null) {
+            return "";
+        }
+        double relativeDifference = Math.round(100 * (resultScore / baselineScore - 1));
+        String symbol = "";
+        if (relativeDifference > 0) {
+            symbol = "+";
+        } else if (relativeDifference < 0) {
+            symbol = "-";
+        }
+        return String.format("(%s %.0f%%)", symbol, relativeDifference);
     }
 }

@@ -84,4 +84,9 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
         //with VALUE being one of XMX_VALUES
         return r -> r.benchmarkName().substring(r.benchmarkName().lastIndexOf('.') + 1).replace("runXmx", "");
     }
+
+    @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return Map.of();
+    }
 }

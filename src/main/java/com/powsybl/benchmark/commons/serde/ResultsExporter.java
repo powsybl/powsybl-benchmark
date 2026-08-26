@@ -85,7 +85,11 @@ public interface ResultsExporter {
         }
     }
 
+    default Map<String, String> exportReport(BenchmarkReport report) {
+        return exportReport(report, null);
+    }
+
     boolean isBenchmarkClassSupported(String benchmarkClass);
 
-    Map<String, String> exportReport(BenchmarkReport report);
+    Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline);
 }
