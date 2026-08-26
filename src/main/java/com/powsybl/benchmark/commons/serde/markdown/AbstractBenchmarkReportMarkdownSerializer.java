@@ -9,15 +9,19 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public abstract class AbstractBenchmarkReportMarkdownSerializer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBenchmarkReportMarkdownSerializer.class);
 
     /**
      * Return the names of the columns to be put in the first line of the Markdown table.
@@ -33,6 +37,8 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
      * @return a Map of strings, each key is a column name (as defined by {@link #columnNames()}), each value to be displayed on the line at that column
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
+
+    protected abstract Map<String, Double> getLineScores(List<BenchmarkResult> results);
 
     /**
      * Define the function that dictates how results should be grouped by line.
@@ -63,13 +69,24 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
     public Map<String, String> reportToStrings(BenchmarkReport report) {
+        return reportToStrings(report, null);
+    }
+
+    public Map<String, String> reportToStrings(BenchmarkReport report, BenchmarkReport baseline) {
+        if (baseline != null && !report.benchmarkClass().equals(baseline.benchmarkClass())) {
+            LOGGER.warn("Cannot compare reports with different benchmark classes: report {} and baseline {}", report.benchmarkClass(), baseline.benchmarkClass());
+            return Map.of();
+        }
         List<BenchmarkReport> splitReports = splitReport(report);
+        Map<String, BenchmarkReport> baselineMap = baseline == null ? Map.of()
+            : splitReport(baseline).stream()
+            .collect(Collectors.toMap(this::getTableName, Function.identity()));
         Map<String, String> reportStrings = new HashMap<>();
         for (BenchmarkReport partReport : splitReports) {
             String tableName = getTableName(partReport);
             StringBuilder tableBuilder = new StringBuilder();
             String[] columnNames = columnNames();
-            String[][] valuesByLine = valuesByLine(partReport);
+            String[][] valuesByLine = valuesByLine(partReport, baselineMap.get(tableName));
             int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
             buildHeader(tableBuilder, columnNames, widthByColumn);
             for (String[] lineValues : valuesByLine) {
@@ -127,16 +144,36 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         tableBuilder.append("\n");
     }
 
-    private String[][] valuesByLine(BenchmarkReport report) {
+    private String[][] valuesByLine(BenchmarkReport report, BenchmarkReport baseline) {
         List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(report);
+        List<List<BenchmarkResult>> baselineResultsByLine = baseline == null ? null : getResultsByTableLine(baseline);
         String[][] valuesByLine = new String[resultsByLine.size()][columnNames().length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
             Map<String, String> lineValues = getLine(resultsByLine.get(i));
+            Map<String, Double> lineScores = getLineScores(resultsByLine.get(i));
+            Map<String, Double> baselineLineScores = baselineResultsByLine == null ? Map.of() : getLineScores(baselineResultsByLine.get(i));
             for (int j = 0; j < columnNames().length; ++j) {
-                valuesByLine[i][j] = lineValues.get(columnNames()[j]);
+                String columnName = columnNames()[j];
+                valuesByLine[i][j] = lineValues.get(columnName) + getBaselineRelativeDifference(
+                    lineScores.get(columnName), baselineLineScores.get(columnName)
+                );
             }
         }
         return valuesByLine;
+    }
+
+    private String getBaselineRelativeDifference(Double resultScore, Double baselineScore) {
+        if (resultScore == null || baselineScore == null) {
+            return "";
+        }
+        double relativeDifference = Math.round(100 * (resultScore / baselineScore - 1));
+        String symbol = "";
+        if (relativeDifference > 0) {
+            symbol = "+";
+        } else if (relativeDifference < 0) {
+            symbol = "-";
+        }
+        return String.format("(%s %.0f%%)", symbol, relativeDifference);
     }
 
     private static void buildLine(StringBuilder tableBuilder, String[] lineValues, int[] widthByColumn) {
@@ -176,7 +213,18 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
      * @return the formatted score with the associated unit
      */
     public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
-        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
+        return getFormattedScoreAndUnit(result.score(), result.scoreUnit(), scorePerOperationFormatter);
+    }
+
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     * @param score the score of the benchmark result
+     * @param unit the unit of the benchmark result
+     * @param scorePerOperationFormatter an operation to apply on the score before formatting
+     * @return the formatted score with the associated unit
+     */
+    public static String getFormattedScoreAndUnit(double score, String unit, DoubleUnaryOperator scorePerOperationFormatter) {
+        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(score), unit);
     }
 
     /**

@@ -60,6 +60,11 @@ public class XmxSecurityAnalysisBenchmarkReportMarkdownSerializer extends Abstra
     }
 
     @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return Map.of();
+    }
+
+    @Override
     protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
         LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();
         Function<BenchmarkResult, String> lineSorter = getLineSorter();

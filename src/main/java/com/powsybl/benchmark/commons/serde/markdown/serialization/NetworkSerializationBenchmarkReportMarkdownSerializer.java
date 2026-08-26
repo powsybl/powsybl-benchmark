@@ -45,6 +45,11 @@ public class NetworkSerializationBenchmarkReportMarkdownSerializer extends Abstr
     }
 
     @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return Map.of();
+    }
+
+    @Override
     protected Function<BenchmarkResult, String> getLineSorter() {
         return BenchmarkResult::benchmarkName;
     }

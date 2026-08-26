@@ -35,6 +35,11 @@ public class ContingencySerializationBenchmarkReportMarkdownSerializer extends A
     }
 
     @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return Map.of();
+    }
+
+    @Override
     protected Function<BenchmarkResult, String> getLineSorter() {
         return BenchmarkResult::benchmarkName;
     }
