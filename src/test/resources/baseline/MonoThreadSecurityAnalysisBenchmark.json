@@ -1,0 +1,73 @@
+{
+  "benchmarkClass" : "MonoThreadSecurityAnalysisBenchmark",
+  "powsyblCoreVersion" : "7.2.1",
+  "openLoadFlowVersion" : "2.2.1",
+  "datetime" : "2026-08-27T12:48:34.132674865",
+  "results" : [ {
+    "benchmarkName" : "MonoThreadSecurityAnalysisBenchmark.benchmark",
+    "parameters" : {
+      "networkName" : "Ieee14",
+      "numberOfContingencies" : "10.0",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 9.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "MonoThreadSecurityAnalysisBenchmark.benchmark",
+    "parameters" : {
+      "networkName" : "Ieee14",
+      "numberOfContingencies" : "10.0",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 14.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "MonoThreadSecurityAnalysisBenchmark.benchmark",
+    "parameters" : {
+      "networkName" : "Ieee14",
+      "numberOfContingencies" : "10.0",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 48.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "MonoThreadSecurityAnalysisBenchmark.benchmark",
+    "parameters" : {
+      "networkName" : "Ieee118",
+      "numberOfContingencies" : "100.0",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 110.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "MonoThreadSecurityAnalysisBenchmark.benchmark",
+    "parameters" : {
+      "networkName" : "Ieee118",
+      "numberOfContingencies" : "100.0",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 17.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "MonoThreadSecurityAnalysisBenchmark.benchmark",
+    "parameters" : {
+      "networkName" : "Ieee118",
+      "numberOfContingencies" : "100.0",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 124.28,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}

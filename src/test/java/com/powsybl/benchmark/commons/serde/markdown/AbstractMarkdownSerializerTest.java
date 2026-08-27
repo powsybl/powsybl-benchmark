@@ -34,9 +34,26 @@ public abstract class AbstractMarkdownSerializerTest {
         testReportToStringFullPath(benchClass, benchClass + ".md", runResults, resourcePath);
     }
 
+    protected void testReportToString(String benchClass, List<RunResult> runResults, String resourcePath, Path baselineDirectoryPath) throws IOException {
+        testReportToStringFullPath(benchClass, benchClass + ".md", runResults, resourcePath, baselineDirectoryPath);
+    }
+
     protected void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
         BenchmarkReportMarkdownSerializer.serialize(report, tempDir);
+
+        String actual = Files.readString(tempDir.resolve(generatedFileName), StandardCharsets.UTF_8)
+            .replace("\r\n", "\n");
+
+        String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream(expectedResourcePath)).readAllBytes(), StandardCharsets.UTF_8)
+            .replace("\r\n", "\n");
+
+        assertEquals(expected, actual);
+    }
+
+    protected void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
+        BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
+        BenchmarkReportMarkdownSerializer.serialize(report, tempDir, baselineDirectoryPath);
 
         String actual = Files.readString(tempDir.resolve(generatedFileName), StandardCharsets.UTF_8)
             .replace("\r\n", "\n");
