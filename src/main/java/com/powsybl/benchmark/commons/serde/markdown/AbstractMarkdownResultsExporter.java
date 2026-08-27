@@ -184,6 +184,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * this abstract class).
      *
      * @param report the original report to be transformed into one or more table
+     * @param baseline the baseline report to be compared with the original report (can be null)
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
     @Override
@@ -318,12 +319,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             return "";
         }
         double relativeDifference = Math.round(100 * (resultScore / baselineScore - 1));
-        String symbol = "";
-        if (relativeDifference > 0) {
-            symbol = "+";
-        } else if (relativeDifference < 0) {
-            symbol = "-";
-        }
-        return String.format("(%s %.0f%%)", symbol, relativeDifference);
+        String symbol = relativeDifference > 0 ? "+" : "";
+        return String.format(" (%s%.0f%%)", symbol, relativeDifference);
     }
 }
