@@ -72,6 +72,14 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
         return reportToStrings(report, null);
     }
 
+    /**
+     * Separate the report into multiple reports if needed (see {@link #splitReport(BenchmarkReport)}).
+     * For each of the split reports, transform it into the associated table (defined depending on the benchmark by the different classes that extend from
+     * this abstract class) and compare it with the baseline report if provided.
+     * @param report the original report to be transformed into one or more table
+     * @param baseline the baseline report to be compared with the original report (can be null)
+     * @return a map where the key is a name related to the table, and the value is the corresponding table
+     */
     public Map<String, String> reportToStrings(BenchmarkReport report, BenchmarkReport baseline) {
         if (baseline != null && !report.benchmarkClass().equals(baseline.benchmarkClass())) {
             LOGGER.warn("Cannot compare reports with different benchmark classes: report {} and baseline {}", report.benchmarkClass(), baseline.benchmarkClass());
@@ -167,13 +175,8 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
             return "";
         }
         double relativeDifference = Math.round(100 * (resultScore / baselineScore - 1));
-        String symbol = "";
-        if (relativeDifference > 0) {
-            symbol = "+";
-        } else if (relativeDifference < 0) {
-            symbol = "-";
-        }
-        return String.format("(%s %.0f%%)", symbol, relativeDifference);
+        String symbol = relativeDifference > 0 ? "+" : "";
+        return String.format(" (%s%.0f%%)", symbol, relativeDifference);
     }
 
     private static void buildLine(StringBuilder tableBuilder, String[] lineValues, int[] widthByColumn) {

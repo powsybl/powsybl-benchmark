@@ -55,18 +55,30 @@ public final class BenchmarkReportMarkdownSerializer {
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
     public static void serialize(BenchmarkReport report, Path filePath) throws IOException {
+        serialize(report, filePath, null);
+    }
+
+    public static void serialize(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryPath) throws IOException {
         AbstractBenchmarkReportMarkdownSerializer serializer = chooseSerializer(report.benchmarkClass());
         if (serializer == null) {
             LOGGER.warn("No serializer found for benchmark class {} : skipping markdown serialization", report.benchmarkClass());
         } else {
-            Map<String, String> serializedReports = serializer.reportToStrings(report);
+            BenchmarkReport baselineReport = null;
+            if (baselineReportDirectoryPath != null) {
+                try {
+                    baselineReport = BenchmarkReportJsonSerDe.readReport(baselineReportDirectoryPath.resolve(report.benchmarkClass() + ".json"));
+                } catch (IOException e) {
+                    //do nothing, there is no baseline to compare to, just write the report without comparing
+                }
+            }
+            Map<String, String> serializedReports = serializer.reportToStrings(report, baselineReport);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
                 String fileName = String.format("%s%s%s.md",
                     report.benchmarkClass(),
                     table.getKey().isEmpty() ? "" : "_",
                     table.getKey());
                 Files.writeString(
-                    filePath.resolve(fileName),
+                    markdownDirectoryOutputPath.resolve(fileName),
                     table.getValue()
                 );
             }
@@ -81,8 +93,20 @@ public final class BenchmarkReportMarkdownSerializer {
      * @see BenchmarkReportMarkdownSerializer#serialize(BenchmarkReport, Path)
      */
     public static void serialize(Collection<RunResult> results, Path filePath) throws IOException {
+        serialize(results, filePath, null);
+    }
+
+    /**
+     * Group all {@link RunResult} into reports, then serialize them in tables written to markdown files.
+     * @param results all the run results to serialize
+     * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
+     * @param baselineReportDirectoryPath path to the directory where the baseline reports are located (can be null)
+     * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
+     * @see BenchmarkReportMarkdownSerializer#serialize(BenchmarkReport, Path, Path)
+     */
+    public static void serialize(Collection<RunResult> results, Path markdownDirectoryOutputPath, Path baselineReportDirectoryPath) throws IOException {
         for (BenchmarkReport report : BenchmarkReport.buildAllReports(results)) {
-            serialize(report, filePath);
+            serialize(report, markdownDirectoryOutputPath, baselineReportDirectoryPath);
         }
     }
 }

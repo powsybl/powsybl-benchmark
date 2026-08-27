@@ -67,18 +67,26 @@ public final class BenchmarkReportJsonSerDe {
      * @param inputPaths the path of each file from which to read a benchmark report. Each file should correspond to a single benchmark report.
      * @return all the benchmark reports read from the provided paths
      * @throws IOException if any file for a benchmark report cannot be read.
-     *     In that case, the exception is thrown only after having tried to read all the reports
      */
     public static List<BenchmarkReport> readReports(Path... inputPaths) throws IOException {
         List<BenchmarkReport> reports = new ArrayList<>();
         for (Path path : inputPaths) {
-            try {
-                BenchmarkReport report = MAPPER.readValue(path.toFile(), BenchmarkReport.class);
-                reports.add(report);
-            } catch (IOException e) {
-                throw new IOException("Failed to read benchmark report from " + path, e);
-            }
+            reports.add(readReport(path));
         }
         return reports;
+    }
+
+    /**
+     * Read a benchmark report from the provided path.
+     * @param inputPath the path of the file from which to read a benchmark report
+     * @return the benchmark report read from the provided path
+     * @throws IOException if the file for the benchmark report cannot be read
+     */
+    public static BenchmarkReport readReport(Path inputPath) throws IOException {
+        try {
+            return MAPPER.readValue(inputPath.toFile(), BenchmarkReport.class);
+        } catch (IOException e) {
+            throw new IOException("Failed to read benchmark report from " + inputPath, e);
+        }
     }
 }
