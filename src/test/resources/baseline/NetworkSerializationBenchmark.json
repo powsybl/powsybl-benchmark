@@ -1,0 +1,187 @@
+{
+  "benchmarkClass" : "NetworkSerializationBenchmark",
+  "powsyblCoreVersion" : "7.2.1",
+  "openLoadFlowVersion" : "2.2.1",
+  "datetime" : "2026-09-15T09:08:38.119996496",
+  "results" : [ {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 4.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.147,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 10.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.5,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.0003,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.07,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 5.1,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 4.2,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.7,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "firstNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.9,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "secondNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.1,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "secondNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 4.2,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "secondNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.7,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "secondNetwork"
+    },
+    "mode" : "AverageTime",
+    "score" : 5.9,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}

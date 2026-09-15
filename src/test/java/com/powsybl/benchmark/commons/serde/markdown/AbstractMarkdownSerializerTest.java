@@ -14,9 +14,11 @@ import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,15 +32,29 @@ public abstract class AbstractMarkdownSerializerTest {
     @TempDir
     Path tempDir;
 
-    protected void testReportToString(String benchClass, List<RunResult> runResults, String resourcePath) throws IOException {
-        testReportToStringFullPath(benchClass, benchClass + ".md", runResults, resourcePath);
+    @Test
+    public void testReportToStringWithoutBaseline() throws IOException {
+        for (int i = 0; i < getBenchFilenames().size(); ++i) {
+            testReportToStringFullPath(getBenchClass(), getBenchFilenames().get(i), buildResults(), getResourcePaths().get(i));
+        }
     }
 
-    protected void testReportToString(String benchClass, List<RunResult> runResults, String resourcePath, Path baselineDirectoryPath) throws IOException {
-        testReportToStringFullPath(benchClass, benchClass + ".md", runResults, resourcePath, baselineDirectoryPath);
+    @Test
+    void testReportToStringMissingBaselineFile() throws IOException {
+        for (int i = 0; i < getBenchFilenames().size(); ++i) {
+            testReportToStringFullPath(getBenchClass(), getBenchFilenames().get(i), buildResults(), getResourcePaths().get(i), Path.of("non-existent-path"));
+        }
     }
 
-    protected void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath) throws IOException {
+    @Test
+    public void testReportToStringWithBaseline() throws IOException, URISyntaxException {
+        for (int i = 0; i < getBenchFilenames().size(); ++i) {
+            testReportToStringFullPath(getBenchClass(), getBenchFilenames().get(i), buildResults(), getResourceWithBaselinePaths().get(i),
+                Paths.get(getClass().getResource(getBaselineDirectoryPathString()).toURI()));
+        }
+    }
+
+    private void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
         ResultsExporter.export(report, tempDir);
 
@@ -51,7 +67,7 @@ public abstract class AbstractMarkdownSerializerTest {
         assertEquals(expected, actual);
     }
 
-    protected void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
+    private void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
         BenchmarkReportMarkdownSerializer.serialize(report, tempDir, baselineDirectoryPath);
 
@@ -63,4 +79,16 @@ public abstract class AbstractMarkdownSerializerTest {
 
         assertEquals(expected, actual);
     }
+
+    protected abstract String getBenchClass();
+
+    protected abstract List<String> getBenchFilenames();
+
+    protected abstract List<String> getResourcePaths();
+
+    protected abstract List<String> getResourceWithBaselinePaths();
+
+    protected abstract String getBaselineDirectoryPathString();
+
+    protected abstract List<RunResult> buildResults();
 }

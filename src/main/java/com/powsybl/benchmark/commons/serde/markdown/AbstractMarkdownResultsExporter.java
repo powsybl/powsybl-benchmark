@@ -125,6 +125,12 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return columnNames;
     }
 
+    /**
+     * Calculate the width of each column in the table.
+     * @param columnNames the names of the columns
+     * @param valuesByLine the strings to be printed in the table
+     * @return the width of each column (the maximum of the length of the strings of that column + 2 for space padding on each side)
+     */
     private static int[] calculateWidthPerColumn(String[] columnNames, String[][] valuesByLine) {
         int[] widthByColumn = new int[columnNames.length];
         for (int i = 0; i < columnNames.length; ++i) {
