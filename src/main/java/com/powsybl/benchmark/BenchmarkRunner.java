@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-@Command(name = "benchmark", mixinStandardHelpOptions = true)
+@Command(name = "benchmark", mixinStandardHelpOptions = true, versionProvider = BenchmarkVersionProvider.class)
 public final class BenchmarkRunner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkRunner.class);
