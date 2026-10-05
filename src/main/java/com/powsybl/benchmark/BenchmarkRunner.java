@@ -86,7 +86,7 @@ public final class BenchmarkRunner implements Runnable {
      * The returned regex depends on the value of the {@link BenchmarkSuite}.
      * @return an array, where the first element is a potential JMH regex, and the remaining elements are the names in {@link #benchmarks} (if any).
      */
-    private String[] buildBenchmarkArgs() {
+    String[] buildBenchmarkArgs() {
         if (benchmarkSuite != null) {
             if (benchmarkSuite.release) {
                 //discover all @ReleaseBenchmark classes and prepend the regex to the list of benchmarks

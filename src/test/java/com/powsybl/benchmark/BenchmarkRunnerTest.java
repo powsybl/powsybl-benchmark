@@ -10,8 +10,6 @@ package com.powsybl.benchmark;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
-import java.lang.reflect.Method;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,43 +19,44 @@ import static org.junit.jupiter.api.Assertions.*;
 class BenchmarkRunnerTest {
 
     @Test
-    void checkReturnedBenchmarkWithoutSuite() throws Exception {
+    void checkReturnedBenchmarkWithoutSuite() {
         BenchmarkRunner runner = new BenchmarkRunner();
         int exitCode = new CommandLine(runner).execute("--list", "benchA", "benchB", "benchC.namedBench");
 
         assertEquals(0, exitCode);
-        assertThat(buildBenchmarkArgs(runner))
+        assertThat(runner.buildBenchmarkArgs())
             .containsExactlyInAnyOrder("benchA", "benchB", "benchC.namedBench");
     }
 
     @Test
-    void noBenchmarkProvided() throws Exception {
+    void noBenchmarkProvided() {
         BenchmarkRunner runner = new BenchmarkRunner();
         int exitCode = new CommandLine(runner).execute("--list");
 
         assertEquals(0, exitCode);
-        assertNull(buildBenchmarkArgs(runner));
+        assertNull(runner.buildBenchmarkArgs());
     }
 
     @Test
-    void prependBenchmarkWithReleaseSuite() throws Exception {
+    void prependBenchmarkWithReleaseSuite() {
         BenchmarkRunner runner = new BenchmarkRunner();
         int exitCode = new CommandLine(runner).execute("--list", "--release", "anotherClass.anotherBench");
 
         assertEquals(0, exitCode);
-        assertThat(buildBenchmarkArgs(runner))
+        assertThat(runner.buildBenchmarkArgs())
             .hasSize(2) //JMH regex + the other bench
             .contains("anotherClass.anotherBench")
-            .anyMatch(s -> s.contains("LoadFlowBenchmark"));
+            .anyMatch(s -> s.contains("LoadFlowBenchmark"))
+            .noneMatch(s -> s.contains("NetworkSerializationBenchmark"));
     }
 
     @Test
-    void prependBenchmarkWithFullSuite() throws Exception {
+    void prependBenchmarkWithFullSuite() {
         BenchmarkRunner runner = new BenchmarkRunner();
         int exitCode = new CommandLine(runner).execute("--list", "--full", "anotherClass.anotherBench");
 
         assertEquals(0, exitCode);
-        assertThat(buildBenchmarkArgs(runner))
+        assertThat(runner.buildBenchmarkArgs())
             .hasSize(2) //JMH regex + the other bench
             .contains("anotherClass.anotherBench")
             .anyMatch(s -> s.contains("LoadFlowBenchmark"))
@@ -65,20 +64,15 @@ class BenchmarkRunnerTest {
     }
 
     @Test
-    void benchmarkSuiteOnly() throws Exception {
+    void benchmarkSuiteOnly() {
         BenchmarkRunner runner = new BenchmarkRunner();
         int exitCode = new CommandLine(runner).execute("--list", "--release");
 
         assertEquals(0, exitCode);
-        assertThat(buildBenchmarkArgs(runner))
+        assertThat(runner.buildBenchmarkArgs())
             .hasSize(1)
-            .anyMatch(s -> s.contains("LoadFlowBenchmark"));
-    }
-
-    //TODO is there any better way to test this than to use reflection ?
-    private static String[] buildBenchmarkArgs(BenchmarkRunner runner) throws Exception {
-        Method method = BenchmarkRunner.class.getDeclaredMethod("buildBenchmarkArgs");
-        method.setAccessible(true);
-        return (String[]) method.invoke(runner);
+            .doesNotContain("anotherClass.anotherBench")
+            .anyMatch(s -> s.contains("LoadFlowBenchmark"))
+            .noneMatch(s -> s.contains("NetworkSerializationBenchmark"));
     }
 }
