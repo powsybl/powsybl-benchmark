@@ -9,7 +9,13 @@ package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
 import com.powsybl.commons.PowsyblException;
+import org.openjdk.jmh.results.RunResult;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.CommandLineOptionException;
+import org.openjdk.jmh.runner.options.CommandLineOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -17,10 +23,8 @@ import picocli.CommandLine.Command;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -33,6 +37,12 @@ public final class BenchmarkRunner implements Runnable {
 
     @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
     private boolean listBenchmarks = false;
+
+    @CommandLine.Option(names = "--no-serde", description = "Do not serialize benchmark results", defaultValue = "false")
+    private boolean noSerde = false;
+
+    @CommandLine.Option(names = "--serde-path", description = "Where to serialize benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
     private BenchmarkSuite benchmarkSuite;
@@ -74,9 +84,14 @@ public final class BenchmarkRunner implements Runnable {
             }
         } else {
             try {
-                org.openjdk.jmh.Main.main(benchmarkArgs);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
+                Collection<RunResult> results = new Runner(opts).run();
+                if (!noSerde) {
+                    BenchmarkReportJsonSerDe.writeAll(results, Path.of(serdePath));
+                }
+            } catch (RunnerException | IOException | CommandLineOptionException e) {
+                LOGGER.error("Error writing benchmark results", e);
+                System.exit(1);
             }
         }
     }
