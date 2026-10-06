@@ -50,7 +50,7 @@ public final class BenchmarkReportJsonSerDe {
         Files.createDirectories(benchmarkOutputPath);
         for (BenchmarkReport report : reports) {
             String benchmarkClass = report.benchmarkClass();
-            Path writePath = benchmarkOutputPath.resolve(benchmarkClass + ".json");
+            Path writePath = benchmarkOutputPath.resolve(benchmarkClass + "_" + report.datetime() + ".json");
             try {
                 MAPPER.writeValue(writePath.toFile(), report);
             } catch (IOException e) {

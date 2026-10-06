@@ -14,6 +14,7 @@ import org.openjdk.jmh.results.RunResult;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,12 +53,12 @@ public final class BenchmarkTestUtils {
     }
 
     public static void assertResultsEqual(BenchmarkResult expected, BenchmarkResult actual) {
-        org.junit.jupiter.api.Assertions.assertEquals(expected.benchmarkName(), actual.benchmarkName());
-        org.junit.jupiter.api.Assertions.assertEquals(expected.parameters(), actual.parameters());
-        org.junit.jupiter.api.Assertions.assertEquals(expected.mode(), actual.mode());
-        org.junit.jupiter.api.Assertions.assertEquals(expected.score(), actual.score());
-        org.junit.jupiter.api.Assertions.assertEquals(expected.scoreError(), actual.scoreError());
-        org.junit.jupiter.api.Assertions.assertEquals(expected.scoreUnit(), actual.scoreUnit());
+        assertEquals(expected.benchmarkName(), actual.benchmarkName());
+        assertEquals(expected.parameters(), actual.parameters());
+        assertEquals(expected.mode(), actual.mode());
+        assertEquals(expected.score(), actual.score());
+        assertEquals(expected.scoreError(), actual.scoreError());
+        assertEquals(expected.scoreUnit(), actual.scoreUnit());
     }
 }
 

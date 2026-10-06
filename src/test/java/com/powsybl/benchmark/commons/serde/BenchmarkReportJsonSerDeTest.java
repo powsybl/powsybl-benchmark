@@ -43,11 +43,17 @@ class BenchmarkReportJsonSerDeTest {
         List<BenchmarkReport> reports = List.of(report1, report2);
         BenchmarkReportJsonSerDe.writeReports(reports, tempDir);
 
-        Path path1 = tempDir.resolve(className1 + ".json");
-        Path path2 = tempDir.resolve(className2 + ".json");
+        List<Path> reportPaths;
+        try (Stream<Path> stream = Files.list(tempDir)) {
+            reportPaths = stream.toList();
+        }
+        assertThat(reportPaths)
+            .hasSize(2)
+            .anyMatch(p -> p.getFileName().toString().startsWith(className1) && p.getFileName().toString().endsWith(".json"))
+            .anyMatch(p -> p.getFileName().toString().startsWith(className2) && p.getFileName().toString().endsWith(".json"));
 
-        assertThat(path1).exists();
-        assertThat(path2).exists();
+        Path path1 = reportPaths.stream().filter(p -> p.getFileName().toString().startsWith(className1)).findFirst().orElseThrow();
+        Path path2 = reportPaths.stream().filter(p -> p.getFileName().toString().startsWith(className2)).findFirst().orElseThrow();
 
         List<BenchmarkReport> readReports = BenchmarkReportJsonSerDe.readReports(path1, path2);
         assertEquals(2, readReports.size());
@@ -59,7 +65,7 @@ class BenchmarkReportJsonSerDeTest {
         assertReportsEqual(report2, readReport2);
     }
 
-    private void assertReportsEqual(BenchmarkReport expected, BenchmarkReport actual) {
+    private static void assertReportsEqual(BenchmarkReport expected, BenchmarkReport actual) {
         assertEquals(expected.benchmarkClass(), actual.benchmarkClass());
         assertEquals(expected.powsyblCoreVersion(), actual.powsyblCoreVersion());
         assertEquals(expected.openLoadFlowVersion(), actual.openLoadFlowVersion());
@@ -77,8 +83,14 @@ class BenchmarkReportJsonSerDeTest {
 
         BenchmarkReportJsonSerDe.writeAll(List.of(rr1, rr2), tempDir);
 
-        assertThat(tempDir.resolve("ClassA.json")).exists();
-        assertThat(tempDir.resolve("ClassB.json")).exists();
+        List<Path> reportPaths;
+        try (Stream<Path> stream = Files.list(tempDir)) {
+            reportPaths = stream.toList();
+        }
+        assertThat(reportPaths)
+            .hasSize(2)
+            .anyMatch(p -> p.getFileName().toString().startsWith("ClassA_") && p.getFileName().toString().endsWith(".json"))
+            .anyMatch(p -> p.getFileName().toString().startsWith("ClassB_") && p.getFileName().toString().endsWith(".json"));
     }
 
     @Test
