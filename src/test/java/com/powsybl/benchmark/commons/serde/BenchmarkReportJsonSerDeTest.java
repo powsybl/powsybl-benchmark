@@ -12,8 +12,11 @@ import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.assertResultsEqual;
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResult;
@@ -43,11 +46,17 @@ class BenchmarkReportJsonSerDeTest {
         List<BenchmarkReport> reports = List.of(report1, report2);
         BenchmarkReportJsonSerDe.writeReports(reports, tempDir);
 
-        Path path1 = tempDir.resolve(className1 + ".json");
-        Path path2 = tempDir.resolve(className2 + ".json");
+        List<Path> reportPaths;
+        try (Stream<Path> stream = Files.list(tempDir)) {
+            reportPaths = stream.toList();
+        }
+        assertThat(reportPaths)
+            .hasSize(2)
+            .anyMatch(checkJsonFileMatches(className1))
+            .anyMatch(checkJsonFileMatches(className2));
 
-        assertThat(path1).exists();
-        assertThat(path2).exists();
+        Path path1 = reportPaths.stream().filter(checkJsonFileMatches(className1)).findFirst().orElseThrow();
+        Path path2 = reportPaths.stream().filter(checkJsonFileMatches(className2)).findFirst().orElseThrow();
 
         List<BenchmarkReport> readReports = BenchmarkReportJsonSerDe.readReports(path1, path2);
         assertEquals(2, readReports.size());
@@ -59,7 +68,7 @@ class BenchmarkReportJsonSerDeTest {
         assertReportsEqual(report2, readReport2);
     }
 
-    private void assertReportsEqual(BenchmarkReport expected, BenchmarkReport actual) {
+    private static void assertReportsEqual(BenchmarkReport expected, BenchmarkReport actual) {
         assertEquals(expected.benchmarkClass(), actual.benchmarkClass());
         assertEquals(expected.powsyblCoreVersion(), actual.powsyblCoreVersion());
         assertEquals(expected.openLoadFlowVersion(), actual.openLoadFlowVersion());
@@ -70,6 +79,10 @@ class BenchmarkReportJsonSerDeTest {
         }
     }
 
+    private static Predicate<Path> checkJsonFileMatches(String toMatch) {
+        return p -> p.getFileName().toString().startsWith(toMatch) && p.getFileName().toString().endsWith(".json");
+    }
+
     @Test
     void testWriteAll() throws IOException {
         RunResult rr1 = mockRunResult("com.powsybl.ClassA.method1");
@@ -77,8 +90,14 @@ class BenchmarkReportJsonSerDeTest {
 
         BenchmarkReportJsonSerDe.writeAll(List.of(rr1, rr2), tempDir);
 
-        assertThat(tempDir.resolve("ClassA.json")).exists();
-        assertThat(tempDir.resolve("ClassB.json")).exists();
+        List<Path> reportPaths;
+        try (Stream<Path> stream = Files.list(tempDir)) {
+            reportPaths = stream.toList();
+        }
+        assertThat(reportPaths)
+            .hasSize(2)
+            .anyMatch(checkJsonFileMatches("ClassA_"))
+            .anyMatch(checkJsonFileMatches("ClassB_"));
     }
 
     @Test

@@ -18,11 +18,10 @@ import org.openjdk.jmh.runner.options.CommandLineOptionException;
 import org.openjdk.jmh.runner.options.CommandLineOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
 import java.util.*;
@@ -31,83 +30,111 @@ import java.util.function.Supplier;
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
-public final class BenchmarkRunner {
+@Command(name = "benchmark", mixinStandardHelpOptions = true, versionProvider = BenchmarkVersionProvider.class)
+public final class BenchmarkRunner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkRunner.class);
 
-    private BenchmarkRunner() {
+    @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
+    private boolean listBenchmarks = false;
+
+    @CommandLine.Option(names = "--no-serde", description = "Do not serialize benchmark results", defaultValue = "false")
+    private boolean noSerde = false;
+
+    @CommandLine.Option(names = "--serde-path", description = "Where to serialize benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
+
+    @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
+    private BenchmarkSuite benchmarkSuite;
+
+    private static final class BenchmarkSuite {
+
+        @CommandLine.Option(names = {"--release"}, description = "Run benchmarks tagged as release")
+        private boolean release;
+
+        @CommandLine.Option(names = {"--full"}, description = "Run all benchmarks tagged as full (that includes release benchmarks)")
+        private boolean full;
     }
 
-    public static void main(String[] args) throws CommandLineOptionException {
-        String[] benchmarkArgs = buildBenchmarkArgs(args);
-        List<String> benchmarkArgsList = List.of(benchmarkArgs);
-        if (benchmarkArgsList.contains("--list")) {
+    @CommandLine.Parameters(paramLabel = "<benchmarks>", description = "List of benchmarks to run, separated by spaces")
+    private String[] benchmarks;
+
+    BenchmarkRunner() {
+    }
+
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new BenchmarkRunner()).execute(args);
+        System.exit(exitCode);
+    }
+
+    @Override
+    public void run() {
+        String[] benchmarkArgs = buildBenchmarkArgs();
+        if (benchmarkArgs == null) {
+            LOGGER.warn("No benchmark provided");
+            return;
+        }
+        if (listBenchmarks) {
             LOGGER.info("Selected benchmarks:");
-            for (String arg : benchmarkArgs) {
-                if ("--list".equals(arg)) {
-                    continue;
-                }
-                for (String s : arg.split("\\|")) {
+            for (String bench : benchmarkArgs) {
+                for (String s : bench.split("\\|")) {
                     String value = s.replace("\\.", ".");
                     LOGGER.info(value);
                 }
             }
         } else {
-            //Serializer benchmarks by default unless stated otherwise
-            boolean serde = !benchmarkArgsList.contains("--no-serde");
-            String serdePathKey = "--serde-path";
-            String serdePathString = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
-            if (benchmarkArgsList.contains(serdePathKey)) {
-                //get path
-                serdePathString = benchmarkArgsList.get(benchmarkArgsList.indexOf(serdePathKey) + 1);
-            }
-            benchmarkArgs = removeArguments(benchmarkArgs, "--no-serde", serdePathKey, serdePathString);
-            CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
             try {
+                CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
                 Collection<RunResult> results = new Runner(opts).run();
-                if (serde) {
-                    BenchmarkReportJsonSerDe.writeAll(results, Path.of(serdePathString));
+                if (!noSerde) {
+                    BenchmarkReportJsonSerDe.writeAll(results, Path.of(serdePath));
                 }
-            } catch (RunnerException | IOException e) {
+            } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);
                 System.exit(1);
             }
         }
     }
 
-    private static String[] buildBenchmarkArgs(String[] args) {
-        if (args.length < 1) {
-            return args;
+    /**
+     * Build benchmarks to be passed to JMH. This is a mix of regex and class names.
+     * The returned regex depends on the value of the {@link BenchmarkSuite}.
+     * @return an array, where the first element is a potential JMH regex, and the remaining elements are the names in {@link #benchmarks} (if any).
+     */
+    String[] buildBenchmarkArgs() {
+        if (benchmarkSuite != null) {
+            if (benchmarkSuite.release) {
+                //discover all @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
+                return buildBenchmarkSuiteRegex(benchmarks, "release",
+                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
+            } else if (benchmarkSuite.full) {
+                //discover all @FullBenchmark and @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
+                return buildBenchmarkSuiteRegex(benchmarks, "full",
+                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
+            }
         }
-
-        return switch (args[0]) {
-            // If "--release" is the first argument, discover all @ReleaseBenchmark classes
-            // and replace args with the generated regex
-            case "--release" -> buildBenchmarkSuiteRegex(args, "release",
-                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
-            // If "--full" is the first argument, discover all @FullBenchmark classes
-            // and replace args with the generated regex
-            case "--full" -> buildBenchmarkSuiteRegex(args, "full",
-                () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
-            default -> args;
-        };
+        return benchmarks;
     }
 
-    private static String[] removeArguments(String[] args, String... argumentsToRemove) {
-        List<String> argsToRemove = Arrays.asList(argumentsToRemove);
-        return Arrays.stream(args)
-            .filter(arg -> !argsToRemove.contains(arg))
-            .toArray(String[]::new);
-    }
-
-    private static String[] buildBenchmarkSuiteRegex(String[] args, String benchmarkSuite, Supplier<String> regexSupplier) {
+    /**
+     * Build the list of benchmarks to be run by JMH using a regex and additionally provided benchmark names.
+     * @param benchmarks the named benchmarks to run (might be empty or null)
+     * @param benchmarkSuite the name of the benchmark suite
+     * @param regexSupplier a supplier of the regex corresponding to the benchmark suite (related to annotation classes)
+     * @return an array starting with the string corresponding to the JMH regex (classes separated by <code>|</code>), and
+     * the remaining elements are the names of the benchmarks to run named directly inside <code>benchmarks</code> (if any).
+     */
+    private static String[] buildBenchmarkSuiteRegex(String[] benchmarks, String benchmarkSuite, Supplier<String> regexSupplier) {
         String regex = regexSupplier.get();
         LOGGER.info("Running {} benchmarks matching: {}", benchmarkSuite, regex);
-        // Pass remaining args after "--release", prepending the regex
-        String[] remainingArgs = new String[args.length]; // same length
-        remainingArgs[0] = regex;
-        System.arraycopy(args, 1, remainingArgs, 1, args.length - 1);
-        return remainingArgs;
+        // The complete list of benchmarks to run is the benchmarks from the regex + benchmarks that are named individually
+        int benchmarksArgNumber = benchmarks != null ? benchmarks.length + 1 : 1;
+        String[] allBenchmarks = new String[benchmarksArgNumber]; // same length
+        allBenchmarks[0] = regex;
+        if (benchmarks != null) {
+            System.arraycopy(benchmarks, 0, allBenchmarks, 1, benchmarks.length);
+        }
+        return allBenchmarks;
     }
 
     /**

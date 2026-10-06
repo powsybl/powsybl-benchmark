@@ -50,7 +50,7 @@ public final class BenchmarkReportJsonSerDe {
         Files.createDirectories(benchmarkOutputPath);
         for (BenchmarkReport report : reports) {
             String benchmarkClass = report.benchmarkClass();
-            Path writePath = benchmarkOutputPath.resolve(benchmarkClass + ".json");
+            Path writePath = benchmarkOutputPath.resolve(benchmarkClass + "_" + formatDatetime(report.datetime()) + ".json");
             try {
                 MAPPER.writeValue(writePath.toFile(), report);
             } catch (IOException e) {
@@ -60,6 +60,14 @@ public final class BenchmarkReportJsonSerDe {
         if (!failedBenchmarkWrite.isEmpty()) {
             throw new IOException("Failed to write benchmark reports for classes: " + failedBenchmarkWrite);
         }
+    }
+
+    private static String formatDatetime(String datetime) {
+        //datetime is of the format 2026-08-14T09:19:45.842589364
+        return datetime.substring(0, datetime.indexOf('.'))
+            .replace('T', '_')
+            .replace("-", "")
+            .replace(":", "");
     }
 
     /**
