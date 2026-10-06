@@ -31,8 +31,8 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 1, time = 3)
-@Measurement(iterations = 2, time = 3)
+@Warmup(iterations = 4, time = 3)
+@Measurement(iterations = 8, time = 3)
 @Fork(2)
 @FullBenchmark
 public class NetworkSerializationBenchmark {
