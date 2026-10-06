@@ -12,6 +12,8 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
 /**
+ * Used to count the number of contingencies in a given benchmark (since it depends on the benchmark that is running).
+ * Not useful for the benchmark itself, but used for data printing in markdown tables.
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 @State(Scope.Thread)

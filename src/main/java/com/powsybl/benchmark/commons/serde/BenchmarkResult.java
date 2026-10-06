@@ -40,6 +40,14 @@ public record BenchmarkResult(
         );
     }
 
+    /**
+     * Builds a map containing parameters and their corresponding values extracted from the provided {@code RunResult}.
+     * The map includes parameters from the benchmark's primary parameters and scores from secondary results.
+     *
+     * @param result The {@code RunResult} object containing the benchmark parameters and results.
+     * @return A {@code Map} where keys are parameter names or secondary result identifiers, and
+     *         values are their associated string representations.
+     */
     private static Map<String, String> buildParametersMap(RunResult result) {
         BenchmarkParams parameters = result.getParams();
         Map<String, String> parametersMap = new TreeMap<>();
