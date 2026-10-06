@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.assertResultsEqual;
@@ -51,11 +52,11 @@ class BenchmarkReportJsonSerDeTest {
         }
         assertThat(reportPaths)
             .hasSize(2)
-            .anyMatch(p -> p.getFileName().toString().startsWith(className1) && p.getFileName().toString().endsWith(".json"))
-            .anyMatch(p -> p.getFileName().toString().startsWith(className2) && p.getFileName().toString().endsWith(".json"));
+            .anyMatch(checkJsonFileMatches(className1))
+            .anyMatch(checkJsonFileMatches(className2));
 
-        Path path1 = reportPaths.stream().filter(p -> p.getFileName().toString().startsWith(className1)).findFirst().orElseThrow();
-        Path path2 = reportPaths.stream().filter(p -> p.getFileName().toString().startsWith(className2)).findFirst().orElseThrow();
+        Path path1 = reportPaths.stream().filter(checkJsonFileMatches(className1)).findFirst().orElseThrow();
+        Path path2 = reportPaths.stream().filter(checkJsonFileMatches(className2)).findFirst().orElseThrow();
 
         List<BenchmarkReport> readReports = BenchmarkReportJsonSerDe.readReports(path1, path2);
         assertEquals(2, readReports.size());
@@ -78,6 +79,10 @@ class BenchmarkReportJsonSerDeTest {
         }
     }
 
+    private static Predicate<Path> checkJsonFileMatches(String toMatch) {
+        return p -> p.getFileName().toString().startsWith(toMatch) && p.getFileName().toString().endsWith(".json");
+    }
+
     @Test
     void testWriteAll() throws IOException {
         RunResult rr1 = mockRunResult("com.powsybl.ClassA.method1");
@@ -91,8 +96,8 @@ class BenchmarkReportJsonSerDeTest {
         }
         assertThat(reportPaths)
             .hasSize(2)
-            .anyMatch(p -> p.getFileName().toString().startsWith("ClassA_") && p.getFileName().toString().endsWith(".json"))
-            .anyMatch(p -> p.getFileName().toString().startsWith("ClassB_") && p.getFileName().toString().endsWith(".json"));
+            .anyMatch(checkJsonFileMatches("ClassA_"))
+            .anyMatch(checkJsonFileMatches("ClassB_"));
     }
 
     @Test
