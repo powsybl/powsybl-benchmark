@@ -7,6 +7,8 @@
  */
 package com.powsybl.benchmark.commons.serde;
 
+import com.powsybl.openloadflow.util.PowsyblOpenLoadFlowVersion;
+import com.powsybl.tools.PowsyblCoreVersion;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;

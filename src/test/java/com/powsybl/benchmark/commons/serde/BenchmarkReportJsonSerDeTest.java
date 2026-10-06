@@ -12,8 +12,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.assertResultsEqual;
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResult;
