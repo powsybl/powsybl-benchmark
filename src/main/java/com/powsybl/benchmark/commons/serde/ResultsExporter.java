@@ -19,6 +19,7 @@ import java.util.*;
  * This is the base class for all the results exporters.
  *
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
+ * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public interface ResultsExporter {
 
