@@ -18,6 +18,7 @@ import java.util.TreeMap;
 /**
  * Result per benchmark function. For a given set of parameters,
  * this is the aggregated score across all the runs for this set of parameters.
+ *
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public record BenchmarkResult(
@@ -46,7 +47,7 @@ public record BenchmarkResult(
      *
      * @param result The {@code RunResult} object containing the benchmark parameters and results.
      * @return A {@code Map} where keys are parameter names or secondary result identifiers, and
-     *         values are their associated string representations.
+     * values are their associated string representations.
      */
     private static Map<String, String> buildParametersMap(RunResult result) {
         BenchmarkParams parameters = result.getParams();

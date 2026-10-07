@@ -35,7 +35,7 @@ public class ContingenciesMarkdownResultsExporter extends AbstractByNetworkMarkd
 
     @Override
     protected String[] columnNames() {
-        return new String[]{
+        return new String[] {
             "Network",
             "Contingencies",
             "Basic parameters",

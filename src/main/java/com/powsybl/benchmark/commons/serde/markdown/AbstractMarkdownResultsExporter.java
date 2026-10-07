@@ -21,86 +21,45 @@ import java.util.function.Function;
 public abstract class AbstractMarkdownResultsExporter implements ResultsExporter {
 
     /**
-     * Return the names of the columns to be put in the first line of the Markdown table.
-     * @return name of columns, each string will correspond to a column
+     * Format the score of a benchmark result.
+     *
+     * @param result the benchmark result
+     * @return the formatted score
      */
-    protected abstract String[] columnNames();
-
-    /**
-     * Return a map where each key corresponds to a column name, and each value will be displayed in the table at the matching line and column
-     * The returned <code>Map&lt;String, String&gt;</code> should contain the same number of entries as there are columns (and the keys should match)
-     * (as defined by {@link #columnNames()}).
-     * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
-     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames()}), each value to be displayed on the line at that column
-     */
-    protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
-
-    /**
-     * Define the function that dictates how results should be grouped by line.
-     * @return a function that says which line of the resulting table a given benchmark result should be in, by providing a string that identifies the line
-     */
-    protected abstract Function<BenchmarkResult, String> getLineSorter();
-
-    /**
-     * Sort all the benchmark results of the report by the relevant information per line.
-     * @param report the report of a given class
-     * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
-     * and should contain the same number of results as there are columns (as defined by {@link #columnNames()}).
-     */
-    protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
-        LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();
-        Function<BenchmarkResult, String> lineSorter = getLineSorter();
-        for (BenchmarkResult result : report.results()) {
-            byLine.computeIfAbsent(lineSorter.apply(result), k -> new ArrayList<>()).add(result);
-        }
-        return new ArrayList<>(byLine.values());
+    public static String getFormattedScore(BenchmarkResult result) {
+        return String.format("%.2f", result.score());
     }
 
     /**
-     * Separate the report into multiple reports if needed (see {@link #splitReport(BenchmarkReport)}).
-     * For each of the split reports, transform it into the associated table (defined depending on the benchmark by the different classes that extend from
-     * this abstract class).
-     * @param report the original report to be transformed into one or more table
-     * @return a map where the key is a name related to the table, and the value is the corresponding table
+     * Format the score of a benchmark result with the associated unit.
+     *
+     * @param result the benchmark result
+     * @return the formatted score with the associated unit
      */
-    public Map<String, String> exportReport(BenchmarkReport report) {
-        List<BenchmarkReport> splitReports = splitReport(report);
-        Map<String, String> reportStrings = new HashMap<>();
-        for (BenchmarkReport partReport : splitReports) {
-            String tableName = getTableName(partReport);
-            StringBuilder tableBuilder = new StringBuilder();
-            String[] columnNames = columnNames();
-            String[][] valuesByLine = valuesByLine(partReport);
-            int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
-            buildHeader(tableBuilder, columnNames, widthByColumn);
-            for (String[] lineValues : valuesByLine) {
-                buildLine(tableBuilder, lineValues, widthByColumn);
-            }
-            reportStrings.put(tableName, tableBuilder.toString());
-        }
-        return reportStrings;
+    public static String getFormattedScoreAndUnit(BenchmarkResult result) {
+        return getFormattedScoreAndUnit(result, DoubleUnaryOperator.identity());
     }
 
     /**
-     * Split a report into multiple reports, each one will get the same header but a different list of {@link org.openjdk.jmh.results.RunResult}.
-     * This is needed for benchmarks that need to display information in multiple tables (for example, when there are 3 or more variables).
-     * If overriding this, also provide different table names for each report with {@link #getTableName(BenchmarkReport)}.
-     * @param report the original report
-     * @return a list of reports, each one of those will get a separate table
+     * Format the score of a benchmark result with the associated unit.
+     *
+     * @param result                     the benchmark result
+     * @param scorePerOperationFormatter an operation to apply on the score before formatting
+     * @return the formatted score with the associated unit
      */
-    protected List<BenchmarkReport> splitReport(BenchmarkReport report) {
-        return Collections.singletonList(report);
+    public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
+        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 
     /**
-     * Return the name of the table to be used for the name of the markdown file.
-     * This is only useful if multiple tables have to be generated from a single starting report.
-     * @param report a part of the original report, which will be serialized to a table
-     * @return the name of the table, which will be put after the benchmark class name
+     * Format the score of a benchmark result with the associated unit.
+     *
+     * @param score the score
+     * @param unit  the unit
+     * @return the formatted score with the associated unit
      */
-    @SuppressWarnings("java:S172")
-    protected String getTableName(BenchmarkReport report) {
-        return "";
+    public static String getFormattedScoreAndUnit(double score, String unit) {
+        return String.format("%.2f %s", score, unit);
     }
 
     private static int[] calculateWidthPerColumn(String[] columnNames, String[][] valuesByLine) {
@@ -128,18 +87,6 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         tableBuilder.append("\n");
     }
 
-    private String[][] valuesByLine(BenchmarkReport report) {
-        List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(report);
-        String[][] valuesByLine = new String[resultsByLine.size()][columnNames().length];
-        for (int i = 0; i < resultsByLine.size(); ++i) {
-            Map<String, String> lineValues = getLine(resultsByLine.get(i));
-            for (int j = 0; j < columnNames().length; ++j) {
-                valuesByLine[i][j] = lineValues.get(columnNames()[j]);
-            }
-        }
-        return valuesByLine;
-    }
-
     private static void buildLine(StringBuilder tableBuilder, String[] lineValues, int[] widthByColumn) {
         tableBuilder.append("|");
         for (int i = 0; i < lineValues.length; ++i) {
@@ -153,40 +100,104 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
     }
 
     /**
-     * Format the score of a benchmark result.
-     * @param result the benchmark result
-     * @return the formatted score
+     * Separate the report into multiple reports if needed (see {@link #splitReport(BenchmarkReport)}).
+     * For each of the split reports, transform it into the associated table (defined depending on the benchmark by the different classes that extend from
+     * this abstract class).
+     *
+     * @param report the original report to be transformed into one or more table
+     * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
-    public static String getFormattedScore(BenchmarkResult result) {
-        return String.format("%.2f", result.score());
+    public Map<String, String> exportReport(BenchmarkReport report) {
+        List<BenchmarkReport> splitReports = splitReport(report);
+        Map<String, String> reportStrings = new HashMap<>();
+        for (BenchmarkReport partReport : splitReports) {
+            String tableName = getTableName(partReport);
+            StringBuilder tableBuilder = new StringBuilder();
+            String[] columnNames = columnNames();
+            String[][] valuesByLine = valuesByLine(partReport);
+            int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
+            buildHeader(tableBuilder, columnNames, widthByColumn);
+            for (String[] lineValues : valuesByLine) {
+                buildLine(tableBuilder, lineValues, widthByColumn);
+            }
+            reportStrings.put(tableName, tableBuilder.toString());
+        }
+        return reportStrings;
     }
 
     /**
-     * Format the score of a benchmark result with the associated unit.
-     * @param result the benchmark result
-     * @return the formatted score with the associated unit
+     * Return the names of the columns to be put in the first line of the Markdown table.
+     *
+     * @return name of columns, each string will correspond to a column
      */
-    public static String getFormattedScoreAndUnit(BenchmarkResult result) {
-        return getFormattedScoreAndUnit(result, DoubleUnaryOperator.identity());
+    protected abstract String[] columnNames();
+
+    /**
+     * Return a map where each key corresponds to a column name, and each value will be displayed in the table at the matching line and column
+     * The returned <code>Map&lt;String, String&gt;</code> should contain the same number of entries as there are columns (and the keys should match)
+     * (as defined by {@link #columnNames()}).
+     * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
+     *
+     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames()}), each value to be displayed on the line at that column
+     */
+    protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
+
+    /**
+     * Define the function that dictates how results should be grouped by line.
+     *
+     * @return a function that says which line of the resulting table a given benchmark result should be in, by providing a string that identifies the line
+     */
+    protected abstract Function<BenchmarkResult, String> getLineSorter();
+
+    /**
+     * Sort all the benchmark results of the report by the relevant information per line.
+     *
+     * @param report the report of a given class
+     * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
+     * and should contain the same number of results as there are columns (as defined by {@link #columnNames()}).
+     */
+    protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
+        LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();
+        Function<BenchmarkResult, String> lineSorter = getLineSorter();
+        for (BenchmarkResult result : report.results()) {
+            byLine.computeIfAbsent(lineSorter.apply(result), k -> new ArrayList<>()).add(result);
+        }
+        return new ArrayList<>(byLine.values());
     }
 
     /**
-     * Format the score of a benchmark result with the associated unit.
-     * @param result the benchmark result
-     * @param scorePerOperationFormatter an operation to apply on the score before formatting
-     * @return the formatted score with the associated unit
+     * Split a report into multiple reports, each one will get the same header but a different list of {@link org.openjdk.jmh.results.RunResult}.
+     * This is needed for benchmarks that need to display information in multiple tables (for example, when there are 3 or more variables).
+     * If overriding this, also provide different table names for each report with {@link #getTableName(BenchmarkReport)}.
+     *
+     * @param report the original report
+     * @return a list of reports, each one of those will get a separate table
      */
-    public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
-        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
+    protected List<BenchmarkReport> splitReport(BenchmarkReport report) {
+        return Collections.singletonList(report);
     }
 
     /**
-     * Format the score of a benchmark result with the associated unit.
-     * @param score the score
-     * @param unit the unit
-     * @return the formatted score with the associated unit
+     * Return the name of the table to be used for the name of the markdown file.
+     * This is only useful if multiple tables have to be generated from a single starting report.
+     *
+     * @param report a part of the original report, which will be serialized to a table
+     * @return the name of the table, which will be put after the benchmark class name
      */
-    public static String getFormattedScoreAndUnit(double score, String unit) {
-        return String.format("%.2f %s", score, unit);
+    @SuppressWarnings("java:S172")
+    protected String getTableName(BenchmarkReport report) {
+        return "";
+    }
+
+    private String[][] valuesByLine(BenchmarkReport report) {
+        List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(report);
+        String[][] valuesByLine = new String[resultsByLine.size()][columnNames().length];
+        for (int i = 0; i < resultsByLine.size(); ++i) {
+            Map<String, String> lineValues = getLine(resultsByLine.get(i));
+            for (int j = 0; j < columnNames().length; ++j) {
+                valuesByLine[i][j] = lineValues.get(columnNames()[j]);
+            }
+        }
+        return valuesByLine;
     }
 }

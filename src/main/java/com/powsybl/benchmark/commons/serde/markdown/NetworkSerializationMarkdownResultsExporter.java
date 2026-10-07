@@ -59,17 +59,6 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
         return BenchmarkResult::benchmarkName;
     }
 
-    private String getPrettyOperationName(String fullOperationName) {
-        String shortName = fullOperationName.substring(fullOperationName.lastIndexOf('.') + 1);
-        return switch (shortName) {
-            case "benchmark1NetworkDeserialization" -> "Deserialization";
-            case "benchmark2NetworkStreamSerialization" -> "Stream Serialization";
-            case "benchmark3NetworkFileSerialization" -> "File Serialization";
-            case "benchmark4NetworkCopy" -> "Copy";
-            default -> shortName;
-        };
-    }
-
     @Override
     protected String getTableName(BenchmarkReport report) {
         return report.results().getFirst().parameters().get("networkName");
@@ -89,6 +78,17 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
                 l
             ))
             .toList();
+    }
+
+    private String getPrettyOperationName(String fullOperationName) {
+        String shortName = fullOperationName.substring(fullOperationName.lastIndexOf('.') + 1);
+        return switch (shortName) {
+            case "benchmark1NetworkDeserialization" -> "Deserialization";
+            case "benchmark2NetworkStreamSerialization" -> "Stream Serialization";
+            case "benchmark3NetworkFileSerialization" -> "File Serialization";
+            case "benchmark4NetworkCopy" -> "Copy";
+            default -> shortName;
+        };
     }
 
     private String getPrettyColumnName(String format) {

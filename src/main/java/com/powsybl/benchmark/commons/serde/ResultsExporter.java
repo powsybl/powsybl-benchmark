@@ -22,8 +22,6 @@ import java.util.*;
  */
 public interface ResultsExporter {
 
-    boolean isBenchmarkClassSupported(String benchmarkClass);
-
     static Collection<ResultsExporter> list(ResultsExportersLoader resultsExportersLoader) {
         Objects.requireNonNull(resultsExportersLoader);
         return resultsExportersLoader.loadExporters();
@@ -40,9 +38,10 @@ public interface ResultsExporter {
 
     /**
      * Serialize a benchmark report into one or more tables, and write them to one or more Markdown file.
-     * @param report the benchmark report
+     *
+     * @param report        the benchmark report
      * @param directoryPath path to the directory where the Markdown files will be written.
-     *                 If multiple tables are generated, the path to each table will be <code>filePath/benchmarkName_tableName.md</code>
+     *                      If multiple tables are generated, the path to each table will be <code>filePath/benchmarkName_tableName.md</code>
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
     static boolean export(BenchmarkReport report, Path directoryPath) throws IOException {
@@ -66,7 +65,8 @@ public interface ResultsExporter {
 
     /**
      * Group all {@link RunResult} into reports, then exportAll them in tables written to markdown files.
-     * @param results all the run results to exportAll
+     *
+     * @param results       all the run results to exportAll
      * @param directoryPath path to the directory where the Markdown files will be written
      * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
      * @see #export(BenchmarkReport, Path)
@@ -82,6 +82,8 @@ public interface ResultsExporter {
             throw new PowsyblException("No results exporter found for benchmark classes: " + String.join(", ", failedExports));
         }
     }
+
+    boolean isBenchmarkClassSupported(String benchmarkClass);
 
     Map<String, String> exportReport(BenchmarkReport report);
 }

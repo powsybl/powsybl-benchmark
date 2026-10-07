@@ -22,12 +22,6 @@ import java.util.function.Function;
 public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("XmxSecurityAnalysisBenchmark");
-
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
-    }
-
     private static final String[] XMX_VALUES = {
         "128M",
         "256M",
@@ -39,8 +33,12 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
         "Undefined"
     };
     private static final String XMX_KEY = "XmX value";
-
     private int xmxIndex = 0;
+
+    @Override
+    public boolean isBenchmarkClassSupported(String benchmarkClass) {
+        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    }
 
     @Override
     protected String[] columnNames() {

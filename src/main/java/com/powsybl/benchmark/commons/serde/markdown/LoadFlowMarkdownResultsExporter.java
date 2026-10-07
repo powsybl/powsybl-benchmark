@@ -31,7 +31,7 @@ public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownRe
 
     @Override
     protected String[] columnNames() {
-        return new String[]{
+        return new String[] {
             "Network",
             "Basic parameters",
             "Standard parameters",

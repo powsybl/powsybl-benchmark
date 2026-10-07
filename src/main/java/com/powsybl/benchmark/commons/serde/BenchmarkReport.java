@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Results of all benchmarks for a given class. This aggregates all the BenchmarkResult of each benchmarked function
  * in that class.
+ *
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public record BenchmarkReport(
@@ -39,6 +40,14 @@ public record BenchmarkReport(
         );
     }
 
+    public static List<BenchmarkReport> buildAllReports(Collection<RunResult> runResults) {
+        return runResults.stream()
+            .collect(Collectors.groupingBy(BenchmarkReport::getClassOfBenchmark))
+            .entrySet().stream()
+            .map(e -> new BenchmarkReport(e.getKey(), e.getValue()))
+            .toList();
+    }
+
     private static String getClassOfBenchmark(RunResult runResult) {
         String bench = runResult.getParams().getBenchmark();
         String nameSplitter = "\\.";
@@ -46,13 +55,5 @@ public record BenchmarkReport(
         //bench is com.powsybl.something.ClassName.BenchName
         //to get the class name, it's the second-to-last part
         return parts[parts.length - 2];
-    }
-
-    public static List<BenchmarkReport> buildAllReports(Collection<RunResult> runResults) {
-        return runResults.stream()
-            .collect(Collectors.groupingBy(BenchmarkReport::getClassOfBenchmark))
-            .entrySet().stream()
-            .map(e -> new BenchmarkReport(e.getKey(), e.getValue()))
-            .toList();
     }
 }

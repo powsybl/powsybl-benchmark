@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
  * Make some code common between different multi-thread benchmark reports.
  * This is done instead of an abstract class because some multi-thread benchmarks are {@link AbstractByNetworkMarkdownResultsExporter}
  * whereas some are {@link AbstractMarkdownResultsExporter}
+ *
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public final class MultiThreadUtil {
@@ -40,7 +41,7 @@ public final class MultiThreadUtil {
 
     public static Map<Integer, BenchmarkResult> getTimePerThread(List<BenchmarkResult> results) {
         return results.stream()
-           .collect(Collectors.toMap(MultiThreadUtil::getThreadCount, Function.identity()));
+            .collect(Collectors.toMap(MultiThreadUtil::getThreadCount, Function.identity()));
     }
 
     public static double getOneThreadTime(Map<Integer, BenchmarkResult> timePerThread) {
