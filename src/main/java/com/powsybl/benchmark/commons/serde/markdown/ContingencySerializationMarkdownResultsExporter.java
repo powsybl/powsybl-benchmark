@@ -30,7 +30,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
 
     @Override
     protected String[] columnNames() {
-        return new String[]{
+        return new String[] {
             "Benchmark Operation",
             "Time (ms/op)"
         };
