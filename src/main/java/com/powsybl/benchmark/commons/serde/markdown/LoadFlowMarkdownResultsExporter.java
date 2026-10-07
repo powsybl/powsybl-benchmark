@@ -13,6 +13,7 @@ import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,11 @@ import java.util.Map;
 public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownResultsExporter {
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("LoadFlowBenchmark");
+    private static final Map<LoadFlowParametersType, String> LOAD_FLOW_PARAMETERS_TYPE_COLUMN_NAMES = Map.of(
+        LoadFlowParametersType.BASIC, "Basic parameters",
+        LoadFlowParametersType.STANDARD, "Standard parameters",
+        LoadFlowParametersType.STANDARD_REACTIVE_LIMITS_NOT_USED, "Standard parameters <br/>with reactive limits not used"
+    );
 
     @Override
     public boolean isBenchmarkClassSupported(String benchmarkClass) {
@@ -30,31 +36,22 @@ public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownRe
     }
 
     @Override
-    protected String[] columnNames() {
-        return new String[] {
-            "Network",
-            "Basic parameters",
-            "Standard parameters",
-            "Standard parameters <br/>with reactive limits not used"
-        };
-
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
+        String[] columnNames = new String[resultsForNetwork.size() + 1];
+        columnNames[0] = "Network";
+        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + 1] = getPrettyColumnName(result));
+        return columnNames;
     }
 
     @Override
     protected Map<String, String> getLine(List<BenchmarkResult> resultsForNetwork) {
-        return Map.of(
-            "Network", Constants.getPrettyNetworkName(resultsForNetwork.get(0).parameters().get("networkName")),
-            getPrettyColumnName(resultsForNetwork.get(0)), getFormattedScoreAndUnit(resultsForNetwork.get(0)),
-            getPrettyColumnName(resultsForNetwork.get(1)), getFormattedScoreAndUnit(resultsForNetwork.get(1)),
-            getPrettyColumnName(resultsForNetwork.get(2)), getFormattedScoreAndUnit(resultsForNetwork.get(2))
-        );
+        Map<String, String> line = new HashMap<>(resultsForNetwork.size() + 1, 1);
+        line.put("Network", Constants.getPrettyNetworkName(resultsForNetwork.getFirst().parameters().get("networkName")));
+        resultsForNetwork.forEach(result -> line.put(getPrettyColumnName(result), getFormattedScoreAndUnit(result)));
+        return line;
     }
 
-    private String getPrettyColumnName(BenchmarkResult benchmarkResult) {
-        return switch (LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type"))) {
-            case BASIC -> "Basic parameters";
-            case STANDARD -> "Standard parameters";
-            case STANDARD_REACTIVE_LIMITS_NOT_USED -> "Standard parameters <br/>with reactive limits not used";
-        };
+    protected String getPrettyColumnName(BenchmarkResult benchmarkResult) {
+        return LOAD_FLOW_PARAMETERS_TYPE_COLUMN_NAMES.get(LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type")));
     }
 }

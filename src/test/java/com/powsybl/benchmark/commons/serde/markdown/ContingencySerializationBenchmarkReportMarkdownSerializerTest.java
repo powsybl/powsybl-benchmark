@@ -7,13 +7,14 @@
  */
 package com.powsybl.benchmark.commons.serde.markdown;
 
-import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResult;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -26,12 +27,12 @@ class ContingencySerializationBenchmarkReportMarkdownSerializerTest extends Abst
         String baseName = "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.";
 
         List<RunResult> runResults = List.of(
-            BenchmarkTestUtils.mockRunResult(baseName + "benchmark1Parsing", Map.of(), 1.0),
-            BenchmarkTestUtils.mockRunResult(baseName + "benchmark2ParsingFromBytes", Map.of(), 2.0),
-            BenchmarkTestUtils.mockRunResult(baseName + "benchmark3JustReading", Map.of(), 3.0),
-            BenchmarkTestUtils.mockRunResult(baseName + "benchmark4ReadingToString", Map.of(), 4.0),
-            BenchmarkTestUtils.mockRunResult(baseName + "benchmark5Writing", Map.of(), 5.0),
-            BenchmarkTestUtils.mockRunResult(baseName + "benchmark6BufferedWriting", Map.of(), 6.0)
+            mockRunResult(baseName + "benchmark1Parsing", Map.of(), 1.0),
+            mockRunResult(baseName + "benchmark2ParsingFromBytes", Map.of(), 2.0),
+            mockRunResult(baseName + "benchmark3JustReading", Map.of(), 3.0),
+            mockRunResult(baseName + "benchmark4ReadingToString", Map.of(), 4.0),
+            mockRunResult(baseName + "benchmark5Writing", Map.of(), 5.0),
+            mockRunResult(baseName + "benchmark6BufferedWriting", Map.of(), 6.0)
         );
 
         testReportToString(benchClass, runResults, "/contingency-serialization-report.md");

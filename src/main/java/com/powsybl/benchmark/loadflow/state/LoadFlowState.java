@@ -21,7 +21,7 @@ import static com.powsybl.benchmark.commons.Constants.*;
 @State(Scope.Thread)
 public class LoadFlowState extends AbstractLoadFlowState {
 
-    @Param({IEEE_14, IEEE_118})
+    @Param({IEEE_14, IEEE_118, IEEE_300, RTE_1888, RTE_6515, REAL_GRID})
     private String networkName;
 
     @Param

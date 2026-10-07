@@ -41,7 +41,7 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
     }
 
     @Override
-    protected String[] columnNames() {
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
         return MultiThreadUtil.columnNames(XMX_KEY);
     }
 
@@ -60,7 +60,7 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
                 XMX_KEY,
                 r -> getLineSorter().apply(r.getFirst()));
         }
-        for (String columnName : columnNames()) {
+        for (String columnName : columnNames(results)) {
             line.putIfAbsent(columnName, "Failed");
         }
         return line;
