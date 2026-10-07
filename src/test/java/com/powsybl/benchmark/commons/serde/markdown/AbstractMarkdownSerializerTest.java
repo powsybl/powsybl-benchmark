@@ -8,8 +8,8 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
-import com.powsybl.benchmark.commons.serde.BenchmarkReportMarkdownSerializer;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
+import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
 
@@ -36,7 +36,7 @@ public abstract class AbstractMarkdownSerializerTest {
 
     protected void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        BenchmarkReportMarkdownSerializer.serialize(report, tempDir);
+        ResultsExporter.export(report, tempDir);
 
         String actual = Files.readString(tempDir.resolve(generatedFileName), StandardCharsets.UTF_8)
             .replace("\r\n", "\n");

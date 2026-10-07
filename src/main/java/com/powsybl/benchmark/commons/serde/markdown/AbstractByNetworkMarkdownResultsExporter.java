@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public abstract class AbstractByNetworkBenchmarkReportMarkdownSerializer extends AbstractBenchmarkReportMarkdownSerializer {
+public abstract class AbstractByNetworkMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
 
     @Override
     protected Function<BenchmarkResult, String> getLineSorter() {

@@ -9,6 +9,7 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+import com.powsybl.benchmark.commons.serde.ResultsExporter;
 
 import java.util.*;
 import java.util.function.DoubleUnaryOperator;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public abstract class AbstractBenchmarkReportMarkdownSerializer {
+public abstract class AbstractMarkdownResultsExporter implements ResultsExporter {
 
     /**
      * Return the names of the columns to be put in the first line of the Markdown table.
@@ -62,7 +63,7 @@ public abstract class AbstractBenchmarkReportMarkdownSerializer {
      * @param report the original report to be transformed into one or more table
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
-    public Map<String, String> reportToStrings(BenchmarkReport report) {
+    public Map<String, String> exportReport(BenchmarkReport report) {
         List<BenchmarkReport> splitReports = splitReport(report);
         Map<String, String> reportStrings = new HashMap<>();
         for (BenchmarkReport partReport : splitReports) {

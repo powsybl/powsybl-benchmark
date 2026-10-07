@@ -5,10 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.commons.serde.markdown.serialization;
+package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import com.powsybl.benchmark.commons.serde.markdown.AbstractMarkdownSerializerTest;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
