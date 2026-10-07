@@ -11,7 +11,6 @@ import com.google.auto.service.AutoService;
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
-import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.util.function.ToIntFunction;
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 @AutoService(ResultsExporter.class)
-public class ContingenciesMarkdownResultsExporter extends AbstractByNetworkMarkdownResultsExporter {
+public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResultsExporter {
 
     private static final List<String> BENCHMARKS_CLASSES = List.of(
         "MonoThreadSecurityAnalysisBenchmark",
@@ -34,14 +33,12 @@ public class ContingenciesMarkdownResultsExporter extends AbstractByNetworkMarkd
     }
 
     @Override
-    protected String[] columnNames() {
-        return new String[] {
-            "Network",
-            "Contingencies",
-            "Basic parameters",
-            "Standard parameters",
-            "Standard parameters <br/>with reactive limits not used"
-        };
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
+        String[] columnNames = new String[resultsForNetwork.size() + 2];
+        columnNames[0] = "Network";
+        columnNames[1] = "Contingencies";
+        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + 2] = getPrettyColumnName(result));
+        return columnNames;
     }
 
     @Override
@@ -63,13 +60,5 @@ public class ContingenciesMarkdownResultsExporter extends AbstractByNetworkMarkd
         } else {
             throw new IllegalStateException("All results for a given network must have the same number of contingencies");
         }
-    }
-
-    private String getPrettyColumnName(BenchmarkResult benchmarkResult) {
-        return switch (LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type"))) {
-            case BASIC -> "Basic parameters";
-            case STANDARD -> "Standard parameters";
-            case STANDARD_REACTIVE_LIMITS_NOT_USED -> "Standard parameters <br/>with reactive limits not used";
-        };
     }
 }

@@ -27,7 +27,19 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * @return the formatted score
      */
     public static String getFormattedScore(BenchmarkResult result) {
-        return String.format("%.2f", result.score());
+        return getFormattedScore(result, 2);
+    }
+
+    /**
+     * Format the score of a benchmark result.
+     *
+     * @param result the benchmark result
+     * @param decimals the number of decimals to keep
+     * @return the formatted score
+     */
+    public static String getFormattedScore(BenchmarkResult result, int decimals) {
+        String format = "%." + decimals + "f";
+        return String.format(format, result.score());
     }
 
     /**
@@ -37,7 +49,18 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * @return the formatted score with the associated unit
      */
     public static String getFormattedScoreAndUnit(BenchmarkResult result) {
-        return getFormattedScoreAndUnit(result, DoubleUnaryOperator.identity());
+        return getFormattedScoreAndUnit(result, 2);
+    }
+
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     *
+     * @param result the benchmark result
+     * @param decimals the number of decimals to keep
+     * @return the formatted score with the associated unit
+     */
+    public static String getFormattedScoreAndUnit(BenchmarkResult result, int decimals) {
+        return getFormattedScoreAndUnit(result, DoubleUnaryOperator.identity(), decimals);
     }
 
     /**
@@ -48,7 +71,21 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * @return the formatted score with the associated unit
      */
     public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter) {
-        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
+        return getFormattedScoreAndUnit(result, scorePerOperationFormatter, 2);
+    }
+
+    /**
+     * Format the score of a benchmark result with the associated unit.
+     *
+     * @param result                     the benchmark result
+     * @param scorePerOperationFormatter an operation to apply on the score before formatting
+     * @param decimals the number of decimals to keep
+     * @return the formatted score with the associated unit
+     */
+    public static String getFormattedScoreAndUnit(BenchmarkResult result, DoubleUnaryOperator scorePerOperationFormatter,
+                                                  int decimals) {
+        String format = "%." + decimals + "f %s";
+        return String.format(format, scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 
     /**
@@ -111,11 +148,23 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         List<BenchmarkReport> splitReports = splitReport(report);
         Map<String, String> reportStrings = new HashMap<>();
         for (BenchmarkReport partReport : splitReports) {
+            // Get the results grouped by line, each line will be a row in the table
+            List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(partReport);
+
+            // Initiate the table
             String tableName = getTableName(partReport);
             StringBuilder tableBuilder = new StringBuilder();
-            String[] columnNames = columnNames();
-            String[][] valuesByLine = valuesByLine(partReport);
+
+            // Get the column names from the first line of results, assuming all lines have the same columns
+            String[] columnNames = columnNames(resultsByLine.getFirst());
+
+            // Get the values for each line in the table
+            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames);
+
+            // Calculate the width of each column based on the column names and the values in each line
             int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
+
+            // Build the table and add it to the report strings map
             buildHeader(tableBuilder, columnNames, widthByColumn);
             for (String[] lineValues : valuesByLine) {
                 buildLine(tableBuilder, lineValues, widthByColumn);
@@ -130,15 +179,16 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      *
      * @return name of columns, each string will correspond to a column
      */
-    protected abstract String[] columnNames();
+    protected abstract String[] columnNames(List<BenchmarkResult> results);
 
     /**
      * Return a map where each key corresponds to a column name, and each value will be displayed in the table at the matching line and column
      * The returned <code>Map&lt;String, String&gt;</code> should contain the same number of entries as there are columns (and the keys should match)
-     * (as defined by {@link #columnNames()}).
+     * (as defined by {@link #columnNames(List<BenchmarkResult>)}).
      * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
      *
-     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames()}), each value to be displayed on the line at that column
+     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames(List<BenchmarkResult>)}),
+     * each value to be displayed on the line at that column
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
 
@@ -154,7 +204,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      *
      * @param report the report of a given class
      * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
-     * and should contain the same number of results as there are columns (as defined by {@link #columnNames()}).
+     * and should contain the same number of results as there are columns (as defined by {@link #columnNames(List<BenchmarkResult>)}).
      */
     protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
         LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();
@@ -189,13 +239,12 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return "";
     }
 
-    private String[][] valuesByLine(BenchmarkReport report) {
-        List<List<BenchmarkResult>> resultsByLine = getResultsByTableLine(report);
-        String[][] valuesByLine = new String[resultsByLine.size()][columnNames().length];
+    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames) {
+        String[][] valuesByLine = new String[resultsByLine.size()][columnNames.length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
             Map<String, String> lineValues = getLine(resultsByLine.get(i));
-            for (int j = 0; j < columnNames().length; ++j) {
-                valuesByLine[i][j] = lineValues.get(columnNames()[j]);
+            for (int j = 0; j < columnNames.length; ++j) {
+                valuesByLine[i][j] = lineValues.get(columnNames[j]);
             }
         }
         return valuesByLine;

@@ -29,7 +29,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
     }
 
     @Override
-    protected String[] columnNames() {
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
         return new String[] {
             "Benchmark Operation",
             "Time (ms/op)"
@@ -40,7 +40,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
     protected Map<String, String> getLine(List<BenchmarkResult> results) {
         return Map.of(
             "Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()),
-            "Time (ms/op)", getFormattedScore(results.getFirst())
+            "Time (ms/op)", getFormattedScore(results.getFirst(), 3)
         );
     }
 

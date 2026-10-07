@@ -29,7 +29,7 @@ public class MultiThreadSecurityAnalysisMarkdownResultsExporter extends Abstract
     }
 
     @Override
-    protected String[] columnNames() {
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
         return MultiThreadUtil.columnNames("Network");
     }
 

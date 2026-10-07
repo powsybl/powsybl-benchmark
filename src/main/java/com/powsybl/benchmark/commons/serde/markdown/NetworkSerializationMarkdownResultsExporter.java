@@ -25,6 +25,11 @@ import java.util.stream.Collectors;
 public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("NetworkSerializationBenchmark");
+    private static final Map<String, String> FORMAT_COLUMN_NAMES = Map.of(
+        "XIIDM", "XML (XIIDM)",
+        "JIIDM", "JSON (JIIDM)",
+        "BIIDM", "Binary (BIIDM)"
+    );
 
     @Override
     public boolean isBenchmarkClassSupported(String benchmarkClass) {
@@ -32,22 +37,19 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
     }
 
     @Override
-    protected String[] columnNames() {
-        return new String[] {
-            "Benchmark Operation",
-            "XML (XIIDM)",
-            "JSON (JIIDM)",
-            "Binary (BIIDM)",
-            "CGMES"
-        };
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
+        String[] columnNames = new String[resultsForNetwork.size() + 1];
+        columnNames[0] = "Benchmark Operation";
+        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + 1] = getPrettyColumnName(result));
+        return columnNames;
     }
 
     @Override
     protected Map<String, String> getLine(List<BenchmarkResult> results) {
-        Map<String, String> line = new HashMap<>(columnNames().length, 1);
+        Map<String, String> line = new HashMap<>(results.size() + 1, 1);
         line.put("Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()));
         for (BenchmarkResult result : results) {
-            line.put(getPrettyColumnName(result.parameters().get("format")), getFormattedScore(result));
+            line.put(getPrettyColumnName(result), getFormattedScore(result));
         }
         //missing CGMES case
         line.putIfAbsent("CGMES", "—");
@@ -91,12 +93,9 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
         };
     }
 
-    private String getPrettyColumnName(String format) {
-        return switch (format) {
-            case "XIIDM" -> "XML (XIIDM)";
-            case "JIIDM" -> "JSON (JIIDM)";
-            case "BIIDM" -> "Binary (BIIDM)";
-            default -> format;
-        };
+    private String getPrettyColumnName(BenchmarkResult benchmarkResult) {
+        return FORMAT_COLUMN_NAMES.getOrDefault(
+            benchmarkResult.parameters().get("format"),
+            benchmarkResult.parameters().get("format"));
     }
 }
