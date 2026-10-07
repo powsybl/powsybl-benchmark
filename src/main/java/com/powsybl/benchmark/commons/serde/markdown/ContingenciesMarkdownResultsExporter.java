@@ -7,8 +7,10 @@
  */
 package com.powsybl.benchmark.commons.serde.markdown;
 
+import com.google.auto.service.AutoService;
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 
 import java.util.List;
@@ -19,7 +21,18 @@ import java.util.function.ToIntFunction;
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public class ContingenciesBenchmarkReportMarkdownSerializer extends AbstractByNetworkBenchmarkReportMarkdownSerializer {
+@AutoService(ResultsExporter.class)
+public class ContingenciesMarkdownResultsExporter extends AbstractByNetworkMarkdownResultsExporter {
+
+    private static final List<String> BENCHMARKS_CLASSES = List.of(
+        "MonoThreadSecurityAnalysisBenchmark",
+        "SensitivityAnalysisBenchmark");
+
+    @Override
+    public boolean isBenchmarkClassSupported(String benchmarkClass) {
+        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    }
+
     @Override
     protected String[] columnNames() {
         return new String[]{

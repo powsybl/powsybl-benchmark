@@ -10,7 +10,7 @@ package com.powsybl.benchmark;
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
-import com.powsybl.benchmark.commons.serde.BenchmarkReportMarkdownSerializer;
+import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -39,10 +39,10 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
     private boolean listBenchmarks = false;
 
-    @CommandLine.Option(names = "--no-serde", description = "Do not serialize benchmark results", defaultValue = "false")
+    @CommandLine.Option(names = "--no-serde", description = "Do not exportAll benchmark results", defaultValue = "false")
     private boolean noSerde = false;
 
-    @CommandLine.Option(names = "--serde-path", description = "Where to serialize benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
@@ -90,7 +90,7 @@ public final class BenchmarkRunner implements Runnable {
                 if (!noSerde) {
                     Path benchmarkOutputPath = Path.of(serdePath);
                     BenchmarkReportJsonSerDe.writeAll(results, benchmarkOutputPath);
-                    BenchmarkReportMarkdownSerializer.serialize(results, benchmarkOutputPath);
+                    ResultsExporter.exportAll(results, benchmarkOutputPath);
                 }
             } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);

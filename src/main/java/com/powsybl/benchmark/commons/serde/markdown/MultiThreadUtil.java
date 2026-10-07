@@ -5,11 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.commons.serde.markdown.security;
+package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
-import com.powsybl.benchmark.commons.serde.markdown.AbstractBenchmarkReportMarkdownSerializer;
-import com.powsybl.benchmark.commons.serde.markdown.AbstractByNetworkBenchmarkReportMarkdownSerializer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +18,8 @@ import java.util.stream.Collectors;
 
 /**
  * Make some code common between different multi-thread benchmark reports.
- * This is done instead of an abstract class because some multi-thread benchmarks are {@link AbstractByNetworkBenchmarkReportMarkdownSerializer}
- * whereas some are {@link AbstractBenchmarkReportMarkdownSerializer}
+ * This is done instead of an abstract class because some multi-thread benchmarks are {@link AbstractByNetworkMarkdownResultsExporter}
+ * whereas some are {@link AbstractMarkdownResultsExporter}
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public final class MultiThreadUtil {
@@ -76,7 +74,7 @@ public final class MultiThreadUtil {
     }
 
     public static String getFormattedScoreAndEffectiveness(BenchmarkResult result, double timeOneThread, int threadCount) {
-        return AbstractBenchmarkReportMarkdownSerializer.getFormattedScoreAndUnit(result) + getFormattedParallelizationEfficiency(result, timeOneThread, threadCount);
+        return AbstractMarkdownResultsExporter.getFormattedScoreAndUnit(result) + getFormattedParallelizationEfficiency(result, timeOneThread, threadCount);
     }
 
     public static String getFormattedParallelizationEfficiency(BenchmarkResult result, double timeOneThread, int threadCount) {
@@ -84,7 +82,7 @@ public final class MultiThreadUtil {
     }
 
     public static String getFormattedScoreAndEffectiveness(Map.Entry<Integer, BenchmarkResult> threadEntry, double timeOneThread) {
-        return AbstractBenchmarkReportMarkdownSerializer.getFormattedScoreAndUnit(threadEntry.getValue())
+        return AbstractMarkdownResultsExporter.getFormattedScoreAndUnit(threadEntry.getValue())
             + getFormattedParallelizationEfficiency(threadEntry.getValue(), timeOneThread, threadEntry.getKey());
     }
 }
