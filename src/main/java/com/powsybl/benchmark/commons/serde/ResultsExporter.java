@@ -43,6 +43,7 @@ public interface ResultsExporter {
      * @param report        the benchmark report
      * @param directoryPath path to the directory where the Markdown files will be written.
      *                      If multiple tables are generated, the path to each table will be <code>filePath/benchmarkName_tableName.md</code>
+     * @return true if the report was successfully exported, false otherwise
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
     static boolean export(BenchmarkReport report, Path directoryPath) throws IOException {

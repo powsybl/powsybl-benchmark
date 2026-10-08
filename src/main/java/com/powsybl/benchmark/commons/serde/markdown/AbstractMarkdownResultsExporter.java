@@ -88,17 +88,6 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return String.format(format, scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 
-    /**
-     * Format the score of a benchmark result with the associated unit.
-     *
-     * @param score the score
-     * @param unit  the unit
-     * @return the formatted score with the associated unit
-     */
-    public static String getFormattedScoreAndUnit(double score, String unit) {
-        return String.format("%.2f %s", score, unit);
-    }
-
     private static int[] calculateWidthPerColumn(String[] columnNames, String[][] valuesByLine) {
         int[] widthByColumn = new int[columnNames.length];
         for (int i = 0; i < columnNames.length; ++i) {
@@ -114,6 +103,14 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return widthByColumn;
     }
 
+    /**
+     * Builds a Markdown table header by appending the column names and a separating line
+     * to the provided StringBuilder.
+     *
+     * @param tableBuilder   the StringBuilder used to construct the table, where the header will be appended
+     * @param columnNames    an array of strings representing the names of the columns to include in the header
+     * @param widthByColumn  an array of integers representing the width of each column, used to align the content
+     */
     private static void buildHeader(StringBuilder tableBuilder, String[] columnNames, int[] widthByColumn) {
         buildLine(tableBuilder, columnNames, widthByColumn);
         for (int width : widthByColumn) {
@@ -124,6 +121,14 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         tableBuilder.append("\n");
     }
 
+    /**
+     * Builds a line of a Markdown table by appending the provided line values,
+     * appropriately aligned as per the specified column widths, to the given StringBuilder.
+     *
+     * @param tableBuilder   the StringBuilder used to construct the table, where the line will be appended
+     * @param lineValues     an array of strings representing the values to include in this line of the table
+     * @param widthByColumn  an array of integers representing the width of each column, used to align the content
+     */
     private static void buildLine(StringBuilder tableBuilder, String[] lineValues, int[] widthByColumn) {
         tableBuilder.append("|");
         for (int i = 0; i < lineValues.length; ++i) {
