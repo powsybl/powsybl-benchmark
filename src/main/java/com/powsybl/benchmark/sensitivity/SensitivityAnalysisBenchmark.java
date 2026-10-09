@@ -40,8 +40,7 @@ public class SensitivityAnalysisBenchmark {
     public void benchmarkSensitivityAnalysis(Blackhole blackhole,
                                              SensitivityAnalysisState sensitivityAnalysisState,
                                              ContingenciesCounter contingenciesCounter) {
-        //TODO this is technically very short compared to the sensi benchmark, but is there a way to do that in the setup ?
-        contingenciesCounter.numberOfContingencies = sensitivityAnalysisState.getNumberOfContingencies();
+        contingenciesCounter.setNumberOfContingencies(sensitivityAnalysisState.getNumberOfContingencies());
         SensitivityAnalysisResult result = SensitivityAnalysis.find(sensitivityAnalysisState.getProvider())
             .run(sensitivityAnalysisState.getNetwork(),
                 sensitivityAnalysisState.getFactors(),
