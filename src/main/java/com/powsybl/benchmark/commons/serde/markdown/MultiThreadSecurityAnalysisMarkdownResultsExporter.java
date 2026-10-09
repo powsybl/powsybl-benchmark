@@ -23,9 +23,8 @@ public class MultiThreadSecurityAnalysisMarkdownResultsExporter extends Abstract
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("MultiThreadSecurityAnalysisBenchmark");
 
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    public MultiThreadSecurityAnalysisMarkdownResultsExporter() {
+        super(BENCHMARKS_CLASSES);
     }
 
     @Override

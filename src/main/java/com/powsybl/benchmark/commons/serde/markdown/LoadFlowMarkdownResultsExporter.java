@@ -30,17 +30,17 @@ public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownRe
         LoadFlowParametersType.STANDARD_REACTIVE_LIMITS_NOT_USED, "Standard parameters <br/>with reactive limits not used"
     );
 
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    public LoadFlowMarkdownResultsExporter() {
+        super(BENCHMARKS_CLASSES);
+    }
+
+    public LoadFlowMarkdownResultsExporter(List<String> supportedBenchmarkClasses) {
+        super(supportedBenchmarkClasses);
     }
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        String[] columnNames = new String[resultsForNetwork.size() + 1];
-        columnNames[0] = "Network";
-        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + 1] = getPrettyColumnName(result));
-        return columnNames;
+        return getColumnNamesWithFirstColumnsAndPrettyColumns(resultsForNetwork, this::getPrettyColumnName, "Network");
     }
 
     @Override

@@ -31,17 +31,13 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
         "BIIDM", "Binary (BIIDM)"
     );
 
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    public NetworkSerializationMarkdownResultsExporter() {
+        super(BENCHMARKS_CLASSES);
     }
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        String[] columnNames = new String[resultsForNetwork.size() + 1];
-        columnNames[0] = "Benchmark Operation";
-        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + 1] = getPrettyColumnName(result));
-        return columnNames;
+        return getColumnNamesWithFirstColumnsAndPrettyColumns(resultsForNetwork, this::getPrettyColumnName, "Benchmark Operation");
     }
 
     @Override

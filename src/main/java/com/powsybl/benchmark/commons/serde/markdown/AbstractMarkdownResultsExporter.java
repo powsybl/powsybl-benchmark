@@ -20,6 +20,12 @@ import java.util.function.Function;
  */
 public abstract class AbstractMarkdownResultsExporter implements ResultsExporter {
 
+    private final List<String> supportedBenchmarkClasses;
+
+    protected AbstractMarkdownResultsExporter(List<String> supportedBenchmarkClasses) {
+        this.supportedBenchmarkClasses = supportedBenchmarkClasses;
+    }
+
     /**
      * Format the score of a benchmark result.
      *
@@ -86,6 +92,13 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
                                                   int decimals) {
         String format = "%." + decimals + "f %s";
         return String.format(format, scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
+    }
+
+    protected static String[] getColumnNamesWithFirstColumnsAndPrettyColumns(List<BenchmarkResult> resultsForNetwork, Function<BenchmarkResult, String> provider, String... firstColumnNames) {
+        String[] columnNames = new String[resultsForNetwork.size() + firstColumnNames.length];
+        System.arraycopy(firstColumnNames, 0, columnNames, 0, firstColumnNames.length);
+        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + firstColumnNames.length] = provider.apply(result));
+        return columnNames;
     }
 
     private static int[] calculateWidthPerColumn(String[] columnNames, String[][] valuesByLine) {
@@ -177,6 +190,11 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             reportStrings.put(tableName, tableBuilder.toString());
         }
         return reportStrings;
+    }
+
+    @Override
+    public boolean isBenchmarkClassSupported(String benchmarkClass) {
+        return supportedBenchmarkClasses.contains(benchmarkClass);
     }
 
     /**

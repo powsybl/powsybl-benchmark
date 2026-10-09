@@ -35,9 +35,8 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
     private static final String XMX_KEY = "XmX value";
     private int xmxIndex = 0;
 
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    public XmxSecurityAnalysisMarkdownResultsExporter() {
+        super(BENCHMARKS_CLASSES);
     }
 
     @Override
