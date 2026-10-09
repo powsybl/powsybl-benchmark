@@ -246,10 +246,10 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
     /**
      * Return a map where each key corresponds to a column name, and each value will be displayed in the table at the matching line and column
      * The returned <code>Map&lt;String, String&gt;</code> should contain the same number of entries as there are columns (and the keys should match)
-     * (as defined by {@link #columnNames(List<BenchmarkResult>)}).
+     * (as defined by {@link #columnNames(List)}).
      * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
      *
-     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames(List<BenchmarkResult>)}),
+     * @return a Map of strings, each key is a column name (as defined by {@link #columnNames(List)}),
      * each value to be displayed on the line at that column
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
@@ -268,7 +268,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      *
      * @param report the report of a given class
      * @return the benchmark results grouped in lists, each sub-list is grouped according to a criteria
-     * and should contain the same number of results as there are columns (as defined by {@link #columnNames(List<BenchmarkResult>)}).
+     * and should contain the same number of results as there are columns (as defined by {@link #columnNames(List)}).
      */
     protected List<List<BenchmarkResult>> getResultsByTableLine(BenchmarkReport report) {
         LinkedHashMap<String, List<BenchmarkResult>> byLine = new LinkedHashMap<>();

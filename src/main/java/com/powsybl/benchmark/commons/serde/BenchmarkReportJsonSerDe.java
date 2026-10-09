@@ -74,7 +74,12 @@ public final class BenchmarkReportJsonSerDe {
     public static List<BenchmarkReport> readReports(Path... inputPaths) throws IOException {
         List<BenchmarkReport> reports = new ArrayList<>();
         for (Path path : inputPaths) {
-            reports.add(readReport(path));
+            try {
+                BenchmarkReport report = MAPPER.readValue(path.toFile(), BenchmarkReport.class);
+                reports.add(report);
+            } catch (IOException e) {
+                throw new IOException("Failed to read benchmark report from " + path, e);
+            }
         }
         return reports;
     }

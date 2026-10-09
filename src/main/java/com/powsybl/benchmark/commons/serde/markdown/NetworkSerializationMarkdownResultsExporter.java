@@ -53,6 +53,11 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
     }
 
     @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return Map.of();
+    }
+
+    @Override
     protected Function<BenchmarkResult, String> getLineSorter() {
         return BenchmarkResult::benchmarkName;
     }

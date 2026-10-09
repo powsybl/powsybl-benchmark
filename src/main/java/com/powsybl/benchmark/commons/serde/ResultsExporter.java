@@ -46,6 +46,20 @@ public interface ResultsExporter {
      * @return true if the report was successfully exported, false otherwise
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
+    static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath) throws IOException {
+        return export(report, markdownDirectoryOutputPath, null);
+    }
+
+    /**
+     * Serialize a benchmark report into one or more tables, and write them to one or more Markdown file.
+     *
+     * @param report        the benchmark report
+     * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written.
+     *                      If multiple tables are generated, the path to each table will be <code>filePath/benchmarkName_tableName.md</code>
+     * @param baselineReportDirectoryInputPath path to the directory where the baseline benchmark report that will be used for baseline comparison is stored. Can be null.
+     * @return true if the report was successfully exported, false otherwise
+     * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
+     */
     static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath) throws IOException {
         ResultsExporter resultsExporter = find(report.benchmarkClass());
         if (resultsExporter != null) {
@@ -75,7 +89,20 @@ public interface ResultsExporter {
      * @param results       all the run results to exportAll
      * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
      * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
-     * @see #export(BenchmarkReport, Path)
+     * @see #export(BenchmarkReport, Path, Path)
+     */
+    static void exportAll(Collection<RunResult> results, Path markdownDirectoryOutputPath) throws IOException {
+        exportAll(results, markdownDirectoryOutputPath, null);
+    }
+
+    /**
+     * Group all {@link RunResult} into reports, then exportAll them in tables written to markdown files.
+     *
+     * @param results       all the run results to exportAll
+     * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
+     * @param baselineReportDirectoryInputPath path to the directory where the serialized benchmark reports used as baseline for comparison are located
+     * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
+     * @see #export(BenchmarkReport, Path, Path)
      */
     static void exportAll(Collection<RunResult> results, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath) throws IOException {
         List<String> failedExports = new ArrayList<>();
