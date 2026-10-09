@@ -40,7 +40,7 @@ public class MonoThreadSecurityAnalysisBenchmark {
     public void benchmarkMonoThreadSecurityAnalysisWithRealGrid(Blackhole blackhole,
                                                                 MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
                                                                 ContingenciesCounter contingenciesCounter) {
-        contingenciesCounter.numberOfContingencies = monoThreadSecurityAnalysisState.getNumberOfContingencies();
+        contingenciesCounter.setNumberOfContingencies(monoThreadSecurityAnalysisState.getNumberOfContingencies());
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
                 monoThreadSecurityAnalysisState.getContingencies(),
@@ -58,7 +58,7 @@ public class MonoThreadSecurityAnalysisBenchmark {
     public void benchmarkMonoThreadSecurityAnalysisWithoutRealGrid(Blackhole blackhole,
                                                                    ReleaseMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
                                                                    ContingenciesCounter contingenciesCounter) {
-        contingenciesCounter.numberOfContingencies = monoThreadSecurityAnalysisState.getNumberOfContingencies();
+        contingenciesCounter.setNumberOfContingencies(monoThreadSecurityAnalysisState.getNumberOfContingencies());
         SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
                 monoThreadSecurityAnalysisState.getContingencies(),

@@ -19,5 +19,13 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Thread)
 @AuxCounters(AuxCounters.Type.EVENTS)
 public class ContingenciesCounter {
-    public int numberOfContingencies;
+    private int numberOfContingencies;
+
+    public int getNumberOfContingencies() {
+        return numberOfContingencies;
+    }
+
+    public void setNumberOfContingencies(int numberOfContingencies) {
+        this.numberOfContingencies = numberOfContingencies;
+    }
 }
