@@ -18,6 +18,7 @@ import java.util.TreeMap;
 /**
  * Result per benchmark function. For a given set of parameters,
  * this is the aggregated score across all the runs for this set of parameters.
+ *
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public record BenchmarkResult(
@@ -32,7 +33,7 @@ public record BenchmarkResult(
     public BenchmarkResult(RunResult result) {
         this(
             result.getParams().getBenchmark(),
-            buildParametersMap(result.getParams()),
+            buildParametersMap(result),
             result.getParams().getMode(),
             result.getPrimaryResult().getScore(),
             result.getPrimaryResult().getScoreError(),
@@ -40,10 +41,22 @@ public record BenchmarkResult(
         );
     }
 
-    private static Map<String, String> buildParametersMap(BenchmarkParams parameters) {
+    /**
+     * Builds a map containing parameters and their corresponding values extracted from the provided {@code RunResult}.
+     * The map includes parameters from the benchmark's primary parameters and scores from secondary results.
+     *
+     * @param result The {@code RunResult} object containing the benchmark parameters and results.
+     * @return A {@code Map} where keys are parameter names or secondary result identifiers, and
+     * values are their associated string representations.
+     */
+    private static Map<String, String> buildParametersMap(RunResult result) {
+        BenchmarkParams parameters = result.getParams();
         Map<String, String> parametersMap = new TreeMap<>();
         for (String key : parameters.getParamsKeys()) {
             parametersMap.put(key, parameters.getParam(key));
+        }
+        for (String key : result.getSecondaryResults().keySet()) {
+            parametersMap.put(key, String.valueOf(result.getSecondaryResults().get(key).getScore()));
         }
         return parametersMap;
     }

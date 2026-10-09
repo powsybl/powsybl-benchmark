@@ -36,13 +36,14 @@ public final class BenchmarkReportJsonSerDe {
 
     /**
      * Writes the provided benchmark reports to the specified output directory in JSON format.
-     * @param reports the list of benchmark reports to be written
+     *
+     * @param reports             the list of benchmark reports to be written
      * @param benchmarkOutputPath the directory path where the benchmark reports will be written
      * @throws IOException IOException <ul>
-     *     <li>if the directory of the provided path cannot be created</li>
-     *     <li>if any file for a benchmark report cannot be created or written to.
-     *     In that case, the exception is thrown only after having tried to write all the reports</li>
-     * </ul>
+     *                     <li>if the directory of the provided path cannot be created</li>
+     *                     <li>if any file for a benchmark report cannot be created or written to.
+     *                     In that case, the exception is thrown only after having tried to write all the reports</li>
+     *                     </ul>
      */
     public static void writeReports(List<BenchmarkReport> reports, Path benchmarkOutputPath) throws IOException {
         List<String> failedBenchmarkWrite = new ArrayList<>();
@@ -62,20 +63,13 @@ public final class BenchmarkReportJsonSerDe {
         }
     }
 
-    private static String formatDatetime(String datetime) {
-        //datetime is of the format 2026-08-14T09:19:45.842589364
-        return datetime.substring(0, datetime.indexOf('.'))
-            .replace('T', '_')
-            .replace("-", "")
-            .replace(":", "");
-    }
-
     /**
      * Read the benchmark reports from the provided paths.
+     *
      * @param inputPaths the path of each file from which to read a benchmark report. Each file should correspond to a single benchmark report.
      * @return all the benchmark reports read from the provided paths
      * @throws IOException if any file for a benchmark report cannot be read.
-     *     In that case, the exception is thrown only after having tried to read all the reports
+     *                     In that case, the exception is thrown only after having tried to read all the reports
      */
     public static List<BenchmarkReport> readReports(Path... inputPaths) throws IOException {
         List<BenchmarkReport> reports = new ArrayList<>();
@@ -88,5 +82,13 @@ public final class BenchmarkReportJsonSerDe {
             }
         }
         return reports;
+    }
+
+    private static String formatDatetime(String datetime) {
+        //datetime is of the format 2026-08-14T09:19:45.842589364
+        return datetime.substring(0, datetime.indexOf('.'))
+            .replace('T', '_')
+            .replace("-", "")
+            .replace(":", "");
     }
 }
