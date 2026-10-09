@@ -8,10 +8,8 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +18,43 @@ import java.util.Map;
  */
 class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "NetworkSerializationBenchmark";
+    private static Map<String, String> params(String networkName, String format) {
+        return Map.of("networkName", networkName, "format", format);
+    }
+
+    @Override
+    protected String getBenchClass() {
+        return "NetworkSerializationBenchmark";
+    }
+
+    @Override
+    protected List<String> getBenchFilenames() {
+        return List.of(getBenchClass() + "_firstNetwork.md", getBenchClass() + "_secondNetwork.md");
+    }
+
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/network-serialization-report_1.md", "/network-serialization-report_2.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/network-serialization-report_1-with-baseline.md", "/network-serialization-report_2-with-baseline.md");
+    }
+
+    @Override
+    protected String getBaselineDirectoryPathString() {
+        return "/baseline";
+    }
+
+    @Override
+    protected List<RunResult> buildResults() {
+        String benchClass = getBenchClass();
         String deserialization = benchClass + ".benchmark1NetworkDeserialization";
         String streamSerialization = benchClass + ".benchmark2NetworkStreamSerialization";
         String fileSerialization = benchClass + ".benchmark3NetworkFileSerialization";
         String copy = benchClass + ".benchmark4NetworkCopy";
+
         Map<String, String> xiidmFormat1 = params("firstNetwork", "XIIDM");
         Map<String, String> jiidmFormat1 = params("firstNetwork", "JIIDM");
         Map<String, String> biidmFormat1 = params("firstNetwork", "BIIDM");
@@ -37,7 +65,7 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
         Map<String, String> biidmFormat2 = params("secondNetwork", "BIIDM");
         Map<String, String> cgmesFormat2 = params("secondNetwork", "CGMES");
 
-        List<RunResult> runResults = List.of(
+        return List.of(
             // Deserialization
             BenchmarkTestUtils.mockRunResult(deserialization, xiidmFormat1, 1.034),
             BenchmarkTestUtils.mockRunResult(deserialization, jiidmFormat1, 2.0),
@@ -67,12 +95,5 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
             BenchmarkTestUtils.mockRunResult(deserialization, biidmFormat2, 1.7),
             BenchmarkTestUtils.mockRunResult(deserialization, cgmesFormat2, 5.5)
         );
-
-        testReportToStringFullPath(benchClass, benchClass + "_firstNetwork.md", runResults, "/network-serialization-report_1.md");
-        testReportToStringFullPath(benchClass, benchClass + "_secondNetwork.md", runResults, "/network-serialization-report_2.md");
-    }
-
-    private static Map<String, String> params(String networkName, String format) {
-        return Map.of("networkName", networkName, "format", format);
     }
 }
