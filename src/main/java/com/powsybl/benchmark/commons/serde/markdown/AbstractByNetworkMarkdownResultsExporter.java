@@ -9,12 +9,17 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public abstract class AbstractByNetworkMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
+
+    protected AbstractByNetworkMarkdownResultsExporter(List<String> supportedBenchmarkClasses) {
+        super(supportedBenchmarkClasses);
+    }
 
     @Override
     protected Function<BenchmarkResult, String> getLineSorter() {

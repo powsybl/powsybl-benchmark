@@ -27,18 +27,13 @@ public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResult
         "MonoThreadSecurityAnalysisBenchmark",
         "SensitivityAnalysisBenchmark");
 
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    public ContingenciesMarkdownResultsExporter() {
+        super(BENCHMARKS_CLASSES);
     }
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        String[] columnNames = new String[resultsForNetwork.size() + 2];
-        columnNames[0] = "Network";
-        columnNames[1] = "Contingencies";
-        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + 2] = getPrettyColumnName(result));
-        return columnNames;
+        return getColumnNamesWithFirstColumnsAndPrettyColumns(resultsForNetwork, this::getPrettyColumnName, "Network", "Contingencies");
     }
 
     @Override

@@ -23,9 +23,8 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("ContingencySerializationBenchmark");
 
-    @Override
-    public boolean isBenchmarkClassSupported(String benchmarkClass) {
-        return BENCHMARKS_CLASSES.contains(benchmarkClass);
+    public ContingencySerializationMarkdownResultsExporter() {
+        super(BENCHMARKS_CLASSES);
     }
 
     @Override
