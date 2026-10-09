@@ -23,7 +23,7 @@
 
     <name>powsybl benchmark</name>
     <description>A set of benchmarks for PowSyBl</description>
-    <url>http://www.powsybl.org</url>
+    <url>https://www.powsybl.org</url>
 
     <scm>
         <connection>scm:git:https://github.com/powsybl/powsybl-benchmark.git</connection>
