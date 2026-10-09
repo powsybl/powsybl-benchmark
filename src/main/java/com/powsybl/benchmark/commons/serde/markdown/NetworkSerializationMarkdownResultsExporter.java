@@ -37,7 +37,7 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        return getColumnNamesWithFirstColumnsAndPrettyColumns(resultsForNetwork, this::getPrettyColumnName, "Benchmark Operation");
+        return getColumnNamesWithFirstColumnsAndColumnsProvider(resultsForNetwork, this::getPrettyColumnName, "Benchmark Operation");
     }
 
     @Override

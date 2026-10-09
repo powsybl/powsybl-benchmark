@@ -33,7 +33,7 @@ public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResult
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        return getColumnNamesWithFirstColumnsAndPrettyColumns(resultsForNetwork, this::getPrettyColumnName, "Network", "Contingencies");
+        return getColumnNamesWithFirstColumnsAndColumnsProvider(resultsForNetwork, this::getPrettyColumnName, "Network", "Contingencies");
     }
 
     @Override

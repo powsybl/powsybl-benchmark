@@ -94,10 +94,19 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return String.format(format, scorePerOperationFormatter.applyAsDouble(result.score()), result.scoreUnit());
     }
 
-    protected static String[] getColumnNamesWithFirstColumnsAndPrettyColumns(List<BenchmarkResult> resultsForNetwork, Function<BenchmarkResult, String> provider, String... firstColumnNames) {
+    /**
+     * Constructs an array of column names by combining a list of initial column names and
+     * column names derived from a list of benchmark results using a column provider function.
+     *
+     * @param resultsForNetwork a list of {@link BenchmarkResult} objects representing the output of a benchmark for a network
+     * @param columnsProvider a function that extracts a column name from a {@link BenchmarkResult} object
+     * @param firstColumnNames an array of initial column names to be included at the start of the result
+     * @return an array of combined column names including the initial column names and those derived from the benchmark results
+     */
+    protected static String[] getColumnNamesWithFirstColumnsAndColumnsProvider(List<BenchmarkResult> resultsForNetwork, Function<BenchmarkResult, String> columnsProvider, String... firstColumnNames) {
         String[] columnNames = new String[resultsForNetwork.size() + firstColumnNames.length];
         System.arraycopy(firstColumnNames, 0, columnNames, 0, firstColumnNames.length);
-        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + firstColumnNames.length] = provider.apply(result));
+        resultsForNetwork.forEach(result -> columnNames[resultsForNetwork.indexOf(result) + firstColumnNames.length] = columnsProvider.apply(result));
         return columnNames;
     }
 

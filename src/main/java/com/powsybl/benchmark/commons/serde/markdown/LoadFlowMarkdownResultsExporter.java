@@ -40,7 +40,7 @@ public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownRe
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        return getColumnNamesWithFirstColumnsAndPrettyColumns(resultsForNetwork, this::getPrettyColumnName, "Network");
+        return getColumnNamesWithFirstColumnsAndColumnsProvider(resultsForNetwork, this::getPrettyColumnName, "Network");
     }
 
     @Override
