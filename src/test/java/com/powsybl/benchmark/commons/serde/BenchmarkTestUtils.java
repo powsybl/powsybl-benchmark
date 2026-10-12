@@ -9,12 +9,19 @@ package com.powsybl.benchmark.commons.serde;
 
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.infra.BenchmarkParams;
+import org.openjdk.jmh.infra.IterationParams;
 import org.openjdk.jmh.results.Result;
 import org.openjdk.jmh.results.RunResult;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -35,11 +42,14 @@ public final class BenchmarkTestUtils {
     public static RunResult mockRunResult(String benchmarkName, Map<String, String> parameters, Mode mode, double score, double scoreError, String scoreUnit, Map<String, Result<?>> secondaryResults) {
         RunResult runResult = mock(RunResult.class);
         BenchmarkParams params = mock(BenchmarkParams.class);
+        IterationParams iterationParams = mock(IterationParams.class);
         Result<?> primaryResult = mock(Result.class);
 
         when(runResult.getParams()).thenReturn(params);
         when(runResult.getPrimaryResult()).thenReturn(primaryResult);
         when(runResult.getSecondaryResults()).thenReturn(new TreeMap<>(secondaryResults));
+        when(runResult.getParams().getMeasurement()).thenReturn(iterationParams);
+        when(iterationParams.getCount()).thenReturn(1);
 
         when(params.getBenchmark()).thenReturn(benchmarkName);
         when(params.getMode()).thenReturn(mode);
@@ -74,7 +84,7 @@ public final class BenchmarkTestUtils {
                 benchmarkClass,
                 "1.0.0",
                 "1.0.0",
-                "2026-08-11T10:00:00Z",
+                "2026-08-11T10:00:00.123",
                 runResults.stream().map(BenchmarkResult::new).toList()
         );
     }
@@ -86,6 +96,18 @@ public final class BenchmarkTestUtils {
         assertEquals(expected.score(), actual.score());
         assertEquals(expected.scoreError(), actual.scoreError());
         assertEquals(expected.scoreUnit(), actual.scoreUnit());
+    }
+
+    public static Predicate<Path> checkFileMatches(String startToMatch, String endToMatch) {
+        return p -> p.getFileName().toString().startsWith(startToMatch) && p.getFileName().toString().endsWith(endToMatch);
+    }
+
+    public static Path getMatchingFileFromPath(Path directory, Predicate<Path> predicate) {
+        try (Stream<Path> files = Files.list(directory)) {
+            return files.filter(predicate).findFirst().orElseThrow();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
 

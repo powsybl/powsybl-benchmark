@@ -68,8 +68,8 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
             BenchmarkTestUtils.mockRunResult(deserialization, cgmesFormat2, 5.5)
         );
 
-        testReportToStringFullPath(benchClass, benchClass + "_firstNetwork.md", runResults, "/network-serialization-report_1.md");
-        testReportToStringFullPath(benchClass, benchClass + "_secondNetwork.md", runResults, "/network-serialization-report_2.md");
+        testReportToStringFullPath(benchClass, benchClass + "_firstNetwork", ".md", runResults, "/network-serialization-report_1.md");
+        testReportToStringFullPath(benchClass, benchClass + "_secondNetwork", ".md", runResults, "/network-serialization-report_2.md");
     }
 
     private static Map<String, String> params(String networkName, String format) {

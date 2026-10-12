@@ -80,7 +80,7 @@ class BenchmarkReportJsonSerDeTest {
     }
 
     private static Predicate<Path> checkJsonFileMatches(String toMatch) {
-        return p -> p.getFileName().toString().startsWith(toMatch) && p.getFileName().toString().endsWith(".json");
+        return BenchmarkTestUtils.checkFileMatches(toMatch, ".json");
     }
 
     @Test
