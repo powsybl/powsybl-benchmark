@@ -9,6 +9,7 @@ package com.powsybl.benchmark.commons.serde;
 
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.infra.BenchmarkParams;
+import org.openjdk.jmh.infra.IterationParams;
 import org.openjdk.jmh.results.Result;
 import org.openjdk.jmh.results.RunResult;
 
@@ -35,11 +36,14 @@ public final class BenchmarkTestUtils {
     public static RunResult mockRunResult(String benchmarkName, Map<String, String> parameters, Mode mode, double score, double scoreError, String scoreUnit, Map<String, Result<?>> secondaryResults) {
         RunResult runResult = mock(RunResult.class);
         BenchmarkParams params = mock(BenchmarkParams.class);
+        IterationParams iterationParams = mock(IterationParams.class);
         Result<?> primaryResult = mock(Result.class);
 
         when(runResult.getParams()).thenReturn(params);
         when(runResult.getPrimaryResult()).thenReturn(primaryResult);
         when(runResult.getSecondaryResults()).thenReturn(new TreeMap<>(secondaryResults));
+        when(runResult.getParams().getMeasurement()).thenReturn(iterationParams);
+        when(iterationParams.getCount()).thenReturn(1);
 
         when(params.getBenchmark()).thenReturn(benchmarkName);
         when(params.getMode()).thenReturn(mode);

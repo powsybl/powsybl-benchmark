@@ -30,6 +30,9 @@ public record BenchmarkResult(
     double scoreError,
     String scoreUnit
 ) {
+
+    public static final String NUMBER_OF_CONTINGENCIES_KEY_PARAM = "numberOfContingencies";
+
     public BenchmarkResult(RunResult result) {
         this(
             result.getParams().getBenchmark(),
@@ -56,7 +59,13 @@ public record BenchmarkResult(
             parametersMap.put(key, parameters.getParam(key));
         }
         for (String key : result.getSecondaryResults().keySet()) {
-            parametersMap.put(key, String.valueOf(result.getSecondaryResults().get(key).getScore()));
+            double value = result.getSecondaryResults().get(key).getScore();
+            if (NUMBER_OF_CONTINGENCIES_KEY_PARAM.equals(key)) {
+                //since ContingenciesCounter is an AuxCounter.Type.EVENT, the values of numberOfContingencies are summed between all the measurement
+                //to get the correct value, we need to divide by the number of measurements
+                value /= result.getParams().getMeasurement().getCount();
+            }
+            parametersMap.put(key, String.valueOf(value));
         }
         return parametersMap;
     }
