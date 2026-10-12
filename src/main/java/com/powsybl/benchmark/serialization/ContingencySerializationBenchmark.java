@@ -31,9 +31,9 @@ import java.util.concurrent.TimeUnit;
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 4, time = 1)
-@Measurement(iterations = 8, time = 1)
-@Fork(3)
+@Warmup(iterations = 2, time = 1)
+@Measurement(iterations = 5, time = 1)
+@Fork(2)
 @FullBenchmark
 public class ContingencySerializationBenchmark {
 
