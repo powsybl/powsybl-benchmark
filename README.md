@@ -153,6 +153,9 @@ For the ENTSOE RealGrid network:
 
 _Note: those results are for the v2026.1.0 version_
 
+**_Note: There is a performance issue in this release for the XML copy operation, which has been fixed in the v7.4.0 release
+of powsybl-core._**
+
 ### Contingency serialization benchmark
 
 Contingency serialization benchmark has been done using RTE 6515 buses network. A list of 1000 contingencies has been 
