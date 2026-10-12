@@ -51,10 +51,11 @@ public interface ResultsExporter {
         if (resultsExporter != null) {
             Map<String, String> serializedReports = resultsExporter.exportReport(report);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
-                String fileName = String.format("%s%s%s.md",
+                String fileName = String.format("%s%s%s_%s.md",
                     report.benchmarkClass(),
                     table.getKey().isEmpty() ? "" : "_",
-                    table.getKey());
+                    table.getKey(),
+                    ExporterUtil.formatDatetime(report));
                 Files.writeString(
                     directoryPath.resolve(fileName),
                     table.getValue()
