@@ -7,10 +7,8 @@
  */
 package com.powsybl.benchmark.commons.serde.markdown;
 
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,20 +19,47 @@ import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResu
  */
 class ContingencySerializationBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "ContingencySerializationBenchmark";
-        String baseName = "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.";
-
-        List<RunResult> runResults = List.of(
-            mockRunResult(baseName + "benchmark1Parsing", Map.of(), 1.0),
-            mockRunResult(baseName + "benchmark2ParsingFromBytes", Map.of(), 2.0),
-            mockRunResult(baseName + "benchmark3JustReading", Map.of(), 3.0),
-            mockRunResult(baseName + "benchmark4ReadingToString", Map.of(), 4.0),
-            mockRunResult(baseName + "benchmark5Writing", Map.of(), 5.0),
-            mockRunResult(baseName + "benchmark6BufferedWriting", Map.of(), 6.0)
-        );
-
-        testReportToString(benchClass, runResults, "/contingency-serialization-report.md");
+    @Override
+    protected String getBenchClass() {
+        return "ContingencySerializationBenchmark";
     }
+
+    @Override
+    protected List<String> getBenchFilenames() {
+        return List.of(getBenchClass() + ".md");
+    }
+
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/contingency-serialization-report.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/contingency-serialization-report-with-baseline.md");
+    }
+
+    @Override
+    protected String getBaselineDirectoryPathString() {
+        return "/baseline";
+    }
+
+    @Override
+    protected List<RunResult> buildResults() {
+        String benchName = getBenchClass() + ".";
+        return List.of(
+            mockRunResult(benchName + "benchmark1Parsing", Map.of(), 1.0),
+            mockRunResult(benchName + "benchmark2ParsingFromBytes", Map.of(), 2.0),
+            mockRunResult(benchName + "benchmark3JustReading", Map.of(), 3.0),
+            mockRunResult(benchName + "benchmark4ReadingToString", Map.of(), 4.0),
+            mockRunResult(benchName + "benchmark5Writing", Map.of(), 5.0),
+            mockRunResult(benchName + "benchmark6BufferedWriting", Map.of(), 6.0)
+        );
+    }
+
+    //@Test
+    //public void writeJson() throws IOException {
+    //    List<RunResult> runResults = buildResults();
+    //    BenchmarkReportJsonSerDe.writeAll(runResults, Path.of("/tmp/"));
+    //}
 }

@@ -81,15 +81,47 @@ public abstract class AbstractMarkdownSerializerTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * Retrieves the name of the benchmark class associated with the test.
+     *
+     * @return A string representing the benchmark class name.
+     */
     protected abstract String getBenchClass();
 
+    /**
+     * Retrieves a list of benchmark filenames that are the generated files.
+     *
+     * @return A list of strings representing the names of the benchmark files.
+     */
     protected abstract List<String> getBenchFilenames();
 
+    /**
+     * Retrieves a list of resource paths that are the expected results when no comparison to a baseline is done.
+     *
+     * @return A list of strings representing the relative paths to the resource files.
+     */
     protected abstract List<String> getResourcePaths();
 
+    /**
+     * Retrieves a list of resource paths that are the expected results when a comparison to a baseline is done.
+     *
+     * @return A list of strings representing the relative paths to the resource files.
+     */
     protected abstract List<String> getResourceWithBaselinePaths();
 
+    /**
+     * Retrieves the path to the baseline directory as a string.
+     * This method is intended to provide the location of the directory
+     * where baseline files are stored, in JSON format.
+     *
+     * @return A string representing the path to the baseline directory.
+     */
     protected abstract String getBaselineDirectoryPathString();
 
+    /**
+     * Constructs a list of benchmark run results that can be used for generating reports.
+     *
+     * @return A list of {@link RunResult} objects representing the benchmark results.
+     */
     protected abstract List<RunResult> buildResults();
 }

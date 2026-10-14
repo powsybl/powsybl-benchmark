@@ -1,0 +1,49 @@
+{
+  "benchmarkClass" : "ContingencySerializationBenchmark",
+  "powsyblCoreVersion" : "7.2.1",
+  "openLoadFlowVersion" : "2.2.1",
+  "datetime" : "2026-10-12T15:37:26.374887769",
+  "results" : [ {
+    "benchmarkName" : "ContingencySerializationBenchmark.myBenchNamebenchmark1Parsing",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ContingencySerializationBenchmark.myBenchNamebenchmark2ParsingFromBytes",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ContingencySerializationBenchmark.myBenchNamebenchmark3JustReading",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 4.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ContingencySerializationBenchmark.myBenchNamebenchmark4ReadingToString",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ContingencySerializationBenchmark.myBenchNamebenchmark5Writing",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ContingencySerializationBenchmark.myBenchNamebenchmark6BufferedWriting",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 1.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}

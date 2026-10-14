@@ -50,7 +50,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
 
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        return Map.of();
+        return Map.of("Time (ms/op)", results.getFirst().score());
     }
 
     private String getPrettyOperationName(String fullOperationName) {
