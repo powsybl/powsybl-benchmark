@@ -15,7 +15,7 @@ Execution is done on a single core, there is no code parallelization, and the re
 
 ## Load flow benchmark
 
-Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.2.1](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.2.1). 
+Load flow benchmark has been done using [JMH](https://github.com/openjdk/jmh) framework and [Open Load Flow v2.3.0](https://github.com/powsybl/powsybl-open-loadflow/releases/tag/v2.3.0). 
 More load flow engines will be added later.
 
 Six networks of various sizes have been used: 
