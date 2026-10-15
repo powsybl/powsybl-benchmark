@@ -22,6 +22,7 @@ import java.util.function.Function;
 public class ContingencySerializationMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("ContingencySerializationBenchmark");
+    private static final String TIME_STRING = "Time (ms/op)";
 
     public ContingencySerializationMarkdownResultsExporter() {
         super(BENCHMARKS_CLASSES);
@@ -31,7 +32,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
         return new String[] {
             "Benchmark Operation",
-            "Time (ms/op)"
+            TIME_STRING
         };
     }
 
@@ -39,7 +40,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
     protected Map<String, String> getLine(List<BenchmarkResult> results) {
         return Map.of(
             "Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()),
-            "Time (ms/op)", getFormattedScore(results.getFirst(), 3)
+            TIME_STRING, getFormattedScore(results.getFirst(), 3)
         );
     }
 
@@ -50,7 +51,7 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
 
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        return Map.of("Time (ms/op)", results.getFirst().score());
+        return Map.of(TIME_STRING, results.getFirst().score());
     }
 
     private String getPrettyOperationName(String fullOperationName) {
