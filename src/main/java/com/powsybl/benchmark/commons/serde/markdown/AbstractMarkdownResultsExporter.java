@@ -254,6 +254,17 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
 
+    /**
+     * This function is used to compare the results of a benchmark with a baseline, and to display the relative difference in the table.
+     * Return a map where each key corresponds to a column name, and each value is the score of the benchmark result at that column.
+     * The returned <code>Map&lt;String, Double&gt;</code> should contain the same number of entries as there are columns (and the keys should match),
+     * as defined by {@link #columnNames(List)}.
+     * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
+     * The scores returned should match with the implementation of the {@link #getLine(List)} function.
+     *
+     * @return a Map of Double, each key is a column name (as defined by {@link #columnNames(List)}), each value is the score of the benchmark result at that column.
+     *
+     */
     protected abstract Map<String, Double> getLineScores(List<BenchmarkResult> results);
 
     /**
