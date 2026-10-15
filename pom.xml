@@ -19,7 +19,7 @@
     </parent>
 
     <artifactId>powsybl-benchmark</artifactId>
-    <version>2026.1.0</version>
+    <version>2026.2.0-SNAPSHOT</version>
 
     <name>powsybl benchmark</name>
     <description>A set of benchmarks for PowSyBl</description>
