@@ -41,7 +41,8 @@ public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResult
     protected Map<String, String> getLine(List<BenchmarkResult> results) {
         Map<String, Double> lineScores = getLineScores(results);
         //this is formatted like a double in the string, but it's an int, get the integer part with the split
-        ToIntFunction<BenchmarkResult> contingenciesNumberGetter = r -> Integer.parseInt(r.parameters().get("numberOfContingencies").split("\\.")[0]);
+        ToIntFunction<BenchmarkResult> contingenciesNumberGetter = r -> Integer.parseInt(r.parameters().get(BenchmarkResult.NUMBER_OF_CONTINGENCIES_KEY_PARAM)
+            .split("\\.")[0]);
         //all results have the same number of contingencies, just get the first
         int contingenciesNumber = contingenciesNumberGetter.applyAsInt(results.getFirst());
         DoubleUnaryOperator scorePerContingency = d -> d / contingenciesNumber;

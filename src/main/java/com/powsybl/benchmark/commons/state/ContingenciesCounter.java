@@ -21,7 +21,9 @@ import org.openjdk.jmh.annotations.State;
 public class ContingenciesCounter {
     private int numberOfContingencies;
 
-    public int getNumberOfContingencies() {
+    //The name of the getter has to be numberOfContingencies, because JMH AuxCounters generates the name
+    //of parameters from public methods that return a value
+    public int numberOfContingencies() {
         return numberOfContingencies;
     }
 
