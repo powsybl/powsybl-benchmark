@@ -9,8 +9,8 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import com.powsybl.benchmark.commons.serde.SerDeUtil;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
+import com.powsybl.benchmark.commons.serde.SerDeUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
