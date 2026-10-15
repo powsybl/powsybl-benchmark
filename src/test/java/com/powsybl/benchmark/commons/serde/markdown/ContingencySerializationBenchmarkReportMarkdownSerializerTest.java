@@ -56,10 +56,4 @@ class ContingencySerializationBenchmarkReportMarkdownSerializerTest extends Abst
             mockRunResult(benchName + "benchmark6BufferedWriting", Map.of(), 6.0)
         );
     }
-
-    //@Test
-    //public void writeJson() throws IOException {
-    //    List<RunResult> runResults = buildResults();
-    //    BenchmarkReportJsonSerDe.writeAll(runResults, Path.of("/tmp/"));
-    //}
 }
