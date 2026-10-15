@@ -7,10 +7,13 @@
  */
 package com.powsybl.benchmark.commons.serde;
 
+import com.powsybl.commons.PowsyblException;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -51,7 +54,14 @@ public final class SerDeUtil {
 
     public static Path getMatchingFileFromPath(Path directory, Predicate<Path> predicate) {
         try (Stream<Path> files = Files.list(directory)) {
-            return files.filter(predicate).findFirst().orElseThrow();
+            List<Path> matchingFiles = files.filter(predicate).toList();
+            if (matchingFiles.size() > 1) {
+                throw new PowsyblException("Multiple matching files found in directory " + directory + " for predicate " + predicate);
+            } else if (matchingFiles.isEmpty()) {
+                throw new PowsyblException("No matching file found in directory " + directory + " for predicate " + predicate);
+            } else {
+                return matchingFiles.getFirst();
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
