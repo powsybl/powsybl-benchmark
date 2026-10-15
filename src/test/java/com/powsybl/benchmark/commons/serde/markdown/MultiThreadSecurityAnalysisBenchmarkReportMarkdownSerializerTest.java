@@ -29,11 +29,6 @@ class MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializerTest extends A
     }
 
     @Override
-    protected List<String> getBenchFilenames() {
-        return List.of(getBenchClass() + ".md");
-    }
-
-    @Override
     protected List<String> getResourcePaths() {
         return List.of("/multi-thread-security-analysis-report.md");
     }

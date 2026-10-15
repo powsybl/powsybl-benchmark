@@ -29,7 +29,7 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
 
     @Override
     protected List<String> getBenchFilenames() {
-        return List.of(getBenchClass() + "_firstNetwork.md", getBenchClass() + "_secondNetwork.md");
+        return List.of(getBenchClass() + "_firstNetwork", getBenchClass() + "_secondNetwork");
     }
 
     @Override

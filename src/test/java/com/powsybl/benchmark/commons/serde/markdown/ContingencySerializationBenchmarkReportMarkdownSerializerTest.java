@@ -25,11 +25,6 @@ class ContingencySerializationBenchmarkReportMarkdownSerializerTest extends Abst
     }
 
     @Override
-    protected List<String> getBenchFilenames() {
-        return List.of(getBenchClass() + ".md");
-    }
-
-    @Override
     protected List<String> getResourcePaths() {
         return List.of("/contingency-serialization-report.md");
     }

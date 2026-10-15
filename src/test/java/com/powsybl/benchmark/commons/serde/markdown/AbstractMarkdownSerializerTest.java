@@ -36,7 +36,7 @@ public abstract class AbstractMarkdownSerializerTest {
     @Test
     public void testReportToStringWithoutBaseline() throws IOException {
         for (int i = 0; i < getBenchFilenames().size(); ++i) {
-            testReportToStringFullPath(getBenchClass(), getBenchFilenames().get(i), buildResults(), getResourcePaths().get(i));
+            testReportToStringFullPath(getBenchClass(), getBenchFilenames().get(i), buildResults(), getResourcePaths().get(i), null);
         }
     }
 
@@ -55,36 +55,15 @@ public abstract class AbstractMarkdownSerializerTest {
         }
     }
 
-    protected void testReportToString(String benchClass, List<RunResult> runResults, String resourcePath) throws IOException {
-        testReportToStringFullPath(benchClass, benchClass, ".md", runResults, resourcePath);
-    }
-
-    protected void testReportToStringFullPath(String benchClass, String filenameStart, String filenameEnd, List<RunResult> runResults, String expectedResourcePath) throws IOException {
-        BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        ResultsExporter.export(report, tempDir);
-
-        String actual = Files.readString(tempDir.resolve(BenchmarkTestUtils.getMatchingFileFromPath(
-                    tempDir,
-                    BenchmarkTestUtils.checkFileMatches(filenameStart, filenameEnd)
-                )),
-                StandardCharsets.UTF_8)
-            .replace("\r\n", "\n");
-
-        String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream(expectedResourcePath)).readAllBytes(), StandardCharsets.UTF_8)
-            .replace("\r\n", "\n");
-
-        assertEquals(expected, actual);
-    }
-
-    private void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath) throws IOException {
-        testReportToStringFullPath(benchClass, generatedFileName, runResults, expectedResourcePath, null);
-    }
-
-    private void testReportToStringFullPath(String benchClass, String generatedFileName, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
+    protected void testReportToStringFullPath(String benchClass, String filenameStart, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
         ResultsExporter.export(report, tempDir, baselineDirectoryPath);
 
-        String actual = Files.readString(tempDir.resolve(generatedFileName), StandardCharsets.UTF_8)
+        String actual = Files.readString(tempDir.resolve(BenchmarkTestUtils.getMatchingFileFromPath(
+                    tempDir,
+                    BenchmarkTestUtils.checkFileMatches(filenameStart, ".md")
+                )),
+                StandardCharsets.UTF_8)
             .replace("\r\n", "\n");
 
         String expected = new String(Objects.requireNonNull(getClass().getResourceAsStream(expectedResourcePath)).readAllBytes(), StandardCharsets.UTF_8)
@@ -105,7 +84,9 @@ public abstract class AbstractMarkdownSerializerTest {
      *
      * @return A list of strings representing the names of the benchmark files.
      */
-    protected abstract List<String> getBenchFilenames();
+    protected List<String> getBenchFilenames() {
+        return List.of(getBenchClass());
+    }
 
     /**
      * Retrieves a list of resource paths that are the expected results when no comparison to a baseline is done.
