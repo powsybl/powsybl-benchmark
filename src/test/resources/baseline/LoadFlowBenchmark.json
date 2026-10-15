@@ -1,0 +1,74 @@
+{
+  "benchmarkClass": "LoadFlowBenchmark",
+  "powsyblCoreVersion": "7.2.1",
+  "openLoadFlowVersion": "2.2.1",
+  "datetime": "2026-10-15T08:19:00.477692481",
+  "results": [
+    {
+      "benchmarkName": "LoadFlowBenchmark.benchmarkLoadFlow",
+      "parameters": {
+        "networkName": "Ieee300",
+        "type": "BASIC"
+      },
+      "mode": "AverageTime",
+      "score": 8.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "LoadFlowBenchmark.benchmarkLoadFlow",
+      "parameters": {
+        "networkName": "Ieee300",
+        "type": "STANDARD"
+      },
+      "mode": "AverageTime",
+      "score": 20.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "LoadFlowBenchmark.benchmarkLoadFlow",
+      "parameters": {
+        "networkName": "Ieee300",
+        "type": "STANDARD_REACTIVE_LIMITS_NOT_USED"
+      },
+      "mode": "AverageTime",
+      "score": 12.03,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "LoadFlowBenchmark.benchmarkLoadFlow",
+      "parameters": {
+        "networkName": "RealGrid",
+        "type": "BASIC"
+      },
+      "mode": "AverageTime",
+      "score": 125.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "LoadFlowBenchmark.benchmarkLoadFlow",
+      "parameters": {
+        "networkName": "RealGrid",
+        "type": "STANDARD"
+      },
+      "mode": "AverageTime",
+      "score": 120.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "LoadFlowBenchmark.benchmarkLoadFlow",
+      "parameters": {
+        "networkName": "RealGrid",
+        "type": "STANDARD_REACTIVE_LIMITS_NOT_USED"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    }
+  ]
+}

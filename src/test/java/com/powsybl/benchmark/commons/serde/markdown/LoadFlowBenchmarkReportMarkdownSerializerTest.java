@@ -9,39 +9,55 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-class LoadFlowBenchmarkReportMarkdownSerializerTest {
+class LoadFlowBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "LoadFlowBenchmark";
-        String benchName = benchClass + ".benchmarkLoadFlow";
+    private Map<String, String> params(String networkName, String type) {
+        return Map.of("networkName", networkName, "type", type);
+    }
 
-        List<RunResult> runResults = List.of(
-            // IEEE 14
+    @Override
+    protected String getBenchClass() {
+        return "LoadFlowBenchmark";
+    }
+
+    @Override
+    protected List<String> getBenchFilenames() {
+        return List.of(getBenchClass() + ".md");
+    }
+
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/load-flow-report.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/load-flow-report-with-baseline.md");
+    }
+
+    @Override
+    protected String getBaselineDirectoryPathString() {
+        return "/baseline";
+    }
+
+    @Override
+    protected List<RunResult> buildResults() {
+        String benchName = getBenchClass() + ".benchmarkLoadFlow";
+        return List.of(
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_300, "BASIC"), 10.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_300, "STANDARD"), 15.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.IEEE_300, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 12.0),
-
-            // IEEE 118
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.REAL_GRID, "BASIC"), 100.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.REAL_GRID, "STANDARD"), 150.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.REAL_GRID, "STANDARD_REACTIVE_LIMITS_NOT_USED"), 120.0)
         );
-
-        //testReportToString(benchClass, runResults, "/load-flow-report.md");
-    }
-
-    private Map<String, String> params(String networkName, String type) {
-        return Map.of("networkName", networkName, "type", type);
     }
 }

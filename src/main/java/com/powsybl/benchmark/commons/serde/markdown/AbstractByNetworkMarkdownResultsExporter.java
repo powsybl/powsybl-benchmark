@@ -10,7 +10,6 @@ package com.powsybl.benchmark.commons.serde.markdown;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -25,10 +24,5 @@ public abstract class AbstractByNetworkMarkdownResultsExporter extends AbstractM
     @Override
     protected Function<BenchmarkResult, String> getLineSorter() {
         return result -> result.parameters().get("networkName");
-    }
-
-    @Override
-    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        return Map.of();
     }
 }
