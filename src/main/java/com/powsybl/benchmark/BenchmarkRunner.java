@@ -45,6 +45,14 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
+    @CommandLine.Option(names = "--baseline-directory", description = "Directory containing baseline benchmark results to compare with." +
+        "Must contain only one of each serialized benchmark result", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    private String baselineDirectory = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
+
+    @CommandLine.Option(names = "--baseline-timestamp", description = "Only use serialized benchmark results from the baseline directory that match exactly the provided timestamp." +
+        "Format is YYYYMMDD_hhmmss. If not provided, do not consider timestamp to match filenames", defaultValue = "")
+    private String baselineTimestamp = "";
+
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
     private BenchmarkSuite benchmarkSuite;
 
@@ -90,7 +98,7 @@ public final class BenchmarkRunner implements Runnable {
                 if (!noSerde) {
                     Path benchmarkOutputPath = Path.of(serdePath);
                     BenchmarkReportJsonSerDe.writeAll(results, benchmarkOutputPath);
-                    ResultsExporter.exportAll(results, benchmarkOutputPath);
+                    ResultsExporter.exportAll(results, benchmarkOutputPath, Path.of(baselineDirectory), baselineTimestamp);
                 }
             } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);

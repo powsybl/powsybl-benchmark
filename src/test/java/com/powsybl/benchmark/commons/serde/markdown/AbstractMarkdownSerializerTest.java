@@ -9,6 +9,7 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
+import com.powsybl.benchmark.commons.serde.SerDeUtil;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -57,11 +58,11 @@ public abstract class AbstractMarkdownSerializerTest {
 
     protected void testReportToStringFullPath(String benchClass, String filenameStart, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        ResultsExporter.export(report, tempDir, baselineDirectoryPath);
+        ResultsExporter.export(report, tempDir, baselineDirectoryPath, "");
 
-        String actual = Files.readString(tempDir.resolve(BenchmarkTestUtils.getMatchingFileFromPath(
+        String actual = Files.readString(tempDir.resolve(SerDeUtil.getMatchingFileFromPath(
                     tempDir,
-                    BenchmarkTestUtils.checkFileMatches(filenameStart, ".md")
+                    SerDeUtil.checkFileMatches(filenameStart, ".md")
                 )),
                 StandardCharsets.UTF_8)
             .replace("\r\n", "\n");

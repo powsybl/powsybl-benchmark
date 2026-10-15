@@ -7,13 +7,20 @@
  */
 package com.powsybl.benchmark.commons.serde;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 /**
  * An utility class for exporting benchmark reports in different formats.
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
-public final class ExporterUtil {
+public final class SerDeUtil {
 
-    private ExporterUtil() {
+    private SerDeUtil() {
         //util class, no instance
     }
 
@@ -36,5 +43,17 @@ public final class ExporterUtil {
             .replace('T', '_')
             .replace("-", "")
             .replace(":", "");
+    }
+
+    public static Predicate<Path> checkFileMatches(String startToMatch, String endToMatch) {
+        return p -> p.getFileName().toString().startsWith(startToMatch) && p.getFileName().toString().endsWith(endToMatch);
+    }
+
+    public static Path getMatchingFileFromPath(Path directory, Predicate<Path> predicate) {
+        try (Stream<Path> files = Files.list(directory)) {
+            return files.filter(predicate).findFirst().orElseThrow();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

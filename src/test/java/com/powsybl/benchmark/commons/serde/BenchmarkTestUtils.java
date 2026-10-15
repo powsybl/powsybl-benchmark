@@ -98,16 +98,5 @@ public final class BenchmarkTestUtils {
         assertEquals(expected.scoreUnit(), actual.scoreUnit());
     }
 
-    public static Predicate<Path> checkFileMatches(String startToMatch, String endToMatch) {
-        return p -> p.getFileName().toString().startsWith(startToMatch) && p.getFileName().toString().endsWith(endToMatch);
-    }
-
-    public static Path getMatchingFileFromPath(Path directory, Predicate<Path> predicate) {
-        try (Stream<Path> files = Files.list(directory)) {
-            return files.filter(predicate).findFirst().orElseThrow();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 }
 

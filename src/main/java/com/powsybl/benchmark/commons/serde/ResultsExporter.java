@@ -47,7 +47,7 @@ public interface ResultsExporter {
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
     static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath) throws IOException {
-        return export(report, markdownDirectoryOutputPath, null);
+        return export(report, markdownDirectoryOutputPath, null, "");
     }
 
     /**
@@ -60,12 +60,14 @@ public interface ResultsExporter {
      * @return true if the report was successfully exported, false otherwise
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
-    static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath) throws IOException {
+    static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) throws IOException {
         ResultsExporter resultsExporter = find(report.benchmarkClass());
         if (resultsExporter != null) {
             BenchmarkReport baselineReport = null;
             if (baselineReportDirectoryInputPath != null && Files.exists(baselineReportDirectoryInputPath)) {
-                baselineReport = BenchmarkReportJsonSerDe.readReports(baselineReportDirectoryInputPath.resolve(report.benchmarkClass() + ".json")).getFirst();
+                baselineReport = BenchmarkReportJsonSerDe.readReports(
+                    SerDeUtil.getMatchingFileFromPath(baselineReportDirectoryInputPath,
+                        SerDeUtil.checkFileMatches(report.benchmarkClass(), timestamp + ".json"))).getFirst();
             }
             Map<String, String> serializedReports = resultsExporter.exportReport(report, baselineReport);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
@@ -73,7 +75,7 @@ public interface ResultsExporter {
                     report.benchmarkClass(),
                     table.getKey().isEmpty() ? "" : "_",
                     table.getKey(),
-                    ExporterUtil.formatDatetime(report));
+                    SerDeUtil.formatDatetime(report));
                 Files.writeString(
                     markdownDirectoryOutputPath.resolve(fileName),
                     table.getValue()
@@ -90,10 +92,10 @@ public interface ResultsExporter {
      * @param results       all the run results to exportAll
      * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
      * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
-     * @see #export(BenchmarkReport, Path, Path)
+     * @see #export(BenchmarkReport, Path, Path, String)
      */
     static void exportAll(Collection<RunResult> results, Path markdownDirectoryOutputPath) throws IOException {
-        exportAll(results, markdownDirectoryOutputPath, null);
+        exportAll(results, markdownDirectoryOutputPath, null, "");
     }
 
     /**
@@ -103,12 +105,27 @@ public interface ResultsExporter {
      * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
      * @param baselineReportDirectoryInputPath path to the directory where the serialized benchmark reports used as baseline for comparison are located
      * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
-     * @see #export(BenchmarkReport, Path, Path)
+     * @see #export(BenchmarkReport, Path, Path, String)
      */
     static void exportAll(Collection<RunResult> results, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath) throws IOException {
+        exportAll(results, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, "");
+    }
+
+    /**
+     * Group all {@link RunResult} into reports, then exportAll them in tables written to markdown files.
+     *
+     * @param results       all the run results to exportAll
+     * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
+     * @param baselineReportDirectoryInputPath path to the directory where the serialized benchmark reports used as baseline for comparison are located
+     * @param timestamp only use serialized benchmark results file whose name matches this timestamp. Format is YYYYMMDD_hhmmss.
+     *                  If not provided or empty, do not consider timestamp to match filenames
+     * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
+     * @see #export(BenchmarkReport, Path, Path, String)
+     */
+    static void exportAll(Collection<RunResult> results, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) throws IOException {
         List<String> failedExports = new ArrayList<>();
         for (BenchmarkReport report : BenchmarkReport.buildAllReports(results)) {
-            if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath)) {
+            if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, timestamp)) {
                 failedExports.add(report.benchmarkClass());
             }
         }
