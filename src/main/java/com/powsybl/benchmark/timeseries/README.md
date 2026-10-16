@@ -4,12 +4,12 @@
 
 All the benchmark results presented here were obtained on the same hardware and software configuration:
 
-| Component      | Specification               |
-|----------------|-----------------------------|
-| Hardware model | Dell Inc. Precision 5520    |
-| Processor      | Intel(R) Core(TM) i7-6820HQ |
-| RAM            | 32 Go                       |
-| OS             | Ubuntu 22.04.5 LTS          |
+| Component      | Specification                        |
+|----------------|--------------------------------------|
+| Hardware model | Dell Precision 5680                  |
+| Processor      | 13th Gen Intel(R) Core(TM) i7-13700H |
+| RAM            | 32 Go                                |
+| OS             | Ubuntu 22.04 LTS                     |
 
 Execution is done on a single core, there is no code parallelization, and the results are in `ms/op` unless explicitly stated.
 
