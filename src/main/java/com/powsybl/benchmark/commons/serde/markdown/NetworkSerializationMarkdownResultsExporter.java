@@ -15,7 +15,6 @@ import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -59,11 +58,6 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
             lineScores.put(getPrettyColumnName(result), result.score());
         }
         return lineScores;
-    }
-
-    @Override
-    protected Function<BenchmarkResult, String> getLineSorter() {
-        return BenchmarkResult::benchmarkName;
     }
 
     @Override

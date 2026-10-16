@@ -272,7 +272,9 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      *
      * @return a function that says which line of the resulting table a given benchmark result should be in, by providing a string that identifies the line
      */
-    protected abstract Function<BenchmarkResult, String> getLineSorter();
+    protected Function<BenchmarkResult, String> getLineSorter() {
+        return BenchmarkResult::benchmarkName;
+    }
 
     /**
      * Sort all the benchmark results of the report by the relevant information per line.

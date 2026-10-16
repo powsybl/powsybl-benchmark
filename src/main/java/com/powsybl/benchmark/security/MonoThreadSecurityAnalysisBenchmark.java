@@ -10,6 +10,7 @@ package com.powsybl.benchmark.security;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.commons.state.ContingenciesCounter;
 import com.powsybl.benchmark.security.state.MonoThreadSecurityAnalysisState;
+import com.powsybl.benchmark.security.state.RealGridMonoThreadSecurityAnalysisState;
 import com.powsybl.benchmark.security.state.ReleaseMonoThreadSecurityAnalysisState;
 import com.powsybl.security.SecurityAnalysis;
 import com.powsybl.security.SecurityAnalysisResult;
@@ -41,11 +42,7 @@ public class MonoThreadSecurityAnalysisBenchmark {
                                                                 MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
                                                                 ContingenciesCounter contingenciesCounter) {
         contingenciesCounter.setNumberOfContingencies(monoThreadSecurityAnalysisState.getNumberOfContingencies());
-        SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
-            .run(monoThreadSecurityAnalysisState.getNetwork(),
-                monoThreadSecurityAnalysisState.getContingencies(),
-                monoThreadSecurityAnalysisState.getRunParameters())
-            .getResult();
+        SecurityAnalysisResult result = runSecurityAnalysis(monoThreadSecurityAnalysisState);
         blackhole.consume(result);
     }
 
@@ -59,11 +56,30 @@ public class MonoThreadSecurityAnalysisBenchmark {
                                                                    ReleaseMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
                                                                    ContingenciesCounter contingenciesCounter) {
         contingenciesCounter.setNumberOfContingencies(monoThreadSecurityAnalysisState.getNumberOfContingencies());
-        SecurityAnalysisResult result = SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
+        SecurityAnalysisResult result = runSecurityAnalysis(monoThreadSecurityAnalysisState);
+        blackhole.consume(result);
+    }
+
+    /**
+     * As the Security analysis on the RealGrid network takes A LOT of time, only one iteration is performed for this benchmark.
+     */
+    @Benchmark
+    @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
+    @Fork(FORKS)
+    public void benchmarkMonoThreadSecurityAnalysisWithOnlyRealGrid(Blackhole blackhole,
+                                                                    RealGridMonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState,
+                                                                    ContingenciesCounter contingenciesCounter) {
+        contingenciesCounter.setNumberOfContingencies(monoThreadSecurityAnalysisState.getNumberOfContingencies());
+        SecurityAnalysisResult result = runSecurityAnalysis(monoThreadSecurityAnalysisState);
+        blackhole.consume(result);
+    }
+
+    private SecurityAnalysisResult runSecurityAnalysis(MonoThreadSecurityAnalysisState monoThreadSecurityAnalysisState) {
+        return SecurityAnalysis.find(monoThreadSecurityAnalysisState.getProvider())
             .run(monoThreadSecurityAnalysisState.getNetwork(),
                 monoThreadSecurityAnalysisState.getContingencies(),
                 monoThreadSecurityAnalysisState.getRunParameters())
             .getResult();
-        blackhole.consume(result);
     }
 }
