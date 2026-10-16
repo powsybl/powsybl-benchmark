@@ -78,7 +78,7 @@ public final class BenchmarkTestUtils {
                 benchmarkClass,
                 "1.0.0",
                 "1.0.0",
-                "2026-08-11T10:00:00.123",
+                SerDeUtil.formatISODatetimeToSimplified("2026-08-11T10:00:00.123"),
                 runResults.stream().map(BenchmarkResult::new).toList()
         );
     }

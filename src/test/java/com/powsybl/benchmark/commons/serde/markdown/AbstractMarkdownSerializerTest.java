@@ -49,7 +49,7 @@ public abstract class AbstractMarkdownSerializerTest {
     public void testReportToStringWithBaseline() throws IOException, URISyntaxException {
         for (int i = 0; i < getBenchFilenames().size(); ++i) {
             testReportToStringFullPath(getBenchClass(), getBenchFilenames().get(i), buildResults(), getResourceWithBaselinePaths().get(i),
-                Paths.get(getClass().getResource(getBaselineDirectoryPathString()).toURI()));
+                Paths.get(Objects.requireNonNull(getClass().getResource(getBaselineDirectoryPathString())).toURI()));
         }
     }
 
