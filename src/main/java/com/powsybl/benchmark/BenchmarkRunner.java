@@ -59,9 +59,6 @@ public final class BenchmarkRunner implements Runnable {
         "Format is YYYYMMDD_hhmmss. If not provided, do not consider timestamp to match filenames", defaultValue = "")
     private String baselineTimestamp = "";
 
-    @CommandLine.Option(names = {"--debug", "-D"}, description = "Disable forks for debug purposes", defaultValue = "false")
-    private boolean debug = false;
-
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
     private BenchmarkSuite benchmarkSuite;
 
@@ -102,9 +99,8 @@ public final class BenchmarkRunner implements Runnable {
             }
         } else {
             try {
-                // Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
-                String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
-                CommandLineOptions opts = new CommandLineOptions(jmhArgs);
+                // Build JMH arguments
+                CommandLineOptions opts = new CommandLineOptions(benchmarkArgs);
 
                 // Run the benchmarks and collect the results
                 Collection<RunResult> results = new Runner(opts).run();
@@ -146,24 +142,6 @@ public final class BenchmarkRunner implements Runnable {
             }
         }
         return benchmarks;
-    }
-
-    /**
-     * Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
-     * @param debug whether debug mode is enabled
-     * @param benchmarkArgs the benchmark arguments to run
-     * @return an array with benchmark arguments and debug options if needed
-     */
-    private static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs) {
-        if (debug) {
-            LOGGER.info("Debug mode activated: forks are disabled");
-            String[] jmhArgs = new String[benchmarkArgs.length + 2];
-            System.arraycopy(benchmarkArgs, 0, jmhArgs, 0, benchmarkArgs.length);
-            jmhArgs[benchmarkArgs.length] = "-f";
-            jmhArgs[benchmarkArgs.length + 1] = "0";
-            return jmhArgs;
-        }
-        return benchmarkArgs;
     }
 
     /**
