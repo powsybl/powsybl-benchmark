@@ -52,6 +52,15 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
     }
 
     @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        Map<String, Double> lineScores = new HashMap<>(results.size() + 1, 1);
+        for (BenchmarkResult result : results) {
+            lineScores.put(getPrettyColumnName(result), result.score());
+        }
+        return lineScores;
+    }
+
+    @Override
     protected String getTableName(BenchmarkReport report) {
         return report.results().getFirst().parameters().get("networkName");
     }

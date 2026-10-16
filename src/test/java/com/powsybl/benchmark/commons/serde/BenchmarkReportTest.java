@@ -18,7 +18,6 @@ import java.util.List;
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.assertResultsEqual;
 import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResult;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -27,16 +26,17 @@ class BenchmarkReportTest {
 
     @Test
     void testConstructorFromRunResults() {
+        String datetime = "20260814_091945";
         String className = "MyBenchmarkClass";
         RunResult rr1 = mockRunResult(className + ".method1");
         RunResult rr2 = mockRunResult(className + ".method2");
 
-        BenchmarkReport report = new BenchmarkReport(className, List.of(rr1, rr2));
+        BenchmarkReport report = new BenchmarkReport(className, List.of(rr1, rr2), datetime);
 
         assertEquals(className, report.benchmarkClass());
         assertEquals(new PowsyblCoreVersion().getMavenProjectVersion(), report.powsyblCoreVersion());
         assertEquals(new PowsyblOpenLoadFlowVersion().getMavenProjectVersion(), report.openLoadFlowVersion());
-        assertNotNull(report.datetime());
+        assertEquals(datetime, report.datetime());
         assertEquals(2, report.results().size());
         assertResultsEqual(new BenchmarkResult(rr1), report.results().get(0));
         assertResultsEqual(new BenchmarkResult(rr2), report.results().get(1));
@@ -44,11 +44,12 @@ class BenchmarkReportTest {
 
     @Test
     void testBuildAllReports() {
+        String datetime = "20260814_091945";
         RunResult rr1 = mockRunResult("com.powsybl.ClassA.method1");
         RunResult rr2 = mockRunResult("com.powsybl.ClassA.method2");
         RunResult rr3 = mockRunResult("com.powsybl.ClassB.method3");
 
-        List<BenchmarkReport> reports = BenchmarkReport.buildAllReports(List.of(rr1, rr2, rr3));
+        List<BenchmarkReport> reports = BenchmarkReport.buildAllReports(List.of(rr1, rr2, rr3), datetime);
 
         Assertions.assertThat(reports).hasSize(2)
             .extracting(

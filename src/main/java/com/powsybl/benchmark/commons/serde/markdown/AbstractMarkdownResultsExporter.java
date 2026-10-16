@@ -10,15 +10,19 @@ package com.powsybl.benchmark.commons.serde.markdown;
 import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 public abstract class AbstractMarkdownResultsExporter implements ResultsExporter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractMarkdownResultsExporter.class);
 
     private final List<String> supportedBenchmarkClasses;
 
@@ -95,6 +99,17 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
     }
 
     /**
+     * Format the score of a benchmark result with the associated unit.
+     * @param score the score of the benchmark result
+     * @param unit the unit of the benchmark result
+     * @param scorePerOperationFormatter an operation to apply on the score before formatting
+     * @return the formatted score with the associated unit
+     */
+    public static String getFormattedScoreAndUnit(double score, String unit, DoubleUnaryOperator scorePerOperationFormatter) {
+        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(score), unit);
+    }
+
+    /**
      * Constructs an array of column names by combining a list of initial column names and
      * column names derived from a list of benchmark results using a column provider function.
      *
@@ -110,6 +125,12 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return columnNames;
     }
 
+    /**
+     * Calculate the width of each column in the table.
+     * @param columnNames the names of the columns
+     * @param valuesByLine the strings to be printed in the table
+     * @return the width of each column (the maximum of the length of the strings of that column + 2 for space padding on each side)
+     */
     private static int[] calculateWidthPerColumn(String[] columnNames, String[][] valuesByLine) {
         int[] widthByColumn = new int[columnNames.length];
         for (int i = 0; i < columnNames.length; ++i) {
@@ -169,10 +190,19 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * this abstract class).
      *
      * @param report the original report to be transformed into one or more table
+     * @param baseline the baseline report to be compared with the original report (can be null)
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
-    public Map<String, String> exportReport(BenchmarkReport report) {
+    @Override
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline) {
+        if (baseline != null && !report.benchmarkClass().equals(baseline.benchmarkClass())) {
+            LOGGER.warn("Cannot compare reports with different benchmark classes: report {} and baseline {}", report.benchmarkClass(), baseline.benchmarkClass());
+            return Map.of();
+        }
         List<BenchmarkReport> splitReports = splitReport(report);
+        Map<String, BenchmarkReport> baselineMap = baseline == null ? Map.of()
+            : splitReport(baseline).stream()
+            .collect(Collectors.toMap(this::getTableName, Function.identity()));
         Map<String, String> reportStrings = new HashMap<>();
         for (BenchmarkReport partReport : splitReports) {
             // Get the results grouped by line, each line will be a row in the table
@@ -186,7 +216,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             String[] columnNames = columnNames(resultsByLine.getFirst());
 
             // Get the values for each line in the table
-            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames);
+            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames, baselineMap.get(tableName));
 
             // Calculate the width of each column based on the column names and the values in each line
             int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
@@ -223,6 +253,19 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * each value to be displayed on the line at that column
      */
     protected abstract Map<String, String> getLine(List<BenchmarkResult> results);
+
+    /**
+     * This function is used to compare the results of a benchmark with a baseline, and to display the relative difference in the table.
+     * Return a map where each key corresponds to a column name, and each value is the score of the benchmark result at that column.
+     * The returned <code>Map&lt;String, Double&gt;</code> should contain the same number of entries as there are columns (and the keys should match),
+     * as defined by {@link #columnNames(List)}.
+     * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
+     * The scores returned should match with the implementation of the {@link #getLine(List)} function.
+     *
+     * @return a Map of Double, each key is a column name (as defined by {@link #columnNames(List)}), each value is the score of the benchmark result at that column.
+     *
+     */
+    protected abstract Map<String, Double> getLineScores(List<BenchmarkResult> results);
 
     /**
      * Define the function that dictates how results should be grouped by line.
@@ -273,14 +316,29 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return "";
     }
 
-    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames) {
+    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames, BenchmarkReport baseline) {
+        List<List<BenchmarkResult>> baselineResultsByLine = baseline == null ? null : getResultsByTableLine(baseline);
         String[][] valuesByLine = new String[resultsByLine.size()][columnNames.length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
             Map<String, String> lineValues = getLine(resultsByLine.get(i));
+            Map<String, Double> lineScores = getLineScores(resultsByLine.get(i));
+            Map<String, Double> baselineLineScores = baselineResultsByLine == null ? Map.of() : getLineScores(baselineResultsByLine.get(i));
             for (int j = 0; j < columnNames.length; ++j) {
-                valuesByLine[i][j] = lineValues.get(columnNames[j]);
+                String columnName = columnNames[j];
+                valuesByLine[i][j] = lineValues.get(columnName) + getBaselineRelativeDifference(
+                    lineScores.get(columnName), baselineLineScores.get(columnName)
+                );
             }
         }
         return valuesByLine;
+    }
+
+    private String getBaselineRelativeDifference(Double resultScore, Double baselineScore) {
+        if (resultScore == null || baselineScore == null) {
+            return "";
+        }
+        double relativeDifference = Math.round(100 * (resultScore / baselineScore - 1));
+        String symbol = relativeDifference > 0 ? "+" : "";
+        return String.format(" (%s%.0f%%)", symbol, relativeDifference);
     }
 }

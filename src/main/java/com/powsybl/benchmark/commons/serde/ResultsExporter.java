@@ -41,23 +41,30 @@ public interface ResultsExporter {
      * Serialize a benchmark report into one or more tables, and write them to one or more Markdown file.
      *
      * @param report        the benchmark report
-     * @param directoryPath path to the directory where the Markdown files will be written.
+     * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written.
      *                      If multiple tables are generated, the path to each table will be <code>filePath/benchmarkName_tableName.md</code>
+     * @param baselineReportDirectoryInputPath path to the directory where the baseline benchmark report that will be used for baseline comparison is stored. Can be null.
      * @return true if the report was successfully exported, false otherwise
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
-    static boolean export(BenchmarkReport report, Path directoryPath) throws IOException {
+    static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) throws IOException {
         ResultsExporter resultsExporter = find(report.benchmarkClass());
         if (resultsExporter != null) {
-            Map<String, String> serializedReports = resultsExporter.exportReport(report);
+            BenchmarkReport baselineReport = null;
+            if (baselineReportDirectoryInputPath != null && Files.exists(baselineReportDirectoryInputPath)) {
+                baselineReport = BenchmarkReportJsonSerDe.readReports(
+                    SerDeUtil.getMatchingFileFromPath(baselineReportDirectoryInputPath,
+                        new SerDeFilePredicate(report.benchmarkClass(), timestamp + ".json", report.datetime()))).getFirst();
+            }
+            Map<String, String> serializedReports = resultsExporter.exportReport(report, baselineReport);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
                 String fileName = String.format("%s%s%s_%s.md",
                     report.benchmarkClass(),
                     table.getKey().isEmpty() ? "" : "_",
                     table.getKey(),
-                    ExporterUtil.formatDatetime(report));
+                    report.datetime());
                 Files.writeString(
-                    directoryPath.resolve(fileName),
+                    markdownDirectoryOutputPath.resolve(fileName),
                     table.getValue()
                 );
             }
@@ -69,15 +76,18 @@ public interface ResultsExporter {
     /**
      * Group all {@link RunResult} into reports, then exportAll them in tables written to markdown files.
      *
-     * @param results       all the run results to exportAll
-     * @param directoryPath path to the directory where the Markdown files will be written
+     * @param reports       all the run reports to be exported
+     * @param markdownDirectoryOutputPath path to the directory where the Markdown files will be written
+     * @param baselineReportDirectoryInputPath path to the directory where the serialized benchmark reports used as baseline for comparison are located
+     * @param timestamp only use serialized benchmark results file whose name matches this timestamp. Format is YYYYMMDD_hhmmss.
+     *                  If not provided or empty, do not consider timestamp to match filenames
      * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
-     * @see #export(BenchmarkReport, Path)
+     * @see #export(BenchmarkReport, Path, Path, String)
      */
-    static void exportAll(Collection<RunResult> results, Path directoryPath) throws IOException {
+    static void exportAll(List<BenchmarkReport> reports, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) throws IOException {
         List<String> failedExports = new ArrayList<>();
-        for (BenchmarkReport report : BenchmarkReport.buildAllReports(results)) {
-            if (!export(report, directoryPath)) {
+        for (BenchmarkReport report : reports) {
+            if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, timestamp)) {
                 failedExports.add(report.benchmarkClass());
             }
         }
@@ -88,5 +98,5 @@ public interface ResultsExporter {
 
     boolean isBenchmarkClassSupported(String benchmarkClass);
 
-    Map<String, String> exportReport(BenchmarkReport report);
+    Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline);
 }

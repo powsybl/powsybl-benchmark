@@ -9,10 +9,8 @@ package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,40 +19,46 @@ import java.util.Map;
  */
 class MultiThreadSecurityAnalysisBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "MultiThreadSecurityAnalysisBenchmark";
-        String benchName = benchClass + ".benchmark";
+    private Map<String, String> params(String networkName, String threadCount) {
+        return Map.of("networkName", networkName, "threadCount", threadCount);
+    }
 
-        List<RunResult> runResults = List.of(
-            // IEEE 14
-            //parallelization factor: 1
+    @Override
+    protected String getBenchClass() {
+        return "MultiThreadSecurityAnalysisBenchmark";
+    }
+
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/multi-thread-security-analysis-report.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/multi-thread-security-analysis-report-with-baseline.md");
+    }
+
+    @Override
+    protected String getBaselineDirectoryPathString() {
+        return "/baseline";
+    }
+
+    @Override
+    protected List<RunResult> buildResults() {
+        String benchName = getBenchClass() + ".benchmark";
+        return List.of(
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_1888, "1"), 100.0),
-            //parallelization factor: 100/(55*2) = 0.909 -> 0.91
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_1888, "2"), 55.0),
-            //parallelization factor: 100/(30*4) = 0.8333 -> 0.83
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_1888, "4"), 30.0),
-            //parallelization factor: 100/(20*8) = 0.625 -> 0.63
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_1888, "8"), 20.0),
-
-            // IEEE 118
-            //same factors since every number is double compared to the IEEE 14 network
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_6515, "1"), 200.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_6515, "2"), 110.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_6515, "4"), 60.0),
             BenchmarkTestUtils.mockRunResult(benchName, params(Constants.RTE_6515, "8"), 40.0),
-
-            //another network
             BenchmarkTestUtils.mockRunResult(benchName, params("Unknown network", "1"), 150.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("Unknown network", "2"), 77.32),
             BenchmarkTestUtils.mockRunResult(benchName, params("Unknown network", "4"), 56.82),
             BenchmarkTestUtils.mockRunResult(benchName, params("Unknown network", "8"), 89.29)
         );
-
-        testReportToString(benchClass, runResults, "/multi-thread-security-analysis-report.md");
-    }
-
-    private Map<String, String> params(String networkName, String threadCount) {
-        return Map.of("networkName", networkName, "threadCount", threadCount);
     }
 }

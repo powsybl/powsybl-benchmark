@@ -51,6 +51,13 @@ public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownRe
         return line;
     }
 
+    @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        Map<String, Double> lineScores = new HashMap<>(results.size(), 1);
+        results.forEach(result -> lineScores.put(getPrettyColumnName(result), result.score()));
+        return lineScores;
+    }
+
     protected String getPrettyColumnName(BenchmarkResult benchmarkResult) {
         return LOAD_FLOW_PARAMETERS_TYPE_COLUMN_NAMES.get(LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type")));
     }
