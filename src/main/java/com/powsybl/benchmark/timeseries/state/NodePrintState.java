@@ -20,6 +20,7 @@ public class NodePrintState {
 
     @Param({"1000", "2000", "4000", "8000"})
     private int size;
+
     private NodeCalc node;
 
     @Setup(Level.Trial)

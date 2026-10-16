@@ -13,7 +13,6 @@ import com.powsybl.benchmark.commons.serde.ResultsExporter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -41,11 +40,6 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
             "Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()),
             "Time (ms/op)", getFormattedScore(results.getFirst(), 3)
         );
-    }
-
-    @Override
-    protected Function<BenchmarkResult, String> getLineSorter() {
-        return BenchmarkResult::benchmarkName;
     }
 
     private String getPrettyOperationName(String fullOperationName) {
