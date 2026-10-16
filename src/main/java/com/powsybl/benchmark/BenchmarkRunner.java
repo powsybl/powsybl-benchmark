@@ -28,6 +28,8 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Supplier;
 
+import static picocli.CommandLine.Option.NULL_VALUE;
+
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
  */
@@ -45,9 +47,9 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
-    @CommandLine.Option(names = "--baseline-directory", description = "Directory containing baseline benchmark results to compare with." +
-        "Must contain only one of each serialized benchmark result", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
-    private String baselineDirectory = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
+    @CommandLine.Option(names = {"--compare", "-C"}, arity = "0..1", description = "Compare with a baselineDirectory containing baseline benchmark results to compare with." +
+        "Must contain only one of each serialized benchmark result", defaultValue = NULL_VALUE, fallbackValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    private Path baselineDirectory;
 
     @CommandLine.Option(names = "--baseline-timestamp", description = "Only use serialized benchmark results from the baseline directory that match exactly the provided timestamp." +
         "Format is YYYYMMDD_hhmmss. If not provided, do not consider timestamp to match filenames", defaultValue = "")
@@ -98,7 +100,7 @@ public final class BenchmarkRunner implements Runnable {
                 if (!noSerde) {
                     Path benchmarkOutputPath = Path.of(serdePath);
                     BenchmarkReportJsonSerDe.writeAll(results, benchmarkOutputPath);
-                    ResultsExporter.exportAll(results, benchmarkOutputPath, Path.of(baselineDirectory), baselineTimestamp);
+                    ResultsExporter.exportAll(results, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
                 }
             } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);
