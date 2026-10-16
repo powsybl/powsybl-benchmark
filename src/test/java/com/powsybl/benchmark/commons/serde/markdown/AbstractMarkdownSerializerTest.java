@@ -7,10 +7,7 @@
  */
 package com.powsybl.benchmark.commons.serde.markdown;
 
-import com.powsybl.benchmark.commons.serde.BenchmarkReport;
-import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import com.powsybl.benchmark.commons.serde.ResultsExporter;
-import com.powsybl.benchmark.commons.serde.SerDeUtil;
+import com.powsybl.benchmark.commons.serde.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
@@ -62,7 +59,7 @@ public abstract class AbstractMarkdownSerializerTest {
 
         String actual = Files.readString(tempDir.resolve(SerDeUtil.getMatchingFileFromPath(
                     tempDir,
-                    SerDeUtil.checkFileMatches(filenameStart, ".md")
+                    new SerDeFilePredicate(filenameStart, ".md", "")
                 )),
                 StandardCharsets.UTF_8)
             .replace("\r\n", "\n");

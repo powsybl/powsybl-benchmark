@@ -9,8 +9,10 @@ package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
+import com.powsybl.benchmark.commons.serde.SerDeUtil;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -25,6 +27,8 @@ import picocli.CommandLine.Command;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -98,13 +102,24 @@ public final class BenchmarkRunner implements Runnable {
             }
         } else {
             try {
+                // Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
                 String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
                 CommandLineOptions opts = new CommandLineOptions(jmhArgs);
+
+                // Run the benchmarks and collect the results
                 Collection<RunResult> results = new Runner(opts).run();
+
+                // Export the results if serde is enabled
                 if (!noSerde) {
+                    String datetimeFormatted = SerDeUtil.formatISODatetimeToSimplified(LocalDateTime.now(ZoneOffset.UTC).toString());
+                    List<BenchmarkReport> reports = BenchmarkReport.buildAllReports(results, datetimeFormatted);
                     Path benchmarkOutputPath = Path.of(serdePath);
-                    BenchmarkReportJsonSerDe.writeAll(results, benchmarkOutputPath);
-                    ResultsExporter.exportAll(results, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
+
+                    // JSON export
+                    BenchmarkReportJsonSerDe.writeAll(reports, benchmarkOutputPath);
+
+                    // Markdown export
+                    ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
                 }
             } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);

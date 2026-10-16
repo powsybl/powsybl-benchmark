@@ -28,19 +28,18 @@ public final class SerDeUtil {
     }
 
     /**
-     * Formats the datetime string from the given {@code BenchmarkReport} by transforming it into a
-     * compact and readable format. The formatting involves removing fractional seconds,
-     * replacing the 'T' delimiter with an underscore ('_'), and removing dashes and colons.
+     * Formats the ISO datetime string by transforming it into a compact and readable format.
+     * The formatting involves removing fractional seconds, replacing the 'T' delimiter with an underscore ('_'),
+     * and removing dashes and colons.
      * This is necessary since some operating systems (such as windows) cannot have filenames with colons.
      *
-     * @param report The {@code BenchmarkReport} object containing the datetime to be formatted.
-     *               The datetime string must adhere to the format: {@code yyyy-MM-dd'T'HH:mm:ss.SSS}.
+     * @param datetime The datetime string to be formatted.
+     *                 The datetime string must adhere to the ISO format: {@code yyyy-MM-dd'T'HH:mm:ss.SSS}.
      * @return A formatted datetime string with fractional seconds removed and symbols replaced
      *         as described. For example, a datetime string like {@code 2026-08-14T09:19:45.842589364}
      *         will be formatted as {@code 20260814_091945}.
      */
-    public static String formatDatetime(BenchmarkReport report) {
-        String datetime = report.datetime();
+    public static String formatISODatetimeToSimplified(String datetime) {
         //datetime is of the format 2026-08-14T09:19:45.842589364
         return datetime.substring(0, datetime.indexOf('.'))
             .replace('T', '_')
@@ -48,15 +47,18 @@ public final class SerDeUtil {
             .replace(":", "");
     }
 
-    public static Predicate<Path> checkFileMatches(String startToMatch, String endToMatch) {
-        return p -> p.getFileName().toString().startsWith(startToMatch) && p.getFileName().toString().endsWith(endToMatch);
+    public static Predicate<Path> checkFileMatches(String startToMatch, String endToMatch, String stringThatShouldNotBeContained) {
+        return p -> p.getFileName().toString().startsWith(startToMatch)
+            && p.getFileName().toString().endsWith(endToMatch)
+            && (stringThatShouldNotBeContained.isEmpty() || !p.getFileName().toString().contains(stringThatShouldNotBeContained));
     }
 
-    public static Path getMatchingFileFromPath(Path directory, Predicate<Path> predicate) {
+    public static Path getMatchingFileFromPath(Path directory, SerDeFilePredicate predicate) {
         try (Stream<Path> files = Files.list(directory)) {
-            List<Path> matchingFiles = files.filter(predicate).toList();
+            List<Path> matchingFiles = files.filter(p -> predicate.test(p.getFileName().toString())).toList();
             if (matchingFiles.size() > 1) {
-                throw new PowsyblException("Multiple matching files found in directory " + directory + " for predicate " + predicate);
+                throw new PowsyblException("Multiple matching files found in directory " + directory + " for predicate "
+                    + predicate + ": " + matchingFiles.stream().map(p -> p.getFileName().toString()).toList());
             } else if (matchingFiles.isEmpty()) {
                 throw new PowsyblException("No matching file found in directory " + directory + " for predicate " + predicate);
             } else {
