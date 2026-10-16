@@ -37,8 +37,8 @@
         <jmh.version>1.37</jmh.version>
         <maven-shade-plugin.version>3.6.1</maven-shade-plugin.version>
         <picocli.version>4.7.7</picocli.version>
-        <powsybl-core.version>7.3.1</powsybl-core.version>
-        <powsybl-open-loadflow.version>2.3.0</powsybl-open-loadflow.version>
+        <powsybl-core.version>7.4.0</powsybl-core.version>
+        <powsybl-open-loadflow.version>2.4.0</powsybl-open-loadflow.version>
 
         <!-- Other variables -->
         <enable-dynamic-agent-loading.argLine/>
