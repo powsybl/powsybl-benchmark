@@ -1,0 +1,205 @@
+{
+  "benchmarkClass" : "LoadFlowBenchmark",
+  "powsyblCoreVersion" : "7.3.1",
+  "openLoadFlowVersion" : "2.3.0",
+  "datetime" : "2026-10-09T17:02:36.098008167",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee14",
+      "provider" : "OpenLoadFlow",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.1497395015932516,
+    "scoreError" : 0.009783117812204704,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee14",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.16144378290110986,
+    "scoreError" : 0.007520709654431273,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee14",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.15464907076037554,
+    "scoreError" : 0.016864133658574563,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee118",
+      "provider" : "OpenLoadFlow",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.089354379841882,
+    "scoreError" : 0.09187149741482299,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee118",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.456285295113807,
+    "scoreError" : 0.12919814549270173,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee118",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 1.1838810173941585,
+    "scoreError" : 0.09841124812115268,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee300",
+      "provider" : "OpenLoadFlow",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.5011904996664245,
+    "scoreError" : 0.13444098945953262,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee300",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 4.567881145571896,
+    "scoreError" : 0.5499236416790162,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "Ieee300",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.1736347397849274,
+    "scoreError" : 0.2173492814025329,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "case1888rte",
+      "provider" : "OpenLoadFlow",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 20.305715924318726,
+    "scoreError" : 0.3576418684461508,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "case1888rte",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 23.360710465544106,
+    "scoreError" : 0.505683251360579,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "case1888rte",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 20.617536768870078,
+    "scoreError" : 0.6696011622141764,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "case6515rte",
+      "provider" : "OpenLoadFlow",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 88.7098738014242,
+    "scoreError" : 3.8570030989461874,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "case6515rte",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 158.01993047485118,
+    "scoreError" : 4.887834856666067,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "case6515rte",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 103.2059818484593,
+    "scoreError" : 2.9486308430934995,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "RealGrid",
+      "provider" : "OpenLoadFlow",
+      "type" : "BASIC"
+    },
+    "mode" : "AverageTime",
+    "score" : 89.5468328062021,
+    "scoreError" : 2.586760525178951,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "RealGrid",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD"
+    },
+    "mode" : "AverageTime",
+    "score" : 138.05023706605533,
+    "scoreError" : 7.266580899143341,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.loadflow.LoadFlowBenchmark.benchmarkLoadFlow",
+    "parameters" : {
+      "networkName" : "RealGrid",
+      "provider" : "OpenLoadFlow",
+      "type" : "STANDARD_REACTIVE_LIMITS_NOT_USED"
+    },
+    "mode" : "AverageTime",
+    "score" : 103.05881633463075,
+    "scoreError" : 1.4967640494236742,
+    "scoreUnit" : "ms/op"
+  } ]
+}

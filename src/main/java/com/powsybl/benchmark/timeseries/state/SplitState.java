@@ -25,10 +25,13 @@ public class SplitState {
 
     @Param({"1000", "10000", "100000"})
     private int size;
+
     @Param({"100", "1000"})
     private int newChunkSize;
+
     @Param({"SINGLE_CHUNK", "FRAGMENTED"})
     private String layout;
+
     private List<DoubleTimeSeries> timeSeriesList;
 
     @Setup(Level.Trial)

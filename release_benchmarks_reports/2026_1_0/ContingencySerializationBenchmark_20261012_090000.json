@@ -1,0 +1,61 @@
+{
+  "benchmarkClass" : "ContingencySerializationBenchmark",
+  "powsyblCoreVersion" : "7.3.1",
+  "openLoadFlowVersion" : "2.3.0",
+  "datetime" : "2026-10-12T09:00:00.514267081",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.benchmark1Parsing",
+    "parameters" : {
+      "defaultContingencyListPath" : "src/main/resources/data/contingencyList.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.7000948981770809,
+    "scoreError" : 0.06575714800350418,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.benchmark2ParsingFromBytes",
+    "parameters" : {
+      "defaultContingencyListPath" : "src/main/resources/data/contingencyList.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.5280307431307703,
+    "scoreError" : 0.008933397753339088,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.benchmark3JustReading",
+    "parameters" : {
+      "defaultContingencyListPath" : "src/main/resources/data/contingencyList.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.09748227637342788,
+    "scoreError" : 0.006341150799919855,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.benchmark4ReadingToString",
+    "parameters" : {
+      "defaultContingencyListPath" : "src/main/resources/data/contingencyList.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.09714476113786234,
+    "scoreError" : 0.002453339375356584,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.benchmark5Writing",
+    "parameters" : {
+      "defaultContingencyListPath" : "src/main/resources/data/contingencyList.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.14342127410626165,
+    "scoreError" : 0.0020914742247194976,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.ContingencySerializationBenchmark.benchmark6BufferedWriting",
+    "parameters" : {
+      "defaultContingencyListPath" : "src/main/resources/data/contingencyList.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.161673533440932,
+    "scoreError" : 0.008080626509011958,
+    "scoreUnit" : "ms/op"
+  } ]
+}

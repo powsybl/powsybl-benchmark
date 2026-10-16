@@ -4,12 +4,12 @@
 
 All the benchmark results presented here were obtained on the same hardware and software configuration:
 
-| Component      | Specification               |
-|----------------|-----------------------------|
-| Hardware model | Dell Inc. Precision 5520    |
-| Processor      | Intel(R) Core(TM) i7-6820HQ |
-| RAM            | 32 Go                       |
-| OS             | Ubuntu 22.04.5 LTS          |
+| Component      | Specification                        |
+|----------------|--------------------------------------|
+| Hardware model | Dell Precision 5680                  |
+| Processor      | 13th Gen Intel(R) Core(TM) i7-13700H |
+| RAM            | 32 Go                                |
+| OS             | Ubuntu 22.04 LTS                     |
 
 Execution is done on a single core, there is no code parallelization, and the results are in `ms/op` unless explicitly stated.
 
@@ -22,9 +22,9 @@ Time series benchmark has been done using the [JMH](https://github.com/openjdk/j
 This benchmark measures `NodeCalcPrinter.print(...)`, which traverses all the tree to
 render it as an expression string. The `size` parameter is the number of nodes.
 
-| Operation | 1000         | 2000        | 4000         | 8000         |
-|-----------|--------------|-------------|--------------|--------------|
-| print     | 0,28 (ms/op) | 1,1 (ms/op) | 4.25 (ms/op) | 16.6 (ms/op) |
+| Operation     | 1000       | 2000       | 4000       | 8000        |
+|---------------|------------|------------|------------|-------------|
+| Node printing | 0,22 ms/op | 0,85 ms/op | 3,38 ms/op | 13,73 ms/op |
 
 _Note: those results are for the v2026.0.0 version_
 
@@ -41,11 +41,13 @@ The benchmark isolates the two factors that actually drive the cost:
 - `SINGLE_CHUNK`: one large uncompressed chunk
 - `FRAGMENTED`: many single uncompressed chunks
 
-| Layout       | newChunkSize (k) | size = 1000   | size = 10 000  | size = 100 000  | complexity |
-|--------------|------------------|---------------|----------------|-----------------|------------|
-| SINGLE_CHUNK | 100              | 0,005 (ms/op) | 0,472  (ms/op) | 42,079  (ms/op) | O(n² / k)  |
-| SINGLE_CHUNK | 1000             | 0.001 (ms/op) | 0,051  (ms/op) | 4,198  (ms/op)  | O(n² / k)  |
-| FRAGMENTED   | 100              | 0,086 (ms/op) | 0,861  (ms/op) | 10,834  (ms/op) | O(n * k)   |
-| FRAGMENTED   | 1000             | 0,384 (ms/op) | 3,861  (ms/op) | 38,530  (ms/op) | O(n * k)   |
+| Layout       | newChunkSize (k) | size = 1000 | size = 10000 | size = 100000 |
+|--------------|------------------|-------------|--------------|---------------|
+| SINGLE_CHUNK | 100              | 0,003 ms/op | 0,275 ms/op  | 32,950 ms/op  |
+| SINGLE_CHUNK | 1000             | 0,000 ms/op | 0,029 ms/op  | 3,295 ms/op   |
+| FRAGMENTED   | 100              | 0,042 ms/op | 0,430 ms/op  | 4,900 ms/op   |
+| FRAGMENTED   | 1000             | 0,335 ms/op | 3,360 ms/op  | 33,707 ms/op  |
 
-_Note: those results are for the v2026.0.0 version_
+_Note: those results are for the v2026.1.0 version_
+
+The algorithmic complexity of the `split` method is O(n² / k) for a single chunk and O(n * k) for fragmented chunks.

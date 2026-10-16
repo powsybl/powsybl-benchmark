@@ -15,7 +15,6 @@ import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -50,11 +49,6 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
         //missing CGMES case
         line.putIfAbsent("CGMES", "—");
         return line;
-    }
-
-    @Override
-    protected Function<BenchmarkResult, String> getLineSorter() {
-        return BenchmarkResult::benchmarkName;
     }
 
     @Override

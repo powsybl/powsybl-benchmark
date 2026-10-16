@@ -1,0 +1,139 @@
+{
+  "benchmarkClass" : "SplitPerfBenchmark",
+  "powsyblCoreVersion" : "7.3.1",
+  "openLoadFlowVersion" : "2.3.0",
+  "datetime" : "2026-10-16T09:19:02.581485118",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.0029824396291468283,
+    "scoreError" : 6.176941836814121E-5,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.2746817190271322,
+    "scoreError" : 0.013041446739130463,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 32.95049262126547,
+    "scoreError" : 0.49635103729575775,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 5.784544938832805E-5,
+    "scoreError" : 6.903368936697976E-6,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.029156816574335765,
+    "scoreError" : 8.438064039372536E-4,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.294757683414184,
+    "scoreError" : 0.048968099505826625,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.041927906710814235,
+    "scoreError" : 7.687692774705638E-4,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.42962543761499977,
+    "scoreError" : 0.011458210793277796,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 4.900008487787917,
+    "scoreError" : 0.7558247695942977,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.3348716820154967,
+    "scoreError" : 0.019783750851423153,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.359827066201133,
+    "scoreError" : 0.15599678976824632,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 33.70704398115363,
+    "scoreError" : 0.26092239194102784,
+    "scoreUnit" : "ms/op"
+  } ]
+}
