@@ -39,11 +39,6 @@ class XmxSecurityAnalysisBenchmarkReportMarkdownSerializerTest extends AbstractM
     }
 
     @Override
-    protected String getBaselineDirectoryPathString() {
-        return "/baseline";
-    }
-
-    @Override
     protected List<RunResult> buildResults() {
         String benchClass = getBenchClass();
         List<RunResult> runResults = new ArrayList<>();

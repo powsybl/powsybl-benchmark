@@ -47,11 +47,6 @@ class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdow
     }
 
     @Override
-    protected String getBaselineDirectoryPathString() {
-        return "/baseline";
-    }
-
-    @Override
     protected List<RunResult> buildResults() {
         String benchName = getBenchClass() + ".benchmark";
         return List.of(

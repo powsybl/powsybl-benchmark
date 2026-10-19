@@ -39,11 +39,6 @@ class LoadFlowBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSeri
     }
 
     @Override
-    protected String getBaselineDirectoryPathString() {
-        return "/baseline";
-    }
-
-    @Override
     protected List<RunResult> buildResults() {
         String benchName = getBenchClass() + ".benchmarkLoadFlow";
         return List.of(
