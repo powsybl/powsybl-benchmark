@@ -1,3 +1,24 @@
 ---
-# Project-specific ORT configuration.
-# Add exclusions, curations, or resolutions only when justified.
+# Template of the repository configuration for PowSyBl projects.
+# Copy it as ".ort.yml" at the root of each repository and adapt it.
+# Documentation: https://oss-review-toolkit.org/ort/docs/configuration/ort-yml
+excludes:
+  scopes:
+    - pattern: "test"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Test dependencies are not distributed."
+    - pattern: "provided"
+      reason: "PROVIDED_DEPENDENCY_OF"
+      comment: "Provided by the runtime environment, not distributed with PowSyBl."
+  paths:
+    - pattern: "docs/**"
+      reason: "DOCUMENTATION_OF"
+      comment: "Documentation sources, not part of the distributed artifacts."
+
+# Pick the acceptable license of dual-licensed dependencies, e.g.:
+# license_choices:
+#   package_license_choices:
+#     - package_id: "Maven:jakarta.annotation:jakarta.annotation-api:2.1.1"
+#       license_choices:
+#         - given: "EPL-2.0 OR GPL-2.0-only WITH Classpath-exception-2.0"
+#           choice: "EPL-2.0"
