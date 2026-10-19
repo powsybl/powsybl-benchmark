@@ -1,0 +1,44 @@
+name: Open Source Compliance
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'release-v**'
+      - 'full-sonar-analysis-**'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ort:
+    name: License and SBOM checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up local ORT configuration
+        shell: bash
+        run: |
+          mkdir -p "$HOME/.ort/config"
+          cp -R ort/. "$HOME/.ort/config/"
+
+      - name: Run ORT
+        uses: oss-review-toolkit/ort-ci-github-action@086d928d24ef1653dc0777296b312fda5faaaf52 # v1.2.0
+        with:
+          run: >
+            cache-dependencies,
+            analyzer,
+            scanner,
+            advisor,
+            evaluator,
+            reporter
+          fail-on: violations
+          report-formats: 'CycloneDx,SpdxDocument'
