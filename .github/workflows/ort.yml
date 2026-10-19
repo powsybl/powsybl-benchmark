@@ -13,16 +13,24 @@ on:
 
 permissions: {}
 
+# Cancel a previous run of the same PR/branch when new commits are pushed.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   ort:
     name: License and SBOM checks
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     permissions:
       contents: read
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
 
       - name: Set up local ORT configuration
         shell: bash
@@ -33,12 +41,23 @@ jobs:
       - name: Run ORT
         uses: oss-review-toolkit/ort-ci-github-action@086d928d24ef1653dc0777296b312fda5faaaf52 # v1.2.0
         with:
+          # Pin the ORT version so that a new ORT release cannot break the configuration files overnight.
+          # Replace <version> with the release the ort/ files were validated against
+          # (see https://github.com/oss-review-toolkit/ort/pkgs/container/ort).
+          # image: 'ghcr.io/oss-review-toolkit/ort:<version>'
           run: >
             cache-dependencies,
+            cache-scan-results,
             analyzer,
             scanner,
             advisor,
             evaluator,
-            reporter
+            reporter,
+            upload-results
+          # Scan only the PowSyBl source code with ScanCode; dependencies are checked through their
+          # declared (Maven POM) licenses. Scanning every dependency jar would take hours.
+          ort-cli-scan-args: '--package-types PROJECT'
+          # Name the SBOM after the release tag instead of the commit short SHA.
+          sw-version: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
           fail-on: violations
-          report-formats: 'CycloneDx,SpdxDocument'
+          report-formats: 'CycloneDx,SpdxDocument,WebApp'
