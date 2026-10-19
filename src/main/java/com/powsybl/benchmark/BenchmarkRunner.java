@@ -115,7 +115,7 @@ public final class BenchmarkRunner implements Runnable {
                     Path benchmarkOutputPath = Path.of(serdePath);
 
                     // JSON export
-                    BenchmarkReportJsonSerDe.writeAll(reports, benchmarkOutputPath);
+                    BenchmarkReportJsonSerDe.writeReports(reports, benchmarkOutputPath);
 
                     // Markdown export
                     ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);

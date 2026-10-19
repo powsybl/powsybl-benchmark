@@ -92,7 +92,7 @@ class BenchmarkReportJsonSerDeTest {
         BenchmarkReport report1 = new BenchmarkReport("ClassA", List.of(rr1), datetime);
         BenchmarkReport report2 = new BenchmarkReport("ClassB", List.of(rr2), datetime);
 
-        BenchmarkReportJsonSerDe.writeAll(List.of(report1, report2), tempDir);
+        BenchmarkReportJsonSerDe.writeReports(List.of(report1, report2), tempDir);
 
         List<Path> reportPaths;
         try (Stream<Path> stream = Files.list(tempDir)) {

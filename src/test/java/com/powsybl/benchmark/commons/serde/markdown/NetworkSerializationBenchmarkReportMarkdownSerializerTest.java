@@ -43,11 +43,6 @@ class NetworkSerializationBenchmarkReportMarkdownSerializerTest extends Abstract
     }
 
     @Override
-    protected String getBaselineDirectoryPathString() {
-        return "/baseline";
-    }
-
-    @Override
     protected List<RunResult> buildResults() {
         String benchClass = getBenchClass();
         String deserialization = benchClass + ".benchmark1NetworkDeserialization";

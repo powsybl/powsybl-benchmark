@@ -27,10 +27,6 @@ public final class BenchmarkReportJsonSerDe {
         //no instancing on util class
     }
 
-    public static void writeAll(List<BenchmarkReport> reports, Path benchmarkOutputPath) throws IOException {
-        writeReports(reports, benchmarkOutputPath);
-    }
-
     /**
      * Writes the provided benchmark reports to the specified output directory in JSON format.
      *
