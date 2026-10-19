@@ -107,7 +107,9 @@ public abstract class AbstractMarkdownSerializerTest {
      *
      * @return A string representing the path to the baseline directory.
      */
-    protected abstract String getBaselineDirectoryPathString();
+    protected String getBaselineDirectoryPathString() {
+        return "/baseline";
+    }
 
     /**
      * Constructs a list of benchmark run results that can be used for generating reports.

@@ -1,0 +1,47 @@
+{
+  "benchmarkClass" : "NodePrintBenchmark",
+  "powsyblCoreVersion" : "7.3.1",
+  "openLoadFlowVersion" : "2.3.0",
+  "datetime" : "20260814_091945",
+  "results" : [ {
+    "benchmarkName" : "NodePrintBenchmark.print",
+    "parameters" : {
+      "Operation" : "Node printing",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 20.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NodePrintBenchmark.print",
+    "parameters" : {
+      "Operation" : "Node printing",
+      "size" : "2000"
+    },
+    "mode" : "AverageTime",
+    "score" : 10.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NodePrintBenchmark.print",
+    "parameters" : {
+      "Operation" : "Node printing",
+      "size" : "4000"
+    },
+    "mode" : "AverageTime",
+    "score" : 25.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "NodePrintBenchmark.print",
+    "parameters" : {
+      "Operation" : "Node printing",
+      "size" : "8000"
+    },
+    "mode" : "AverageTime",
+    "score" : 30.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}

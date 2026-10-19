@@ -1,0 +1,139 @@
+{
+  "benchmarkClass" : "SplitPerfBenchmark",
+  "powsyblCoreVersion" : "7.3.1",
+  "openLoadFlowVersion" : "2.3.0",
+  "datetime" : "20260814_091945",
+  "results" : [ {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.5,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.3,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 5.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 6.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 7.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 8.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 9.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 10.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 15.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 10.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}
