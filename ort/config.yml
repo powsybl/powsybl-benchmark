@@ -1,0 +1,18 @@
+
+---
+ort:
+  licenseFactProviders:
+    spdx: {}
+
+  scanner:
+    archive:
+      # Keep archived license files locally on the CI runner.
+      # They are useful when generating attribution notices.
+      enabled: true
+
+  advisor:
+    # Use the advisor configuration supported by the
+    # ORT version pinned in the GitHub Action.
+    # Configure vulnerability data sources separately
+    # if your deployment requires specific providers.
+    enabled: true
