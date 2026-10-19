@@ -1,0 +1,258 @@
+{
+  "benchmarkClass": "XmxSecurityAnalysisBenchmark",
+  "powsyblCoreVersion": "7.2.1",
+  "openLoadFlowVersion": "2.2.1",
+  "datetime": "2026-10-15T08:19:00.503480494",
+  "results": [
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx256M",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx512M",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 125.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx512M",
+      "parameters": {
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 65.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx512M",
+      "parameters": {
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 55.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx512M",
+      "parameters": {
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 24.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx1G",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 140.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx1G",
+      "parameters": {
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx1G",
+      "parameters": {
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 50.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx1G",
+      "parameters": {
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 44.2,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx2G",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 150.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx2G",
+      "parameters": {
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 80.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx2G",
+      "parameters": {
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 70.2,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx2G",
+      "parameters": {
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 55.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx4G",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 120.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx4G",
+      "parameters": {
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 125.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx4G",
+      "parameters": {
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 64.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx4G",
+      "parameters": {
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 75.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx8G",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 200.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx8G",
+      "parameters": {
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 88.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx8G",
+      "parameters": {
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmx8G",
+      "parameters": {
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 63.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmxUndefined",
+      "parameters": {
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 136.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmxUndefined",
+      "parameters": {
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 150.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmxUndefined",
+      "parameters": {
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 95.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "XmxSecurityAnalysisBenchmark.runXmxUndefined",
+      "parameters": {
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    }
+  ]
+}

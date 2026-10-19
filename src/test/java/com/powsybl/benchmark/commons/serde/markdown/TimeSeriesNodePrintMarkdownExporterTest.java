@@ -8,10 +8,8 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,19 +18,31 @@ import java.util.Map;
  */
 public class TimeSeriesNodePrintMarkdownExporterTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "NodePrintBenchmark";
-        String benchName = benchClass + ".print";
+    @Override
+    protected String getBenchClass() {
+        return "NodePrintBenchmark";
+    }
 
-        List<RunResult> runResults = List.of(
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/timeseries-node-printing-report.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/timeseries-node-printing-report-with-baseline.md");
+    }
+
+    @Override
+    protected List<RunResult> buildResults() {
+        String benchName = getBenchClass() + ".print";
+
+        return List.of(
             BenchmarkTestUtils.mockRunResult(benchName, params("Node printing", "1000"), 10.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("Node printing", "2000"), 15.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("Node printing", "4000"), 20.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("Node printing", "8000"), 25.0)
         );
-
-        testReportToString(benchClass, runResults, "/timeseries-node-printing-report.md");
     }
 
     private Map<String, String> params(String operation, String size) {

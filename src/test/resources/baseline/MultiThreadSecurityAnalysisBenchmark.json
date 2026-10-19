@@ -1,0 +1,140 @@
+{
+  "benchmarkClass": "MultiThreadSecurityAnalysisBenchmark",
+  "powsyblCoreVersion": "7.2.1",
+  "openLoadFlowVersion": "2.2.1",
+  "datetime": "2026-10-15T08:19:00.405826835",
+  "results": [
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case1888rte",
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 100.4,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case1888rte",
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 50.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case1888rte",
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 40.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case1888rte",
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 16.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case6515rte",
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 250.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case6515rte",
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case6515rte",
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 75.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "case6515rte",
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 50.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "Unknown network",
+        "threadCount": "1"
+      },
+      "mode": "AverageTime",
+      "score": 120.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "Unknown network",
+        "threadCount": "2"
+      },
+      "mode": "AverageTime",
+      "score": 80.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "Unknown network",
+        "threadCount": "4"
+      },
+      "mode": "AverageTime",
+      "score": 56.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    },
+    {
+      "benchmarkName": "MultiThreadSecurityAnalysisBenchmark.benchmark",
+      "parameters": {
+        "networkName": "Unknown network",
+        "threadCount": "8"
+      },
+      "mode": "AverageTime",
+      "score": 100.0,
+      "scoreError": 0.1,
+      "scoreUnit": "ms/op"
+    }
+  ]
+}

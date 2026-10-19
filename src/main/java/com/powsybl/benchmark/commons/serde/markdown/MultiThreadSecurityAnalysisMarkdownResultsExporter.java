@@ -39,4 +39,9 @@ public class MultiThreadSecurityAnalysisMarkdownResultsExporter extends Abstract
             "Network",
             results -> Constants.getPrettyNetworkName(results.getFirst().parameters().get("networkName")));
     }
+
+    @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return MultiThreadUtil.getLineScores(results);
+    }
 }

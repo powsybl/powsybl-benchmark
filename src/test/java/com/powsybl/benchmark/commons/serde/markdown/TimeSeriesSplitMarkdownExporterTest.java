@@ -8,10 +8,8 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.serde.BenchmarkTestUtils;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -20,12 +18,10 @@ import java.util.Map;
  */
 public class TimeSeriesSplitMarkdownExporterTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "SplitPerfBenchmark";
-        String benchName = benchClass + ".split";
+    protected List<RunResult> buildResults() {
+        String benchName = getBenchClass() + ".split";
 
-        List<RunResult> runResults = List.of(
+        return List.of(
             BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "100", "1000"), 1.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "100", "10000"), 2.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "100", "100000"), 3.0),
@@ -39,8 +35,21 @@ public class TimeSeriesSplitMarkdownExporterTest extends AbstractMarkdownSeriali
             BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "1000", "10000"), 11.0),
             BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "1000", "100000"), 12.0)
         );
+    }
 
-        testReportToString(benchClass, runResults, "/timeseries-split-report.md");
+    @Override
+    protected String getBenchClass() {
+        return "SplitPerfBenchmark";
+    }
+
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/timeseries-split-report.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/timeseries-split-report-with-baseline.md");
     }
 
     private Map<String, String> params(String layout, String newChunkSize, String size) {

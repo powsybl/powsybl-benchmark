@@ -63,6 +63,26 @@ public final class MultiThreadUtil {
     }
 
     /**
+     * Builds the score map used for baseline comparison by matching each present thread result
+     * to the same thread-based column name used in the markdown table.
+     *
+     * @param results A list of {@code BenchmarkResult} objects containing benchmarking data.
+     * @return A map where each key is the pretty column name for a present thread count and each
+     *         value is the raw benchmark score for that thread count. Returns an empty map when
+     *         no results are provided.
+     */
+    public static Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        if (results.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, Double> lineScores = new HashMap<>(results.size(), 1);
+        for (BenchmarkResult result : results) {
+            lineScores.put(getPrettyColumnName(getThreadCount(result)), result.score());
+        }
+        return lineScores;
+    }
+
+    /**
      * Retrieves the benchmark score for a single-threaded execution from the provided map.
      * If no benchmark result exists for 1 thread, an exception is thrown.
      *

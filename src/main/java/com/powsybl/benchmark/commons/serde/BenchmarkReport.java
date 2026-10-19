@@ -11,8 +11,6 @@ import com.powsybl.openloadflow.util.PowsyblOpenLoadFlowVersion;
 import com.powsybl.tools.PowsyblCoreVersion;
 import org.openjdk.jmh.results.RunResult;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,21 +28,21 @@ public record BenchmarkReport(
     String datetime,
     List<BenchmarkResult> results
 ) {
-    public BenchmarkReport(String benchmarkClass, Collection<RunResult> runResultsForThatClass) {
+    public BenchmarkReport(String benchmarkClass, Collection<RunResult> runResultsForThatClass, String datetimeFormatted) {
         this(
             benchmarkClass,
             new PowsyblCoreVersion().getMavenProjectVersion(),
             new PowsyblOpenLoadFlowVersion().getMavenProjectVersion(),
-            LocalDateTime.now(ZoneOffset.UTC).toString(),
+            datetimeFormatted,
             runResultsForThatClass.stream().map(BenchmarkResult::new).toList()
         );
     }
 
-    public static List<BenchmarkReport> buildAllReports(Collection<RunResult> runResults) {
+    public static List<BenchmarkReport> buildAllReports(Collection<RunResult> runResults, String datetimeFormatted) {
         return runResults.stream()
             .collect(Collectors.groupingBy(BenchmarkReport::getClassOfBenchmark))
             .entrySet().stream()
-            .map(e -> new BenchmarkReport(e.getKey(), e.getValue()))
+            .map(e -> new BenchmarkReport(e.getKey(), e.getValue(), datetimeFormatted))
             .toList();
     }
 

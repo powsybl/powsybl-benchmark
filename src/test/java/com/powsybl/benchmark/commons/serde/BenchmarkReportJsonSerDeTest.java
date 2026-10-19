@@ -34,14 +34,15 @@ class BenchmarkReportJsonSerDeTest {
 
     @Test
     void roundTripJsonSerDeTest() throws IOException {
+        String datetime = "20260814_091945";
         String className1 = "ClassA";
         RunResult rr1 = mockRunResult("com.powsybl." + className1 + ".method1");
-        BenchmarkReport report1 = new BenchmarkReport(className1, List.of(rr1));
+        BenchmarkReport report1 = new BenchmarkReport(className1, List.of(rr1), datetime);
 
         String className2 = "ClassB";
         RunResult rr2 = mockRunResult("com.powsybl." + className2 + ".method2");
         RunResult rr3 = mockRunResult("com.powsybl." + className2 + ".method3");
-        BenchmarkReport report2 = new BenchmarkReport(className2, List.of(rr2, rr3));
+        BenchmarkReport report2 = new BenchmarkReport(className2, List.of(rr2, rr3), datetime);
 
         List<BenchmarkReport> reports = List.of(report1, report2);
         BenchmarkReportJsonSerDe.writeReports(reports, tempDir);
@@ -80,15 +81,18 @@ class BenchmarkReportJsonSerDeTest {
     }
 
     private static Predicate<Path> checkJsonFileMatches(String toMatch) {
-        return BenchmarkTestUtils.checkFileMatches(toMatch, ".json");
+        return SerDeUtil.checkFileMatches(toMatch, ".json", "");
     }
 
     @Test
     void testWriteAll() throws IOException {
+        String datetime = "20260814_091945";
         RunResult rr1 = mockRunResult("com.powsybl.ClassA.method1");
         RunResult rr2 = mockRunResult("com.powsybl.ClassB.method2");
+        BenchmarkReport report1 = new BenchmarkReport("ClassA", List.of(rr1), datetime);
+        BenchmarkReport report2 = new BenchmarkReport("ClassB", List.of(rr2), datetime);
 
-        BenchmarkReportJsonSerDe.writeAll(List.of(rr1, rr2), tempDir);
+        BenchmarkReportJsonSerDe.writeReports(List.of(report1, report2), tempDir);
 
         List<Path> reportPaths;
         try (Stream<Path> stream = Files.list(tempDir)) {
@@ -116,7 +120,8 @@ class BenchmarkReportJsonSerDeTest {
             throw new RuntimeException(e);
         }
 
-        BenchmarkReport report = new BenchmarkReport("SomeClass", List.of(mockRunResult("SomeClass.method")));
+        String datetime = "20260814_091945";
+        BenchmarkReport report = new BenchmarkReport("SomeClass", List.of(mockRunResult("SomeClass.method")), datetime);
 
         // writeReports calls Files.createDirectories(benchmarkOutputPath)
         // which will throw FileAlreadyExistsException (subclass of IOException) if benchmarkOutputPath is a file

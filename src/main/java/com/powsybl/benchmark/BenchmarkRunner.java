@@ -9,8 +9,10 @@ package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
+import com.powsybl.benchmark.commons.serde.BenchmarkReport;
 import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
+import com.powsybl.benchmark.commons.serde.SerDeUtil;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -25,8 +27,12 @@ import picocli.CommandLine.Command;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Supplier;
+
+import static picocli.CommandLine.Option.NULL_VALUE;
 
 /**
  * @author Geoffroy Jamgotchian <geoffroy.jamgotchian at rte-france.com>
@@ -44,6 +50,14 @@ public final class BenchmarkRunner implements Runnable {
 
     @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
+
+    @CommandLine.Option(names = {"--compare", "-C"}, arity = "0..1", description = "Compare with a baselineDirectory containing baseline benchmark results to compare with." +
+        "Must contain only one of each serialized benchmark result", defaultValue = NULL_VALUE, fallbackValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    private Path baselineDirectory;
+
+    @CommandLine.Option(names = "--baseline-timestamp", description = "Only use serialized benchmark results from the baseline directory that match exactly the provided timestamp." +
+        "Format is YYYYMMDD_hhmmss. If not provided, do not consider timestamp to match filenames", defaultValue = "")
+    private String baselineTimestamp = "";
 
     @CommandLine.Option(names = {"--debug", "-D"}, description = "Disable forks for debug purposes", defaultValue = "false")
     private boolean debug = false;
@@ -88,13 +102,23 @@ public final class BenchmarkRunner implements Runnable {
             }
         } else {
             try {
+
                 String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
                 CommandLineOptions opts = new CommandLineOptions(jmhArgs);
+                // Run the benchmarks and collect the results
                 Collection<RunResult> results = new Runner(opts).run();
+
+                // Export the results if serde is enabled
                 if (!noSerde) {
+                    String datetimeFormatted = SerDeUtil.formatISODatetimeToSimplified(LocalDateTime.now(ZoneOffset.UTC).toString());
+                    List<BenchmarkReport> reports = BenchmarkReport.buildAllReports(results, datetimeFormatted);
                     Path benchmarkOutputPath = Path.of(serdePath);
-                    BenchmarkReportJsonSerDe.writeAll(results, benchmarkOutputPath);
-                    ResultsExporter.exportAll(results, benchmarkOutputPath);
+
+                    // JSON export
+                    BenchmarkReportJsonSerDe.writeReports(reports, benchmarkOutputPath);
+
+                    // Markdown export
+                    ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
                 }
             } catch (RunnerException | IOException | CommandLineOptionException e) {
                 LOGGER.error("Error writing benchmark results", e);

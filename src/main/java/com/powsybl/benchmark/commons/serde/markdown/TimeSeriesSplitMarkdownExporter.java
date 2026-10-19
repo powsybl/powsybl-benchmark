@@ -47,6 +47,13 @@ public class TimeSeriesSplitMarkdownExporter extends AbstractMarkdownResultsExpo
         return line;
     }
 
+    @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        Map<String, Double> line = new HashMap<>(results.size() + 1, 1);
+        results.forEach(result -> line.put(getColumnName(result), result.score()));
+        return line;
+    }
+
     protected String getColumnName(BenchmarkResult benchmarkResult) {
         return "size = " + benchmarkResult.parameters().get("size");
     }

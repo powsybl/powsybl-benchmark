@@ -40,6 +40,12 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
     }
 
     @Override
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline) {
+        xmxIndex = 0;
+        return super.exportReport(report, baseline);
+    }
+
+    @Override
     protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
         return MultiThreadUtil.columnNames(XMX_KEY);
     }
@@ -83,5 +89,10 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
         //this assumes that all XmX benchmarks are named runXmxVALUE
         //with VALUE being one of XMX_VALUES
         return r -> r.benchmarkName().substring(r.benchmarkName().lastIndexOf('.') + 1).replace("runXmx", "");
+    }
+
+    @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return MultiThreadUtil.getLineScores(results);
     }
 }

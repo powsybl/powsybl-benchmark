@@ -8,12 +8,10 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.powsybl.benchmark.commons.Constants;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.results.Result;
 import org.openjdk.jmh.results.RunResult;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +23,33 @@ import static com.powsybl.benchmark.commons.serde.BenchmarkTestUtils.mockRunResu
  */
 class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdownSerializerTest {
 
-    @Test
-    void testReportToString() throws IOException {
-        String benchClass = "MonoThreadSecurityAnalysisBenchmark";
-        String benchName = benchClass + ".benchmark";
+    private Map<String, String> params(String networkName, String type) {
+        return Map.of("networkName", networkName, "type", type);
+    }
 
-        List<RunResult> runResults = List.of(
+    private Map<String, Result<?>> paramSecondary(double numberOfContingencies) {
+        return Map.of("numberOfContingencies", mockResult(numberOfContingencies));
+    }
+
+    @Override
+    protected String getBenchClass() {
+        return "MonoThreadSecurityAnalysisBenchmark";
+    }
+
+    @Override
+    protected List<String> getResourcePaths() {
+        return List.of("/contingencies-report.md");
+    }
+
+    @Override
+    protected List<String> getResourceWithBaselinePaths() {
+        return List.of("/contingencies-report-with-baseline.md");
+    }
+
+    @Override
+    protected List<RunResult> buildResults() {
+        String benchName = getBenchClass() + ".benchmark";
+        return List.of(
             // IEEE 14
             mockRunResult(benchName, params(Constants.IEEE_14, "BASIC"), Mode.AverageTime, 10.0, 0.1, "ms/op", paramSecondary(10.0)),
             mockRunResult(benchName, params(Constants.IEEE_14, "STANDARD"), Mode.AverageTime, 15.0, 0.1, "ms/op", paramSecondary(10.0)),
@@ -41,15 +60,5 @@ class ContingenciesBenchmarkReportMarkdownSerializerTest extends AbstractMarkdow
             mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD"), Mode.AverageTime, 177.7, 0.1, "ms/op", paramSecondary(100.0)),
             mockRunResult(benchName, params(Constants.IEEE_118, "STANDARD_REACTIVE_LIMITS_NOT_USED"), Mode.AverageTime, 124.28, 0.1, "ms/op", paramSecondary(100.0))
         );
-
-        testReportToString(benchClass, runResults, "/contingencies-report.md");
-    }
-
-    private Map<String, String> params(String networkName, String type) {
-        return Map.of("networkName", networkName, "type", type);
-    }
-
-    private Map<String, Result<?>> paramSecondary(double numberOfContingencies) {
-        return Map.of("numberOfContingencies", mockResult(numberOfContingencies));
     }
 }

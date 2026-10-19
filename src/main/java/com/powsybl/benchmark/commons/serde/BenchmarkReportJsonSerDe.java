@@ -9,13 +9,11 @@ package com.powsybl.benchmark.commons.serde;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.openjdk.jmh.results.RunResult;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,11 +25,6 @@ public final class BenchmarkReportJsonSerDe {
 
     private BenchmarkReportJsonSerDe() {
         //no instancing on util class
-    }
-
-    public static void writeAll(Collection<RunResult> runResults, Path benchmarkOutputPath) throws IOException {
-        List<BenchmarkReport> reports = BenchmarkReport.buildAllReports(runResults);
-        writeReports(reports, benchmarkOutputPath);
     }
 
     /**
@@ -51,7 +44,7 @@ public final class BenchmarkReportJsonSerDe {
         Files.createDirectories(benchmarkOutputPath);
         for (BenchmarkReport report : reports) {
             String benchmarkClass = report.benchmarkClass();
-            Path writePath = benchmarkOutputPath.resolve(benchmarkClass + "_" + ExporterUtil.formatDatetime(report) + ".json");
+            Path writePath = benchmarkOutputPath.resolve(benchmarkClass + "_" + report.datetime() + ".json");
             try {
                 MAPPER.writeValue(writePath.toFile(), report);
             } catch (IOException e) {
