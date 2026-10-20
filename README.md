@@ -30,16 +30,16 @@ Three different load flow parameters sets have been tested:
 - a standard one: slack bus is distributed and generator reactive limits are taken into account.
 - a standard one with the reactive limits not used
 
-| Network  | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
-|----------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 0,15 ms/op       | 0,16 ms/op          | 0,15 ms/op                                             |
-| IEEE 118 | 1,09 ms/op       | 1,46 ms/op          | 1,18 ms/op                                             |
-| IEEE 300 | 2,50 ms/op       | 4,57 ms/op          | 3,17 ms/op                                             |
-| RTE 1888 | 20,31 ms/op      | 23,36 ms/op         | 20,62 ms/op                                            |
-| RTE 6515 | 88,71 ms/op      | 158,02 ms/op        | 103,21 ms/op                                           |
-| RealGrid | 89,55 ms/op      | 138,05 ms/op        | 103,06 ms/op                                           |
+| Network  | Basic parameters  | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|-------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 0,13 ms/op (-11%) | 0,14 ms/op (-10%)   | 0,14 ms/op (-6%)                                       |
+| IEEE 118 | 1,10 ms/op (+1%)  | 1,56 ms/op (+7%)    | 1,21 ms/op (+2%)                                       |
+| IEEE 300 | 2,64 ms/op (+6%)  | 4,65 ms/op (+2%)    | 3,06 ms/op (-4%)                                       |
+| RTE 1888 | 18,84 ms/op (-7%) | 24,07 ms/op (+3%)   | 20,24 ms/op (-2%)                                      |
+| RTE 6515 | 90,41 ms/op (+2%) | 165,30 ms/op (+5%)  | 102,58 ms/op (-1%)                                     |
+| RealGrid | 93,83 ms/op (+5%) | 150,36 ms/op (+9%)  | 108,75 ms/op (+6%)                                     |
 
-_Note: those results are for the v2026.1.0 version_
+_Note: those results are for the v2026.2.0 version_
 
 ## Security analysis benchmark
 
@@ -51,13 +51,13 @@ contingencies have been sequentially simulated for each of the analyses (taking 
 
 The results here are the duration per contingency.
 
-| Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
-|----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 45 µs            | 80 µs               | 53 µs                                                  |
-| IEEE 118 | 177           | 199 µs           | 389 µs              | 253 µs                                                 |
-| IEEE 300 | 304           | 728 µs           | 1.42 ms             | 819 µs                                                 |
-| RTE 1888 | 1000          | 3.33 ms          | 5.33 ms             | 4.67 ms                                                |
-| RTE 6515 | 1000          | 15.8 ms          | 23.5 ms             | 14.2 ms                                                |
+| Network  | Contingencies | Basic parameters  | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|---------------|-------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 17            | 0,05 ms/op (0%)   | 0,11 ms/op (+34%)   | 0,08 ms/op (+40%)                                      |
+| IEEE 118 | 177           | 0,20 ms/op (0%)   | 0,47 ms/op (+20%)   | 0,29 ms/op (+13%)                                      |
+| IEEE 300 | 304           | 0,72 ms/op (-1%)  | 1,77 ms/op (+24%)   | 0,99 ms/op (+21%)                                      |
+| RTE 1888 | 1000          | 4,17 ms/op (+25%) | 6,94 ms/op (+30%)   | 5,13 ms/op (+10%)                                      |
+| RTE 6515 | 1000          | 16,61 ms/op (+5%) | 25,69 ms/op (+9%)   | 18,60 ms/op (+31%)                                     |
 
 _Note: those results are for the v2026.1.0 version_
 
@@ -65,9 +65,9 @@ In the current version, the security analysis is unexpectedly slow for the RealG
 
 | Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| RealGrid | 1000          | 719 ms           | 636 ms              | 628 ms                                                 |
+| RealGrid | 1000          | 635,96 ms/op     | 547,45 ms/op        | 547,05 ms/op                                           |
 
-_Note: those results are for the v2025.3.3 version_
+_Note: those results are for the v2026.2.0 version_
 
 ### Multi-thread security analysis benchmark
 
@@ -114,16 +114,16 @@ permutations are computed and only the first 10,000 are selected.
 
 This table presents the average execution time per contingency and factors for all networks and parameters sets.
 
-| Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
-|----------|---------------|------------------|---------------------|--------------------------------------------------------|
-| IEEE 14  | 17            | 65 µs            | 95 µs               | 73 µs                                                  |
-| IEEE 118 | 177           | 3.2 ms           | 3.4 ms              | 3.4 ms                                                 |
-| IEEE 300 | 304           | 3.7 ms           | 4.7 ms              | 4.1 ms                                                 |
-| RTE 1888 | 1000          | 8.5 ms           | 11.3 ms             | 9.4 ms                                                 |
-| RTE 6515 | 1000          | 19.5 ms          | 32.2 ms             | 21.3 ms                                                |
-| RealGrid | 1000          | 21.7 ms          | 25.5 ms             | 20.7 ms                                                |
+| Network  | Contingencies | Basic parameters   | Standard parameters | Standard parameters <br/>with reactive limits not used |
+|----------|---------------|--------------------|---------------------|--------------------------------------------------------|
+| IEEE 14  | 17            | 0,06 ms/op (0%)    | 0,13 ms/op (+37%)   | 0,10 ms/op (+32%)                                      |
+| IEEE 118 | 177           | 3,10 ms/op (-4%)   | 3,48 ms/op (+1%)    | 3,32 ms/op (-1%)                                       |
+| IEEE 300 | 304           | 3,73 ms/op (+2%)   | 4,77 ms/op (+1%)    | 3,93 ms/op (-5%)                                       |
+| RTE 1888 | 1000          | 8,71 ms/op (+2%)   | 11,59 ms/op (+2%)   | 9,82 ms/op (+4%)                                       |
+| RTE 6515 | 1000          | 23,43 ms/op (+20%) | 33,31 ms/op (+4%)   | 25,88 ms/op (+22%)                                     |
+| RealGrid | 1000          | 21,79 ms/op (+1%)  | 26,23 ms/op (+3%)   | 23,86 ms/op (+15%)                                     |
 
-_Note: those results are for the v2026.1.0 version_
+_Note: those results are for the v2026.2.0 version_
 
 ## Serialization benchmark
 
@@ -135,23 +135,23 @@ The results presented here are the average time per operation, given in ms/op.
 
 For the RTE 6515 buses network:
 
-| Benchmark Operation  | XML (XIIDM) | JSON (JIIDM) | Binary (BIIDM) | CGMES   |
-|----------------------|-------------|--------------|----------------|---------|
-| Deserialization      | 76,07       | 54,14        | 35,11          | 1428,34 |
-| Stream Serialization | 81,85       | 75,86        | 63,73          | —       |
-| File Serialization   | 168,06      | 77,22        | 64,56          | 700,12  |
-| Copy                 | 3537,74     | 89,65        | 106,04         | —       |
+| Benchmark Operation  | XML (XIIDM)   | JSON (JIIDM)  | Binary (BIIDM) | CGMES         |
+|----------------------|---------------|---------------|----------------|---------------|
+| Deserialization      | 72,55 (-5%)   | 48,94 (-10%)  | 32,07 (-9%)    | 1370,36 (-4%) |
+| Stream Serialization | 73,15 (-11%)  | 66,64 (-12%)  | 57,96 (-9%)    | —             |
+| File Serialization   | 190,50 (+13%) | 104,84 (+36%) | 78,07 (+21%)   | 688,29 (-2%)  |
+| Copy                 | 172,08 (-95%) | 84,43 (-6%)   | 88,98 (-16%)   | —             |
 
 For the ENTSOE RealGrid network:
 
-| Benchmark Operation  | XML (XIIDM) | JSON (JIIDM) | Binary (BIIDM) | CGMES   |
-|----------------------|-------------|--------------|----------------|---------|
-| Deserialization      | 290,50      | 179,81       | 97,53          | 3166,03 |
-| Stream Serialization | 269,29      | 196,65       | 160,36         | —       |
-| File Serialization   | 670,42      | 207,65       | 161,40         | 1898,05 |
-| Copy                 | 17307,93    | 258,38       | 249,94         | —       |
+| Benchmark Operation  | XML (XIIDM)   | JSON (JIIDM)  | Binary (BIIDM) | CGMES         |
+|----------------------|---------------|---------------|----------------|---------------|
+| Deserialization      | 284,70 (-2%)  | 162,84 (-9%)  | 89,92 (-8%)    | 3213,83 (+2%) |
+| Stream Serialization | 241,68 (-10%) | 196,61 (0%)   | 152,85 (-5%)   | —             |
+| File Serialization   | 745,39 (+11%) | 293,41 (+41%) | 247,78 (+54%)  | 1889,08 (0%)  |
+| Copy                 | 698,47 (-96%) | 229,91 (-11%) | 234,06 (-6%)   | —             |
 
-_Note: those results are for the v2026.1.0 version_
+_Note: those results are for the v2026.2.0 version_
 
 **_Note: There is a performance issue in this release for the XML copy operation, which has been fixed in the v7.4.0 release
 of powsybl-core._**
@@ -163,14 +163,14 @@ generated by using the first 1000 lines of the network.
 
 | Benchmark Operation | Time (ms/op) |
 |---------------------|--------------|
-| Parsing             | 0,700        |
-| Parsing from bytes  | 0,528        |
-| Just reading        | 0,097        |
-| Reading to string   | 0,097        |
-| Writing             | 0,143        |
-| Buffered writing    | 0,162        |
+| Parsing             | 0,779 (+11%) |
+| Parsing from bytes  | 0,536 (+1%)  |
+| Just reading        | 0,089 (-8%)  |
+| Reading to string   | 0,090 (-7%)  |
+| Writing             | 0,142 (-1%)  |
+| Buffered writing    | 0,162 (0%)   |
 
-_Note: those results are for the v2026.1.0 version_
+_Note: those results are for the v2026.2.0 version_
 
 ## Running the benchmarks
 
