@@ -153,8 +153,8 @@ For the ENTSOE RealGrid network:
 
 _Note: those results are for the v2026.2.0 version_
 
-**_Note: There is a performance issue in this release for the XML copy operation, which has been fixed in the v7.4.0 release
-of powsybl-core._**
+**_Note: There was a performance issue in the previous release for the XML copy operation, which has been fixed in the v7.4.0 release
+of powsybl-core, hence the huge improvement._**
 
 ### Contingency serialization benchmark
 
