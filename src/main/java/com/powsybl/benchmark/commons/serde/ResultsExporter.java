@@ -96,7 +96,7 @@ public interface ResultsExporter {
                     failedExports.add(new FailedExport(report.benchmarkClass(), "No results exporter found"));
                 }
             } catch (Exception e) {
-                failedExports.add(new FailedExport(report.benchmarkClass(), e.getClass().getSimpleName() +": " + e.getMessage()));
+                failedExports.add(new FailedExport(report.benchmarkClass(), e.getClass().getSimpleName() + ": " + e.getMessage()));
             }
         }
         if (!failedExports.isEmpty()) {
