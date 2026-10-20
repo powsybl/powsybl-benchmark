@@ -53,13 +53,19 @@ public final class SerDeUtil {
             && (stringThatShouldNotBeContained.isEmpty() || !p.getFileName().toString().contains(stringThatShouldNotBeContained));
     }
 
-    public static List<Path> getMatchingFileFromPath(Path directory, SerDeFilePredicate predicate, boolean allowMultipleMatches) {
+    public static Path getMatchingFileFromPath(Path directory, SerDeFilePredicate predicate) {
+        List<Path> matchingFiles = getMatchingFilesFromPath(directory, predicate);
+        if (matchingFiles.size() > 1) {
+            throw new PowsyblException("Multiple matching files found in directory " + directory + " for predicate "
+                + predicate + ": " + matchingFiles.stream().map(p -> p.getFileName().toString()).toList());
+        }
+        return matchingFiles.getFirst();
+    }
+
+    public static List<Path> getMatchingFilesFromPath(Path directory, SerDeFilePredicate predicate) {
         try (Stream<Path> files = Files.list(directory)) {
             List<Path> matchingFiles = files.filter(p -> predicate.test(p.getFileName().toString())).toList();
-            if (matchingFiles.size() > 1 && !allowMultipleMatches) {
-                throw new PowsyblException("Multiple matching files found in directory " + directory + " for predicate "
-                    + predicate + ": " + matchingFiles.stream().map(p -> p.getFileName().toString()).toList());
-            } else if (matchingFiles.isEmpty()) {
+            if (matchingFiles.isEmpty()) {
                 throw new PowsyblException("No matching file found in directory " + directory + " for predicate " + predicate);
             } else {
                 return matchingFiles;

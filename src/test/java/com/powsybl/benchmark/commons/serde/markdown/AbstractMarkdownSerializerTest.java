@@ -59,9 +59,8 @@ public abstract class AbstractMarkdownSerializerTest {
 
         String actual = Files.readString(tempDir.resolve(SerDeUtil.getMatchingFileFromPath(
                     tempDir,
-                    new SerDeFilePredicate(filenameStart, ".md", ""),
-                    false
-                ).getFirst()),
+                    new SerDeFilePredicate(filenameStart, ".md", "")
+                )),
                 StandardCharsets.UTF_8)
             .replace("\r\n", "\n");
 

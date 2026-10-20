@@ -46,6 +46,8 @@ public class MonoThreadSecurityAnalysisMarkdownResultsExporter extends Contingen
     @Override
     protected String getTableName(BenchmarkReport report) {
         String benchmarkName = report.results().getFirst().benchmarkName();
-        return benchmarkName.split("\\.")[benchmarkName.split("\\.").length - 1];
+        String[] parts = benchmarkName.split("\\.");
+        // Return the last part of the benchmark name, which is the method name
+        return parts[parts.length - 1];
     }
 }

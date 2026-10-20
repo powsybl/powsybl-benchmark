@@ -56,9 +56,7 @@ public interface ResultsExporter {
                 baselineReport = BenchmarkReportJsonSerDe.readReports(
                     SerDeUtil.getMatchingFileFromPath(
                         baselineReportDirectoryInputPath,
-                        new SerDeFilePredicate(report.benchmarkClass(), timestamp + ".json", report.datetime()),
-                        false)
-                        .getFirst())
+                        new SerDeFilePredicate(report.benchmarkClass(), timestamp + ".json", report.datetime())))
                     .getFirst();
             }
             Map<String, String> serializedReports = resultsExporter.exportReport(report, baselineReport);

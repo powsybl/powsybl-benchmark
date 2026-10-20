@@ -32,7 +32,7 @@ public final class BenchmarkReportJsonSerDe {
      * Writes the provided benchmark reports to the specified output directory in JSON format.
      *
      * @param reports             the list of benchmark reports to be written
-     * @param benchmarkOutputPath the directory path where the benchmark reports will be written
+     * @param benchmarkOutputPath the directory path where the benchmark reports will be written. This directory must exist and be writable.
      */
     public static void writeReports(List<BenchmarkReport> reports, Path benchmarkOutputPath) {
         List<FailedExport> failedBenchmarkWrite = new ArrayList<>();

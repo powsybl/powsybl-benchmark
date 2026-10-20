@@ -301,8 +301,8 @@ public final class BenchmarkRunner implements Runnable {
         List<BenchmarkReport> reports;
         try {
             reports = BenchmarkReportJsonSerDe.readReports(
-                SerDeUtil.getMatchingFileFromPath(benchmarkOutputPath,
-                    new SerDeFilePredicate(cleanedBenchmarkArgs, ".json", ""), true).toArray(new Path[0]));
+                SerDeUtil.getMatchingFilesFromPath(benchmarkOutputPath,
+                    new SerDeFilePredicate(cleanedBenchmarkArgs, ".json", "")).toArray(new Path[0]));
 
         } catch (IOException e) {
             throw new PowsyblException("Error reading existing JSON reports", e);
