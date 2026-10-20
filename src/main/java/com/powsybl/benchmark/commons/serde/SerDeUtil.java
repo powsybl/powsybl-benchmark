@@ -53,16 +53,16 @@ public final class SerDeUtil {
             && (stringThatShouldNotBeContained.isEmpty() || !p.getFileName().toString().contains(stringThatShouldNotBeContained));
     }
 
-    public static Path getMatchingFileFromPath(Path directory, SerDeFilePredicate predicate) {
+    public static List<Path> getMatchingFileFromPath(Path directory, SerDeFilePredicate predicate, boolean allowMultipleMatches) {
         try (Stream<Path> files = Files.list(directory)) {
             List<Path> matchingFiles = files.filter(p -> predicate.test(p.getFileName().toString())).toList();
-            if (matchingFiles.size() > 1) {
+            if (matchingFiles.size() > 1 && !allowMultipleMatches) {
                 throw new PowsyblException("Multiple matching files found in directory " + directory + " for predicate "
                     + predicate + ": " + matchingFiles.stream().map(p -> p.getFileName().toString()).toList());
             } else if (matchingFiles.isEmpty()) {
                 throw new PowsyblException("No matching file found in directory " + directory + " for predicate " + predicate);
             } else {
-                return matchingFiles.getFirst();
+                return matchingFiles;
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);

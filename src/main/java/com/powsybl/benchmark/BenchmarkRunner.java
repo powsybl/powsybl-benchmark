@@ -9,10 +9,7 @@ package com.powsybl.benchmark;
 
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
-import com.powsybl.benchmark.commons.serde.BenchmarkReport;
-import com.powsybl.benchmark.commons.serde.BenchmarkReportJsonSerDe;
-import com.powsybl.benchmark.commons.serde.ResultsExporter;
-import com.powsybl.benchmark.commons.serde.SerDeUtil;
+import com.powsybl.benchmark.commons.serde.*;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -26,6 +23,7 @@ import picocli.CommandLine.Command;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -42,14 +40,10 @@ public final class BenchmarkRunner implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BenchmarkRunner.class);
 
-    @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
-    private boolean listBenchmarks = false;
+    private static final Map<String, String> BENCHMARK_METHOD_TO_CLASS = loadBenchmarkMethodToClassCache();
 
-    @CommandLine.Option(names = "--no-serde", description = "Do not exportAll benchmark results", defaultValue = "false")
-    private boolean noSerde = false;
-
-    @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
-    private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
+    @CommandLine.Parameters(paramLabel = "<benchmarks>", description = "List of benchmarks to run, separated by spaces")
+    private String[] benchmarks;
 
     @CommandLine.Option(names = {"--compare", "-C"}, arity = "0..1", description = "Compare with a baselineDirectory containing baseline benchmark results to compare with." +
         "Must contain only one of each serialized benchmark result", defaultValue = NULL_VALUE, fallbackValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
@@ -61,6 +55,18 @@ public final class BenchmarkRunner implements Runnable {
 
     @CommandLine.Option(names = {"--debug", "-D"}, description = "Disable forks for debug purposes", defaultValue = "false")
     private boolean debug = false;
+
+    @CommandLine.Option(names = {"--export-markdown-only", "-E"}, description = "Only export existing JSON results to Markdown without running benchmarks", defaultValue = "false")
+    private boolean exportMarkdownOnly = false;
+
+    @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
+    private boolean listBenchmarks = false;
+
+    @CommandLine.Option(names = "--no-serde", description = "Do not exportAll benchmark results", defaultValue = "false")
+    private boolean noSerde = false;
+
+    @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
+    private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
     private BenchmarkSuite benchmarkSuite;
@@ -74,15 +80,27 @@ public final class BenchmarkRunner implements Runnable {
         private boolean full;
     }
 
-    @CommandLine.Parameters(paramLabel = "<benchmarks>", description = "List of benchmarks to run, separated by spaces")
-    private String[] benchmarks;
-
     BenchmarkRunner() {
     }
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new BenchmarkRunner()).execute(args);
         System.exit(exitCode);
+    }
+
+    private static Map<String, String> loadBenchmarkMethodToClassCache() {
+        Map<String, String> benchmarkMethodToClass = new HashMap<>();
+        // Initialize the cache from BenchmarkList
+        try (InputStream is = Objects.requireNonNull(BenchmarkRunner.class.getResourceAsStream("/META-INF/BenchmarkList"));
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                cacheBenchmarkMethodToClass(benchmarkMethodToClass, line);
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Failed to populate benchmark method-to-class cache", e);
+        }
+        return benchmarkMethodToClass;
     }
 
     @Override
@@ -93,6 +111,7 @@ public final class BenchmarkRunner implements Runnable {
             return;
         }
         if (listBenchmarks) {
+            // Only list selected benchmarks, do not run them
             LOGGER.info("Selected benchmarks:");
             for (String bench : benchmarkArgs) {
                 for (String s : bench.split("\\|")) {
@@ -101,50 +120,21 @@ public final class BenchmarkRunner implements Runnable {
                 }
             }
         } else {
-            try {
 
-                String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
-                CommandLineOptions opts = new CommandLineOptions(jmhArgs);
-                // Run the benchmarks and collect the results
-                Collection<RunResult> results = new Runner(opts).run();
+            // Path to the directory where benchmark results are and/or will be exported
+            Path benchmarkOutputPath = Path.of(serdePath);
 
-                // Export the results if serde is enabled
-                if (!noSerde) {
-                    String datetimeFormatted = SerDeUtil.formatISODatetimeToSimplified(LocalDateTime.now(ZoneOffset.UTC).toString());
-                    List<BenchmarkReport> reports = BenchmarkReport.buildAllReports(results, datetimeFormatted);
-                    Path benchmarkOutputPath = Path.of(serdePath);
+            // Check/create directory and parents, does not throw if directory already exists
+            if (exportMarkdownOnly || !noSerde) {
+                checkOrCreateDirectory(benchmarkOutputPath);
+            }
 
-                    // JSON export
-                    BenchmarkReportJsonSerDe.writeReports(reports, benchmarkOutputPath);
-
-                    // Markdown export
-                    ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
-                }
-            } catch (RunnerException | IOException | CommandLineOptionException e) {
-                LOGGER.error("Error writing benchmark results", e);
-                System.exit(1);
+            if (exportMarkdownOnly) {
+                exportExistingJsonReportsToMarkdown(benchmarkOutputPath, benchmarkArgs);
+            } else {
+                runAndExportBenchmarks(benchmarkOutputPath, benchmarkArgs);
             }
         }
-    }
-
-    /**
-     * Build benchmarks to be passed to JMH. This is a mix of regex and class names.
-     * The returned regex depends on the value of the {@link BenchmarkSuite}.
-     * @return an array, where the first element is a potential JMH regex, and the remaining elements are the names in {@link #benchmarks} (if any).
-     */
-    String[] buildBenchmarkArgs() {
-        if (benchmarkSuite != null) {
-            if (benchmarkSuite.release) {
-                //discover all @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
-                return buildBenchmarkSuiteRegex(benchmarks, "release",
-                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
-            } else if (benchmarkSuite.full) {
-                //discover all @FullBenchmark and @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
-                return buildBenchmarkSuiteRegex(benchmarks, "full",
-                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
-            }
-        }
-        return benchmarks;
     }
 
     /**
@@ -259,5 +249,109 @@ public final class BenchmarkRunner implements Runnable {
             }
         }
         return false;
+    }
+
+    /**
+     * Build benchmarks to be passed to JMH. This is a mix of regex and class names.
+     * The returned regex depends on the value of the {@link BenchmarkSuite}.
+     * @return an array, where the first element is a potential JMH regex, and the remaining elements are the names in {@link #benchmarks} (if any).
+     */
+    String[] buildBenchmarkArgs() {
+        if (benchmarkSuite != null) {
+            if (benchmarkSuite.release) {
+                //discover all @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
+                return buildBenchmarkSuiteRegex(benchmarks, "release",
+                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
+            } else if (benchmarkSuite.full) {
+                //discover all @FullBenchmark and @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
+                return buildBenchmarkSuiteRegex(benchmarks, "full",
+                    () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
+            }
+        }
+        return benchmarks;
+    }
+
+    private void checkOrCreateDirectory(Path directory) {
+        try {
+            Files.createDirectories(directory);
+        } catch (IOException e) {
+            throw new PowsyblException("Failed to create directory: " + directory, e);
+        }
+    }
+
+    private String[] getBenchmarkClassesFromBenchmarkArgs(String[] benchmarkArgs) {
+        Set<String> cleanedBenchmarkArgs = new HashSet<>();
+        for (String bench : benchmarkArgs) {
+            for (String s : bench.split("\\|")) {
+                // Split at the first backslash to get the class or method name
+                String classOrMethod = s.split("\\\\")[0]; // Remove escaped characters
+
+                // If it's a method name, look it up in the cache
+                // Otherwise, treat it as a class name or full qualified name
+                cleanedBenchmarkArgs.add(BENCHMARK_METHOD_TO_CLASS.getOrDefault(classOrMethod, classOrMethod));
+            }
+        }
+        return cleanedBenchmarkArgs.toArray(new String[0]);
+    }
+
+    private void exportExistingJsonReportsToMarkdown(Path benchmarkOutputPath, String[] benchmarkArgs) {
+        // Clean benchmark classes from regex characters to match the JSON files
+        String[] cleanedBenchmarkArgs = getBenchmarkClassesFromBenchmarkArgs(benchmarkArgs);
+
+        List<BenchmarkReport> reports;
+        try {
+            reports = BenchmarkReportJsonSerDe.readReports(
+                SerDeUtil.getMatchingFileFromPath(benchmarkOutputPath,
+                    new SerDeFilePredicate(cleanedBenchmarkArgs, ".json", ""), true).toArray(new Path[0]));
+
+        } catch (IOException e) {
+            throw new PowsyblException("Error reading existing JSON reports", e);
+        }
+
+        // Markdown export
+        ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
+    }
+
+    private void runAndExportBenchmarks(Path benchmarkOutputPath, String[] benchmarkArgs) {
+        List<BenchmarkReport> reports;
+        try {
+            String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
+            CommandLineOptions opts = new CommandLineOptions(jmhArgs);
+            // Run the benchmarks and collect the results
+            Collection<RunResult> results = new Runner(opts).run();
+
+            String datetimeFormatted = SerDeUtil.formatISODatetimeToSimplified(LocalDateTime.now(ZoneOffset.UTC).toString());
+            reports = BenchmarkReport.buildAllReports(results, datetimeFormatted);
+
+        } catch (RunnerException | CommandLineOptionException e) {
+            throw new PowsyblException("Error running benchmarks", e);
+        }
+
+        // Export the results if serde is enabled
+        if (!noSerde) {
+            // JSON export
+            BenchmarkReportJsonSerDe.writeReports(reports, benchmarkOutputPath);
+
+            // Markdown export
+            ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
+        }
+    }
+
+    /**
+     * Caches the method-to-class mapping from a BenchmarkList line.
+     */
+    private static void cacheBenchmarkMethodToClass(Map<String, String> benchmarkMethodToClass, String line) {
+        String[] tokens = line.trim().split("\\s+");
+        if (tokens.length < 10 || !"JMH".equals(tokens[0])) {
+            return;
+        }
+        String fullClassName = tokens[3];
+        String methodName = tokens[9];
+        try {
+            Class<?> clazz = Class.forName(fullClassName);
+            benchmarkMethodToClass.put(methodName, clazz.getSimpleName());
+        } catch (ClassNotFoundException ignored) {
+            // skip entries whose class cannot be loaded
+        }
     }
 }

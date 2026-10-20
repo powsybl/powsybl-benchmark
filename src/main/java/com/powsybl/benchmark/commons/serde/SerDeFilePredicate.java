@@ -7,23 +7,31 @@
  */
 package com.powsybl.benchmark.commons.serde;
 
+import java.util.Arrays;
+
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
  */
 public class SerDeFilePredicate {
 
-    private final String startToMatch;
+    private final String[] startToMatch;
     private final String endToMatch;
     private final String stringThatShouldNotBeContained;
 
     public SerDeFilePredicate(String startToMatch, String endToMatch, String stringThatShouldNotBeContained) {
+        this.startToMatch = new String[] {startToMatch};
+        this.endToMatch = endToMatch;
+        this.stringThatShouldNotBeContained = stringThatShouldNotBeContained;
+    }
+
+    public SerDeFilePredicate(String[] startToMatch, String endToMatch, String stringThatShouldNotBeContained) {
         this.startToMatch = startToMatch;
         this.endToMatch = endToMatch;
         this.stringThatShouldNotBeContained = stringThatShouldNotBeContained;
     }
 
     public boolean test(String fileName) {
-        return fileName.startsWith(startToMatch)
+        return startsWith(fileName)
             && fileName.endsWith(endToMatch)
             && (stringThatShouldNotBeContained.isEmpty() || !fileName.contains(stringThatShouldNotBeContained));
     }
@@ -31,9 +39,18 @@ public class SerDeFilePredicate {
     @Override
     public String toString() {
         return "SerDeFilePredicate{" +
-            "startToMatch='" + startToMatch + '\'' +
+            "startToMatch='" + Arrays.toString(startToMatch) + '\'' +
             ", endToMatch='" + endToMatch + '\'' +
             ", stringThatShouldNotBeContained='" + stringThatShouldNotBeContained + '\'' +
             '}';
+    }
+
+    private boolean startsWith(String fileName) {
+        for (String start : startToMatch) {
+            if (fileName.startsWith(start)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
