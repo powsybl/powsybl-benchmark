@@ -9,12 +9,13 @@ package com.powsybl.benchmark.commons.serde;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.powsybl.commons.PowsyblException;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -31,28 +32,23 @@ public final class BenchmarkReportJsonSerDe {
      * Writes the provided benchmark reports to the specified output directory in JSON format.
      *
      * @param reports             the list of benchmark reports to be written
-     * @param benchmarkOutputPath the directory path where the benchmark reports will be written
-     * @throws IOException IOException <ul>
-     *                     <li>if the directory of the provided path cannot be created</li>
-     *                     <li>if any file for a benchmark report cannot be created or written to.
-     *                     In that case, the exception is thrown only after having tried to write all the reports</li>
-     *                     </ul>
+     * @param benchmarkOutputPath the directory path where the benchmark reports will be written. This directory must exist and be writable.
      */
-    public static void writeReports(List<BenchmarkReport> reports, Path benchmarkOutputPath) throws IOException {
-        List<String> failedBenchmarkWrite = new ArrayList<>();
-        //create directory and parents, does not throw if directory already exists
-        Files.createDirectories(benchmarkOutputPath);
+    public static void writeReports(List<BenchmarkReport> reports, Path benchmarkOutputPath) {
+        List<FailedExport> failedBenchmarkWrite = new ArrayList<>();
         for (BenchmarkReport report : reports) {
             String benchmarkClass = report.benchmarkClass();
             Path writePath = benchmarkOutputPath.resolve(benchmarkClass + "_" + report.datetime() + ".json");
             try {
                 MAPPER.writeValue(writePath.toFile(), report);
             } catch (IOException e) {
-                failedBenchmarkWrite.add(benchmarkClass);
+                failedBenchmarkWrite.add(new FailedExport(benchmarkClass, "IOException: " + e.getMessage()));
             }
         }
         if (!failedBenchmarkWrite.isEmpty()) {
-            throw new IOException("Failed to write benchmark reports for classes: " + failedBenchmarkWrite);
+            throw new PowsyblException("Failed to export benchmark reports as JSON: " + failedBenchmarkWrite.stream()
+                .map(fe -> fe.benchmarkClass() + " (" + fe.reason() + ")")
+                .collect(Collectors.joining(", ")));
         }
     }
 

@@ -7,6 +7,7 @@
  */
 package com.powsybl.benchmark.commons.serde;
 
+import com.powsybl.commons.PowsyblException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openjdk.jmh.results.RunResult;
@@ -111,7 +112,7 @@ class BenchmarkReportJsonSerDeTest {
     }
 
     @Test
-    void testWriteReportsIOException() {
+    void testWriteReportsException() {
         // Create a file where a directory should be to cause an IOException
         Path fileAsDir = tempDir.resolve("fileAsDir");
         try {
@@ -121,10 +122,10 @@ class BenchmarkReportJsonSerDeTest {
         }
 
         String datetime = "20260814_091945";
-        BenchmarkReport report = new BenchmarkReport("SomeClass", List.of(mockRunResult("SomeClass.method")), datetime);
+        List<BenchmarkReport> reports = List.of(new BenchmarkReport("SomeClass", List.of(mockRunResult("SomeClass.method")), datetime));
 
         // writeReports calls Files.createDirectories(benchmarkOutputPath)
         // which will throw FileAlreadyExistsException (subclass of IOException) if benchmarkOutputPath is a file
-        assertThrows(IOException.class, () -> BenchmarkReportJsonSerDe.writeReports(List.of(report), fileAsDir));
+        assertThrows(PowsyblException.class, () -> BenchmarkReportJsonSerDe.writeReports(reports, fileAsDir));
     }
 }
