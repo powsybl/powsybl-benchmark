@@ -48,7 +48,7 @@ public interface ResultsExporter {
      * @return true if the report was successfully exported, false otherwise
      * @throws IOException if the file cannot be written (path does not exist, permission denied, etc.)
      */
-    static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) throws IOException {
+    static boolean export(BenchmarkReport report, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp, boolean colors) throws IOException {
         ResultsExporter resultsExporter = find(report.benchmarkClass());
         if (resultsExporter != null) {
             BenchmarkReport baselineReport = null;
@@ -59,7 +59,7 @@ public interface ResultsExporter {
                         new SerDeFilePredicate(report.benchmarkClass(), timestamp + ".json", report.datetime())))
                     .getFirst();
             }
-            Map<String, String> serializedReports = resultsExporter.exportReport(report, baselineReport);
+            Map<String, String> serializedReports = resultsExporter.exportReport(report, baselineReport, colors);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
                 String fileName = String.format("%s%s%s_%s.md",
                     report.benchmarkClass(),
@@ -84,13 +84,14 @@ public interface ResultsExporter {
      * @param baselineReportDirectoryInputPath path to the directory where the serialized benchmark reports used as baseline for comparison are located
      * @param timestamp only use serialized benchmark results file whose name matches this timestamp. Format is YYYYMMDD_hhmmss.
      *                  If not provided or empty, do not consider timestamp to match filenames
-     * @see #export(BenchmarkReport, Path, Path, String)
+     * @param colors whether to use colors in the exported Markdown tables
+     * @see #export(BenchmarkReport, Path, Path, String, boolean)
      */
-    static void exportAll(List<BenchmarkReport> reports, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) {
+    static void exportAll(List<BenchmarkReport> reports, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp, boolean colors) {
         List<FailedExport> failedExports = new ArrayList<>();
         for (BenchmarkReport report : reports) {
             try {
-                if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, timestamp)) {
+                if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, timestamp, colors)) {
                     failedExports.add(new FailedExport(report.benchmarkClass(), "No results exporter found"));
                 }
             } catch (Exception e) {
@@ -106,5 +107,5 @@ public interface ResultsExporter {
 
     boolean isBenchmarkClassSupported(String benchmarkClass);
 
-    Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline);
+    Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, boolean colors);
 }

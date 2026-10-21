@@ -15,6 +15,7 @@ import com.powsybl.benchmark.commons.serde.ResultsExporter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -53,11 +54,12 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
 
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        Map<String, Double> lineScores = new HashMap<>(results.size() + 1, 1);
-        for (BenchmarkResult result : results) {
-            lineScores.put(getPrettyColumnName(result), result.score());
-        }
-        return lineScores;
+        return getLineData(results, BenchmarkResult::score);
+    }
+
+    @Override
+    protected Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return getLineData(results, BenchmarkResult::scoreError);
     }
 
     @Override
@@ -96,5 +98,13 @@ public class NetworkSerializationMarkdownResultsExporter extends AbstractMarkdow
         return FORMAT_COLUMN_NAMES.getOrDefault(
             benchmarkResult.parameters().get("format"),
             benchmarkResult.parameters().get("format"));
+    }
+
+    private <T> Map<String, T> getLineData(List<BenchmarkResult> results, Function<BenchmarkResult, T> getter) {
+        Map<String, T> lineScores = new HashMap<>(results.size() + 1, 1);
+        for (BenchmarkResult result : results) {
+            lineScores.put(getPrettyColumnName(result), getter.apply(result));
+        }
+        return lineScores;
     }
 }

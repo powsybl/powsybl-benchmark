@@ -16,6 +16,7 @@ import com.powsybl.benchmark.commons.state.LoadFlowParametersType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -45,20 +46,28 @@ public class LoadFlowMarkdownResultsExporter extends AbstractByNetworkMarkdownRe
 
     @Override
     protected Map<String, String> getLine(List<BenchmarkResult> resultsForNetwork) {
-        Map<String, String> line = new HashMap<>(resultsForNetwork.size() + 1, 1);
+        Map<String, String> line = getDataByColumn(resultsForNetwork, AbstractMarkdownResultsExporter::getFormattedScoreAndUnit);
         line.put("Network", Constants.getPrettyNetworkName(resultsForNetwork.getFirst().parameters().get("networkName")));
-        resultsForNetwork.forEach(result -> line.put(getPrettyColumnName(result), getFormattedScoreAndUnit(result)));
         return line;
     }
 
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        Map<String, Double> lineScores = new HashMap<>(results.size(), 1);
-        results.forEach(result -> lineScores.put(getPrettyColumnName(result), result.score()));
-        return lineScores;
+        return getDataByColumn(results, BenchmarkResult::score);
+    }
+
+    @Override
+    protected Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return getDataByColumn(results, BenchmarkResult::scoreError);
     }
 
     protected String getPrettyColumnName(BenchmarkResult benchmarkResult) {
         return LOAD_FLOW_PARAMETERS_TYPE_COLUMN_NAMES.get(LoadFlowParametersType.valueOf(benchmarkResult.parameters().get("type")));
+    }
+
+    private <T> Map<String, T> getDataByColumn(List<BenchmarkResult> results, Function<BenchmarkResult, T> getter) {
+        Map<String, T> lineScores = new HashMap<>(results.size(), 1);
+        results.forEach(result -> lineScores.put(getPrettyColumnName(result), getter.apply(result)));
+        return lineScores;
     }
 }

@@ -59,6 +59,9 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Option(names = {"--export-markdown-only", "-E"}, description = "Only export existing JSON results to Markdown without running benchmarks", defaultValue = "false")
     private boolean exportMarkdownOnly = false;
 
+    @CommandLine.Option(names = "--colors, -c", description = "Use colors in the exported Markdown tables", defaultValue = "false")
+    private boolean colors = false;
+
     @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
     private boolean listBenchmarks = false;
 
@@ -309,7 +312,7 @@ public final class BenchmarkRunner implements Runnable {
         }
 
         // Markdown export
-        ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
+        ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp, colors);
     }
 
     private void runAndExportBenchmarks(Path benchmarkOutputPath, String[] benchmarkArgs) {
@@ -333,7 +336,7 @@ public final class BenchmarkRunner implements Runnable {
             BenchmarkReportJsonSerDe.writeReports(reports, benchmarkOutputPath);
 
             // Markdown export
-            ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp);
+            ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp, colors);
         }
     }
 

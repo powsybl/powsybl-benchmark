@@ -40,9 +40,9 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
     }
 
     @Override
-    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline) {
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, boolean colors) {
         xmxIndex = 0;
-        return super.exportReport(report, baseline);
+        return super.exportReport(report, baseline, colors);
     }
 
     @Override
@@ -94,5 +94,10 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
         return MultiThreadUtil.getLineScores(results);
+    }
+
+    @Override
+    protected Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return MultiThreadUtil.getLineScoresError(results);
     }
 }

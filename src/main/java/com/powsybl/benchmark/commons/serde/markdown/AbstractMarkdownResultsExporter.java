@@ -194,7 +194,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
     @Override
-    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline) {
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, boolean colors) {
         if (baseline != null && !report.benchmarkClass().equals(baseline.benchmarkClass())) {
             LOGGER.warn("Cannot compare reports with different benchmark classes: report {} and baseline {}", report.benchmarkClass(), baseline.benchmarkClass());
             return Map.of();
@@ -216,7 +216,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             String[] columnNames = columnNames(resultsByLine.getFirst());
 
             // Get the values for each line in the table
-            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames, baselineMap.get(tableName));
+            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames, baselineMap.get(tableName), colors);
 
             // Calculate the width of each column based on the column names and the values in each line
             int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
@@ -268,6 +268,19 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
     protected abstract Map<String, Double> getLineScores(List<BenchmarkResult> results);
 
     /**
+     * This function is used to add color to the relative difference with a baseline.
+     * Return a map where each key corresponds to a column name, and each value is the score error of the benchmark result at that column.
+     * The returned <code>Map&lt;String, Double&gt;</code> should contain the same number of entries as there are columns (and the keys should match),
+     * as defined by {@link #columnNames(List)}.
+     * We use a map since we have no guarantee for the order of the results compared to the order of the columns.
+     * The scores returned should match with the implementation of the {@link #getLine(List)} function.
+     *
+     * @return a Map of Double, each key is a column name (as defined by {@link #columnNames(List)}), each value is the score error of the benchmark result at that column.
+     *
+     */
+    protected abstract Map<String, Double> getLineScoresError(List<BenchmarkResult> results);
+
+    /**
      * Define the function that dictates how results should be grouped by line.
      *
      * @return a function that says which line of the resulting table a given benchmark result should be in, by providing a string that identifies the line
@@ -316,29 +329,62 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return "";
     }
 
-    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames, BenchmarkReport baseline) {
+    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames, BenchmarkReport baseline, boolean colors) {
         List<List<BenchmarkResult>> baselineResultsByLine = baseline == null ? null : getResultsByTableLine(baseline);
         String[][] valuesByLine = new String[resultsByLine.size()][columnNames.length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
-            Map<String, String> lineValues = getLine(resultsByLine.get(i));
-            Map<String, Double> lineScores = getLineScores(resultsByLine.get(i));
+            List<BenchmarkResult> results = resultsByLine.get(i);
+            Map<String, String> lineValues = getLine(results);
+            Map<String, Double> lineScores = getLineScores(results);
+            Map<String, Double> lineScoresError = getLineScoresError(results);
             Map<String, Double> baselineLineScores = baselineResultsByLine == null ? Map.of() : getLineScores(baselineResultsByLine.get(i));
+            Map<String, Double> baselineLineScoresError = baselineResultsByLine == null ? Map.of() : getLineScoresError(baselineResultsByLine.get(i));
             for (int j = 0; j < columnNames.length; ++j) {
                 String columnName = columnNames[j];
                 valuesByLine[i][j] = lineValues.get(columnName) + getBaselineRelativeDifference(
-                    lineScores.get(columnName), baselineLineScores.get(columnName)
+                    lineScores.get(columnName), lineScoresError.get(columnName), baselineLineScores.get(columnName), baselineLineScoresError.get(columnName), colors
                 );
             }
         }
         return valuesByLine;
     }
 
-    private String getBaselineRelativeDifference(Double resultScore, Double baselineScore) {
+    private String getBaselineRelativeDifference(Double resultScore, Double resultScoreError, Double baselineScore, Double baselineScoreError, boolean colors) {
         if (resultScore == null || baselineScore == null) {
             return "";
         }
         double relativeDifference = Math.round(100 * (resultScore / baselineScore - 1));
         String symbol = relativeDifference > 0 ? "+" : "";
-        return String.format(" (%s%.0f%%)", symbol, relativeDifference);
+        String prefix = "";
+        String suffix = "";
+        if (colors) {
+            String color = switch (getIntervalsRelativeSign(resultScore - resultScoreError, resultScore + resultScoreError, baselineScore - baselineScoreError, baselineScore + baselineScoreError)) {
+                case -1 -> "green"; //result is lower than baseline, meaning it's faster
+                case 0 -> ""; //no color
+                case 1 -> "red"; //result is higher than baseline, meaning it's slower
+                default -> throw new IllegalStateException("Unexpected value");
+            };
+            prefix = String.format(" <span style=\"color:%s\">", color);
+            suffix = "</span>";
+        }
+        return String.format(" %s(%s%.0f%%)%s", prefix, symbol, relativeDifference, suffix);
+    }
+
+    /**
+     * Get the relative sign of two intervals, defined by their start and end values.
+     * @param start1 the start of the first interval, must be lower than end1
+     * @param end1 the end of the first interval, must be higher than start1
+     * @param start2 the start of the second interval, must be lower than end2
+     * @param end2 the end of the second interval, must be higher than start2
+     * @return -1 if the first interval is strictly lower than the second, 0 if they overlap, 1 if the first interval is strictly higher than the second
+     */
+    private int getIntervalsRelativeSign(double start1, double end1, double start2, double end2) {
+        if (start1 < start2 && end1 < start2) {
+            return -1;
+        } else if (start1 > end2 && end1 > end2) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
