@@ -24,12 +24,14 @@ import java.util.function.ToIntFunction;
 @AutoService(ResultsExporter.class)
 public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResultsExporter {
 
-    private static final List<String> BENCHMARKS_CLASSES = List.of(
-        "MonoThreadSecurityAnalysisBenchmark",
-        "SensitivityAnalysisBenchmark");
+    private static final List<String> BENCHMARKS_CLASSES = List.of("SensitivityAnalysisBenchmark");
 
     public ContingenciesMarkdownResultsExporter() {
         super(BENCHMARKS_CLASSES);
+    }
+
+    public ContingenciesMarkdownResultsExporter(List<String> benchmarkClasses) {
+        super(benchmarkClasses);
     }
 
     @Override

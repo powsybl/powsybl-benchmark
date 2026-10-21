@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This is the base class for all the results exporters.
@@ -53,8 +54,10 @@ public interface ResultsExporter {
             BenchmarkReport baselineReport = null;
             if (baselineReportDirectoryInputPath != null && Files.exists(baselineReportDirectoryInputPath)) {
                 baselineReport = BenchmarkReportJsonSerDe.readReports(
-                    SerDeUtil.getMatchingFileFromPath(baselineReportDirectoryInputPath,
-                        new SerDeFilePredicate(report.benchmarkClass(), timestamp + ".json", report.datetime()))).getFirst();
+                    SerDeUtil.getMatchingFileFromPath(
+                        baselineReportDirectoryInputPath,
+                        new SerDeFilePredicate(report.benchmarkClass(), timestamp + ".json", report.datetime())))
+                    .getFirst();
             }
             Map<String, String> serializedReports = resultsExporter.exportReport(report, baselineReport);
             for (Map.Entry<String, String> table : serializedReports.entrySet()) {
@@ -81,18 +84,23 @@ public interface ResultsExporter {
      * @param baselineReportDirectoryInputPath path to the directory where the serialized benchmark reports used as baseline for comparison are located
      * @param timestamp only use serialized benchmark results file whose name matches this timestamp. Format is YYYYMMDD_hhmmss.
      *                  If not provided or empty, do not consider timestamp to match filenames
-     * @throws IOException if any file cannot be written (path does not exist, permission denied, etc.)
      * @see #export(BenchmarkReport, Path, Path, String)
      */
-    static void exportAll(List<BenchmarkReport> reports, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) throws IOException {
-        List<String> failedExports = new ArrayList<>();
+    static void exportAll(List<BenchmarkReport> reports, Path markdownDirectoryOutputPath, Path baselineReportDirectoryInputPath, String timestamp) {
+        List<FailedExport> failedExports = new ArrayList<>();
         for (BenchmarkReport report : reports) {
-            if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, timestamp)) {
-                failedExports.add(report.benchmarkClass());
+            try {
+                if (!export(report, markdownDirectoryOutputPath, baselineReportDirectoryInputPath, timestamp)) {
+                    failedExports.add(new FailedExport(report.benchmarkClass(), "No results exporter found"));
+                }
+            } catch (Exception e) {
+                failedExports.add(new FailedExport(report.benchmarkClass(), e.getClass().getSimpleName() + ": " + e.getMessage()));
             }
         }
         if (!failedExports.isEmpty()) {
-            throw new PowsyblException("No results exporter found for benchmark classes: " + String.join(", ", failedExports));
+            throw new PowsyblException("Failed to export benchmark reports as markdown: " + failedExports.stream()
+                .map(fe -> fe.benchmarkClass() + " (" + fe.reason() + ")")
+                .collect(Collectors.joining(", ")));
         }
     }
 
