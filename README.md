@@ -59,7 +59,7 @@ The results here are the duration per contingency.
 | RTE 1888 | 1000          | 4,17 ms/op (+25%) | 6,94 ms/op (+30%)   | 5,13 ms/op (+10%)                                      |
 | RTE 6515 | 1000          | 16,61 ms/op (+5%) | 25,69 ms/op (+9%)   | 18,60 ms/op (+31%)                                     |
 
-_Note: those results are for the v2026.1.0 version_
+_Note: those results are for the v2026.2.0 version_
 
 In the current version, the security analysis is unexpectedly slow for the RealGrid network. This is to be investigated.
 
