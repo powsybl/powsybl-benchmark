@@ -156,6 +156,8 @@ _Note: those results are for the v2026.2.0 version_
 **_Note: There was a performance issue in the previous release for the XML copy operation, which has been fixed in the v7.4.0 release
 of powsybl-core, hence the huge improvement._**
 
+**_Note 2: There is now a performance issue in the file serialization, which will be fixed in the next release of powsybl-core._**
+
 ### Contingency serialization benchmark
 
 Contingency serialization benchmark has been done using RTE 6515 buses network. A list of 1000 contingencies has been 
