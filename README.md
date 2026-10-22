@@ -61,6 +61,8 @@ The results here are the duration per contingency.
 
 _Note: those results are for the v2026.2.0 version_
 
+_Note: there is a performance issue in the security analysis, especially in the standard parameters, this is under investigation._
+
 In the current version, the security analysis is unexpectedly slow for the RealGrid network. This is to be investigated.
 
 | Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
@@ -124,6 +126,8 @@ This table presents the average execution time per contingency and factors for a
 | RealGrid | 1000          | 21,79 ms/op (+1%)  | 26,23 ms/op (+3%)   | 23,86 ms/op (+15%)                                     |
 
 _Note: those results are for the v2026.2.0 version_
+
+_Note: there is a performance issue in the sensitivity analysis, especially in the standard parameters, this is under investigation._
 
 ## Serialization benchmark
 
