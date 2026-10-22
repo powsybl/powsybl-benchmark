@@ -1,0 +1,43 @@
+{
+  "benchmarkClass" : "NodePrintBenchmark",
+  "powsyblCoreVersion" : "7.4.0",
+  "openLoadFlowVersion" : "2.4.0",
+  "datetime" : "20261019_213537",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.NodePrintBenchmark.print",
+    "parameters" : {
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.03158494668451167,
+    "scoreError" : 0.0013674651927438925,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.NodePrintBenchmark.print",
+    "parameters" : {
+      "size" : "2000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.07994641860239975,
+    "scoreError" : 0.00340453011860554,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.NodePrintBenchmark.print",
+    "parameters" : {
+      "size" : "4000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.16297928981661608,
+    "scoreError" : 0.0025975130299826367,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.NodePrintBenchmark.print",
+    "parameters" : {
+      "size" : "8000"
+    },
+    "mode" : "AverageTime",
+    "score" : 0.3480624723347319,
+    "scoreError" : 0.018169212967397163,
+    "scoreUnit" : "ms/op"
+  } ]
+}

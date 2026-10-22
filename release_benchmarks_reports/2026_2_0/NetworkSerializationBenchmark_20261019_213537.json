@@ -1,0 +1,287 @@
+{
+  "benchmarkClass" : "NetworkSerializationBenchmark",
+  "powsyblCoreVersion" : "7.4.0",
+  "openLoadFlowVersion" : "2.4.0",
+  "datetime" : "20261019_213537",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 284.69701816363636,
+    "scoreError" : 2.632010032779598,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 72.55413790963996,
+    "scoreError" : 0.5756191273599708,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 162.8445455157895,
+    "scoreError" : 0.969301933745601,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 48.938984856213644,
+    "scoreError" : 0.2726161794061438,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 89.92201269298701,
+    "scoreError" : 2.398248931088271,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 32.066024812515266,
+    "scoreError" : 0.5978285265480818,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 3213.8270719,
+    "scoreError" : 98.9398484967867,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark1NetworkDeserialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 1370.3556777000001,
+    "scoreError" : 34.28676189003917,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 241.67860157692303,
+    "scoreError" : 3.8732367847828364,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 73.14651829547039,
+    "scoreError" : 1.9875867003841545,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 196.61412775,
+    "scoreError" : 1.458526633898864,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 66.63743728556202,
+    "scoreError" : 5.6117264756211025,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 152.85148426,
+    "scoreError" : 1.136965530969748,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark2NetworkStreamSerialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 57.956856565434194,
+    "scoreError" : 4.734871491057056,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 745.3883382850001,
+    "scoreError" : 13.218066253339675,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 190.50260771397058,
+    "scoreError" : 5.392223432715034,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 293.4109067909091,
+    "scoreError" : 15.321753324103536,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 104.8416648895238,
+    "scoreError" : 6.232399054658043,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 247.78263465384617,
+    "scoreError" : 10.215704837576952,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 78.06779126408141,
+    "scoreError" : 13.405551344955226,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 1889.0805009500004,
+    "scoreError" : 11.368701765899742,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark3NetworkFileSerialization",
+    "parameters" : {
+      "format" : "CGMES",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 688.28950316,
+    "scoreError" : 7.787666071071492,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 698.4696720200001,
+    "scoreError" : 13.985244733945668,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "XIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 172.08242022222223,
+    "scoreError" : 3.38843366132969,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 229.91107163461538,
+    "scoreError" : 3.076598295951787,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "JIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 84.425453100873,
+    "scoreError" : 1.2888866947738946,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "RealGrid"
+    },
+    "mode" : "AverageTime",
+    "score" : 234.05931319230763,
+    "scoreError" : 2.112059716720043,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.NetworkSerializationBenchmark.benchmark4NetworkCopy",
+    "parameters" : {
+      "format" : "BIIDM",
+      "networkName" : "case6515rte"
+    },
+    "mode" : "AverageTime",
+    "score" : 88.98429206164757,
+    "scoreError" : 2.1229439203418603,
+    "scoreUnit" : "ms/op"
+  } ]
+}
