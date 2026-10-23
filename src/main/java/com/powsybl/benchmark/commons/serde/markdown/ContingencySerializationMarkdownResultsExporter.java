@@ -8,47 +8,24 @@
 package com.powsybl.benchmark.commons.serde.markdown;
 
 import com.google.auto.service.AutoService;
-import com.powsybl.benchmark.commons.serde.BenchmarkResult;
 import com.powsybl.benchmark.commons.serde.ResultsExporter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
  */
 @AutoService(ResultsExporter.class)
-public class ContingencySerializationMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
+public class ContingencySerializationMarkdownResultsExporter extends AbstractMultipleOperationsMarkdownResultsExporter {
 
     private static final List<String> BENCHMARKS_CLASSES = List.of("ContingencySerializationBenchmark");
-    private static final String TIME_STRING = "Time (ms/op)";
 
     public ContingencySerializationMarkdownResultsExporter() {
         super(BENCHMARKS_CLASSES);
     }
 
     @Override
-    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
-        return new String[] {
-            "Benchmark Operation",
-            TIME_STRING
-        };
-    }
-
-    @Override
-    protected Map<String, String> getLine(List<BenchmarkResult> results) {
-        return Map.of(
-            "Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()),
-            TIME_STRING, getFormattedScore(results.getFirst(), 3)
-        );
-    }
-
-    @Override
-    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        return Map.of(TIME_STRING, results.getFirst().score());
-    }
-
-    private String getPrettyOperationName(String fullOperationName) {
+    protected String getPrettyOperationName(String fullOperationName) {
         String shortName = fullOperationName.substring(fullOperationName.lastIndexOf('.') + 1);
         return switch (shortName) {
             case "benchmark1Parsing" -> "Parsing";

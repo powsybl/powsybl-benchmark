@@ -1,0 +1,28 @@
+{
+  "benchmarkClass" : "TimeSeriesBenchmark",
+  "powsyblCoreVersion" : "7.4.0",
+  "openLoadFlowVersion" : "2.4.0",
+  "datetime" : "20261023_083733",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark1GenerateTimeSeries",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark2ParseCsv",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark3WriteCsv",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 4.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}
