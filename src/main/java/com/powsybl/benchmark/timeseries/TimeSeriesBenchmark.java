@@ -31,8 +31,8 @@ import static com.powsybl.benchmark.timeseries.state.TimeSeriesState.generateTim
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 1, time = 5, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 1, time = 5, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 3, time = 5, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 public class TimeSeriesBenchmark {
 
