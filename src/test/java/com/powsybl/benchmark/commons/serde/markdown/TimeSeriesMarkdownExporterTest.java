@@ -38,9 +38,12 @@ public class TimeSeriesMarkdownExporterTest extends AbstractMarkdownSerializerTe
     protected List<RunResult> buildResults() {
         String benchName = getBenchClass() + ".";
         return List.of(
-            mockRunResult(benchName + "benchmark1GenerateTimeSeries", Map.of(), 1.0),
+            mockRunResult(benchName + "benchmark1GenerateTimeSeriesTable", Map.of(), 1.0),
             mockRunResult(benchName + "benchmark2ParseCsv", Map.of(), 2.0),
-            mockRunResult(benchName + "benchmark3WriteCsv", Map.of(), 3.0)
+            mockRunResult(benchName + "benchmark3WriteCsv", Map.of(), 3.0),
+            mockRunResult(benchName + "benchmark4GenerateCalculatedTimeSeries", Map.of(), 4.0),
+            mockRunResult(benchName + "benchmark5ParseJson", Map.of(), 5.0),
+            mockRunResult(benchName + "benchmark6WriteJson", Map.of(), 6.0)
         );
     }
 }

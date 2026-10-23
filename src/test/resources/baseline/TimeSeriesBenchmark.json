@@ -24,5 +24,26 @@
     "score" : 4.0,
     "scoreError" : 0.1,
     "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark4GenerateCalculatedTimeSeries",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 5.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark5ParseJson",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 6.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark6WriteJson",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 7.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
   } ]
 }

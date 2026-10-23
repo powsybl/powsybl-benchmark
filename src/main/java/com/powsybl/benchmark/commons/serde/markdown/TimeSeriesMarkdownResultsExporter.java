@@ -28,9 +28,12 @@ public class TimeSeriesMarkdownResultsExporter extends AbstractMultipleOperation
     protected String getPrettyOperationName(String fullOperationName) {
         String shortName = fullOperationName.substring(fullOperationName.lastIndexOf('.') + 1);
         return switch (shortName) {
-            case "benchmark1GenerateTimeSeries" -> "Generation";
+            case "benchmark1GenerateTimeSeriesTable" -> "Generation of TimeSeriesTable";
             case "benchmark2ParseCsv" -> "Parsing from CSV";
             case "benchmark3WriteCsv" -> "Writing to CSV";
+            case "benchmark4GenerateCalculatedTimeSeries" -> "Generation of CalculatedTimeSeries";
+            case "benchmark5ParseJson" -> "Parsing from JSON";
+            case "benchmark6WriteJson" -> "Writing to JSON";
             default -> shortName;
         };
     }
