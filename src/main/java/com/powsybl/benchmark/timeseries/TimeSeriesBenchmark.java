@@ -43,12 +43,16 @@ public class TimeSeriesBenchmark {
     }
 
     @Benchmark
+    @Warmup(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 10, time = 30, timeUnit = TimeUnit.SECONDS)
     public void benchmark2ParseCsv(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         Map<Integer, List<TimeSeries>> timeseriesMap = TimeSeries.parseCsv(timeSeriesState.getFilePath());
         blackhole.consume(timeseriesMap);
     }
 
     @Benchmark
+    @Warmup(iterations = 5, time = 30, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 10, time = 30, timeUnit = TimeUnit.SECONDS)
     public void benchmark3WriteCsv(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         Path filePath = timeSeriesState.getOutputPath();
         timeSeriesState.getTable().writeCsv(filePath);
