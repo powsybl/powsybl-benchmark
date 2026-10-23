@@ -33,28 +33,28 @@ import static com.powsybl.benchmark.timeseries.state.TimeSeriesState.generateTim
  */
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 3, time = 5, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 public class TimeSeriesBenchmark {
 
     @Benchmark
+    @Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 4, time = 2, timeUnit = TimeUnit.SECONDS)
     public void benchmark1GenerateTimeSeriesTable(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         TimeSeriesTable timeSeriesTable = generateTimeSeriesTable(timeSeriesState.getIndex());
         blackhole.consume(timeSeriesTable);
     }
 
     @Benchmark
-    @Warmup(iterations = 4, time = 20, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 8, time = 20, timeUnit = TimeUnit.SECONDS)
+    @Warmup(iterations = 3, time = 15, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 5, time = 15, timeUnit = TimeUnit.SECONDS)
     public void benchmark2ParseCsv(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         Map<Integer, List<TimeSeries>> timeseriesMap = TimeSeries.parseCsv(timeSeriesState.getCsvFilePath());
         blackhole.consume(timeseriesMap);
     }
 
     @Benchmark
-    @Warmup(iterations = 4, time = 20, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 8, time = 20, timeUnit = TimeUnit.SECONDS)
+    @Warmup(iterations = 3, time = 15, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 5, time = 15, timeUnit = TimeUnit.SECONDS)
     public void benchmark3WriteCsv(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         Path filePath = timeSeriesState.getCsvOutputPath();
         timeSeriesState.getTable().writeCsv(filePath);
@@ -62,22 +62,24 @@ public class TimeSeriesBenchmark {
     }
 
     @Benchmark
+    @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 4, time = 1, timeUnit = TimeUnit.SECONDS)
     public void benchmark4GenerateCalculatedTimeSeries(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         CalculatedTimeSeries generateCalculatedTimeSeries = generateCalculatedTimeSeries(timeSeriesState.getIndex());
         blackhole.consume(generateCalculatedTimeSeries);
     }
 
     @Benchmark
-    @Warmup(iterations = 4, time = 20, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 8, time = 20, timeUnit = TimeUnit.SECONDS)
+    @Warmup(iterations = 2, time = 10, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 4, time = 10, timeUnit = TimeUnit.SECONDS)
     public void benchmark5ParseJson(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         List<TimeSeries> timeseriesMap = TimeSeries.parseJson(timeSeriesState.getJsonFilePath());
         blackhole.consume(timeseriesMap);
     }
 
     @Benchmark
-    @Warmup(iterations = 4, time = 20, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 8, time = 20, timeUnit = TimeUnit.SECONDS)
+    @Warmup(iterations = 2, time = 10, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 4, time = 10, timeUnit = TimeUnit.SECONDS)
     public void benchmark6WriteJson(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         Path jsonFilePath = timeSeriesState.getJsonOutputPath();
         TimeSeries.writeJson(jsonFilePath, List.of(timeSeriesState.getCalculatedTimeSeries()));

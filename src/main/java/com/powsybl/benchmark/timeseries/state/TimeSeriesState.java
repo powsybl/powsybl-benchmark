@@ -31,16 +31,16 @@ import java.util.*;
 public class TimeSeriesState {
 
     // Number of steps in the index
-    private static final int STEPS = 2500;
+    private static final int STEPS = 500;
 
     // Number of time series
-    private static final int SIZE = 800;
+    private static final int SIZE = 100;
 
     // Number of values per chunk
     private static final int CHUNK_SIZE = 500;
 
     // Max depth of the tree
-    private static final int MAX_DEPTH = 5;
+    private static final int MAX_DEPTH = 25;
 
     private static final int VERSIONS = 5;
     private static final String CSV_FILE_NAME = "timeseries.csv";
