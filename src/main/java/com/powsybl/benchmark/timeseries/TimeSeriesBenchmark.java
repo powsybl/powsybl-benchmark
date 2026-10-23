@@ -62,8 +62,8 @@ public class TimeSeriesBenchmark {
     }
 
     @Benchmark
-    @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 4, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Warmup(iterations = 2, time = 10, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 4, time = 10, timeUnit = TimeUnit.SECONDS)
     public void benchmark4GenerateCalculatedTimeSeries(Blackhole blackhole, TimeSeriesState timeSeriesState) {
         CalculatedTimeSeries generateCalculatedTimeSeries = generateCalculatedTimeSeries(timeSeriesState.getIndex());
         blackhole.consume(generateCalculatedTimeSeries);

@@ -42,6 +42,12 @@ public class TimeSeriesState {
     // Max depth of the tree
     private static final int MAX_DEPTH = 25;
 
+    // Thresholds
+    private static final int THRESHOLD_VALUE_START_DEPTH = 5;
+    private static final double THRESHOLD_VALUE_START_RANDOM = 0.25;
+    private static final double THRESHOLD_DOUBLE_NODE_RANDOM = 0.5;
+    private static final double THRESHOLD_NEW_DOUBLE_TIMESERIES_RANDOM = 0.25;
+
     private static final int VERSIONS = 5;
     private static final String CSV_FILE_NAME = "timeseries.csv";
     private static final String JSON_FILE_NAME = "timeseries.json";
@@ -119,7 +125,7 @@ public class TimeSeriesState {
     }
 
     private static NodeCalc generateNodeCalc(RegularTimeSeriesIndex index, List<DoubleTimeSeries> timeSeriesList, int currentLevel) {
-        if (currentLevel == MAX_DEPTH || currentLevel > 5 && RANDOM.nextDouble() < 0.2) {
+        if (currentLevel == MAX_DEPTH || currentLevel > THRESHOLD_VALUE_START_DEPTH && RANDOM.nextDouble() < THRESHOLD_VALUE_START_RANDOM) {
             return generateValueNodeCalc(index, timeSeriesList);
         } else {
             NodeCalc left = generateNodeCalc(index, timeSeriesList, currentLevel + 1);
@@ -142,10 +148,10 @@ public class TimeSeriesState {
     }
 
     private static NodeCalc generateValueNodeCalc(RegularTimeSeriesIndex index, List<DoubleTimeSeries> timeSeriesList) {
-        if (RANDOM.nextBoolean()) {
+        if (RANDOM.nextDouble() < THRESHOLD_DOUBLE_NODE_RANDOM) {
             return new DoubleNodeCalc(RANDOM.nextDouble());
         } else {
-            if (timeSeriesList.isEmpty() || RANDOM.nextBoolean()) {
+            if (timeSeriesList.isEmpty() || RANDOM.nextDouble() < THRESHOLD_NEW_DOUBLE_TIMESERIES_RANDOM) {
                 String id = "ts_" + timeSeriesList.size();
                 DoubleTimeSeries ts = createDoubleTimeSeries(index, id);
                 timeSeriesList.add(ts);
