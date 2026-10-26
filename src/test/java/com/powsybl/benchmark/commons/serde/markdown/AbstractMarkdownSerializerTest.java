@@ -55,7 +55,7 @@ public abstract class AbstractMarkdownSerializerTest {
 
     protected void testReportToStringFullPath(String benchClass, String filenameStart, List<RunResult> runResults, String expectedResourcePath, Path baselineDirectoryPath) throws IOException {
         BenchmarkReport report = BenchmarkTestUtils.mockBenchmarkReport(benchClass, runResults);
-        ResultsExporter.export(report, tempDir, baselineDirectoryPath, "", false);
+        ResultsExporter.export(report, tempDir, baselineDirectoryPath, "", new MarkdownExportParameters());
 
         String actual = Files.readString(tempDir.resolve(SerDeUtil.getMatchingFileFromPath(
                     tempDir,

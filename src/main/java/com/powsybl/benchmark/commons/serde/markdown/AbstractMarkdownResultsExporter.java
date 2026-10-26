@@ -194,7 +194,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
      * @return a map where the key is a name related to the table, and the value is the corresponding table
      */
     @Override
-    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, boolean colors) {
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, MarkdownExportParameters parameters) {
         if (baseline != null && !report.benchmarkClass().equals(baseline.benchmarkClass())) {
             LOGGER.warn("Cannot compare reports with different benchmark classes: report {} and baseline {}", report.benchmarkClass(), baseline.benchmarkClass());
             return Map.of();
@@ -216,7 +216,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             String[] columnNames = columnNames(resultsByLine.getFirst());
 
             // Get the values for each line in the table
-            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames, baselineMap.get(tableName), colors);
+            String[][] valuesByLine = valuesByLine(resultsByLine, columnNames, baselineMap.get(tableName), parameters);
 
             // Calculate the width of each column based on the column names and the values in each line
             int[] widthByColumn = calculateWidthPerColumn(columnNames, valuesByLine);
@@ -329,7 +329,7 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         return "";
     }
 
-    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames, BenchmarkReport baseline, boolean colors) {
+    private String[][] valuesByLine(List<List<BenchmarkResult>> resultsByLine, String[] columnNames, BenchmarkReport baseline, MarkdownExportParameters parameters) {
         List<List<BenchmarkResult>> baselineResultsByLine = baseline == null ? null : getResultsByTableLine(baseline);
         String[][] valuesByLine = new String[resultsByLine.size()][columnNames.length];
         for (int i = 0; i < resultsByLine.size(); ++i) {
@@ -342,14 +342,14 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
             for (int j = 0; j < columnNames.length; ++j) {
                 String columnName = columnNames[j];
                 valuesByLine[i][j] = lineValues.get(columnName) + getBaselineRelativeDifference(
-                    lineScores.get(columnName), lineScoresError.get(columnName), baselineLineScores.get(columnName), baselineLineScoresError.get(columnName), colors
+                    lineScores.get(columnName), lineScoresError.get(columnName), baselineLineScores.get(columnName), baselineLineScoresError.get(columnName), parameters
                 );
             }
         }
         return valuesByLine;
     }
 
-    private String getBaselineRelativeDifference(Double resultScore, Double resultScoreError, Double baselineScore, Double baselineScoreError, boolean colors) {
+    private String getBaselineRelativeDifference(Double resultScore, Double resultScoreError, Double baselineScore, Double baselineScoreError, MarkdownExportParameters parameters) {
         if (resultScore == null || baselineScore == null) {
             return "";
         }
@@ -357,10 +357,17 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
         String symbol = relativeDifference > 0 ? "+" : "";
         String prefix = "";
         String suffix = "";
-        if (colors) {
+        if (parameters.useColors()) {
             String color = switch (getIntervalsRelativeSign(resultScore - resultScoreError, resultScore + resultScoreError, baselineScore - baselineScoreError, baselineScore + baselineScoreError)) {
                 case -1 -> "green"; //result is lower than baseline, meaning it's faster
-                case 0 -> ""; //no color
+                case 0 -> {
+                    if (Math.abs(relativeDifference) > parameters.getResultVariationWarningThreshold()) {
+                        //intervals overlap, but relative difference is high so a warning color is used
+                        yield "yellow";
+                    } else {
+                        yield "";
+                    }
+                }
                 case 1 -> "red"; //result is higher than baseline, meaning it's slower
                 default -> throw new IllegalStateException("Unexpected value");
             };

@@ -40,9 +40,9 @@ public class XmxSecurityAnalysisMarkdownResultsExporter extends AbstractMarkdown
     }
 
     @Override
-    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, boolean colors) {
+    public Map<String, String> exportReport(BenchmarkReport report, BenchmarkReport baseline, MarkdownExportParameters parameters) {
         xmxIndex = 0;
-        return super.exportReport(report, baseline, colors);
+        return super.exportReport(report, baseline, parameters);
     }
 
     @Override

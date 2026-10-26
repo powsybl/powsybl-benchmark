@@ -10,6 +10,7 @@ package com.powsybl.benchmark;
 import com.powsybl.benchmark.commons.FullBenchmark;
 import com.powsybl.benchmark.commons.ReleaseBenchmark;
 import com.powsybl.benchmark.commons.serde.*;
+import com.powsybl.benchmark.commons.serde.markdown.MarkdownExportParameters;
 import com.powsybl.commons.PowsyblException;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -60,7 +61,7 @@ public final class BenchmarkRunner implements Runnable {
     private boolean exportMarkdownOnly = false;
 
     @CommandLine.Option(names = "--colors, -c", description = "Use colors in the exported Markdown tables", defaultValue = "false")
-    private boolean colors = false;
+    private boolean useColors = false;
 
     @CommandLine.Option(names = {"--list", "-l"}, description = "List benchmarks that would be run by the command, but do not run them", defaultValue = "false")
     private boolean listBenchmarks = false;
@@ -132,10 +133,13 @@ public final class BenchmarkRunner implements Runnable {
                 checkOrCreateDirectory(benchmarkOutputPath);
             }
 
+            MarkdownExportParameters parameters = new MarkdownExportParameters();
+            parameters.setUseColors(useColors);
+
             if (exportMarkdownOnly) {
-                exportExistingJsonReportsToMarkdown(benchmarkOutputPath, benchmarkArgs);
+                exportExistingJsonReportsToMarkdown(benchmarkOutputPath, benchmarkArgs, parameters);
             } else {
-                runAndExportBenchmarks(benchmarkOutputPath, benchmarkArgs);
+                runAndExportBenchmarks(benchmarkOutputPath, benchmarkArgs, parameters);
             }
         }
     }
@@ -297,7 +301,7 @@ public final class BenchmarkRunner implements Runnable {
         return cleanedBenchmarkArgs.toArray(new String[0]);
     }
 
-    private void exportExistingJsonReportsToMarkdown(Path benchmarkOutputPath, String[] benchmarkArgs) {
+    private void exportExistingJsonReportsToMarkdown(Path benchmarkOutputPath, String[] benchmarkArgs, MarkdownExportParameters parameters) {
         // Clean benchmark classes from regex characters to match the JSON files
         String[] cleanedBenchmarkArgs = getBenchmarkClassesFromBenchmarkArgs(benchmarkArgs);
 
@@ -312,10 +316,10 @@ public final class BenchmarkRunner implements Runnable {
         }
 
         // Markdown export
-        ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp, colors);
+        ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp, parameters);
     }
 
-    private void runAndExportBenchmarks(Path benchmarkOutputPath, String[] benchmarkArgs) {
+    private void runAndExportBenchmarks(Path benchmarkOutputPath, String[] benchmarkArgs, MarkdownExportParameters parameters) {
         List<BenchmarkReport> reports;
         try {
             String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
@@ -336,7 +340,7 @@ public final class BenchmarkRunner implements Runnable {
             BenchmarkReportJsonSerDe.writeReports(reports, benchmarkOutputPath);
 
             // Markdown export
-            ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp, colors);
+            ResultsExporter.exportAll(reports, benchmarkOutputPath, baselineDirectory, baselineTimestamp, parameters);
         }
     }
 
