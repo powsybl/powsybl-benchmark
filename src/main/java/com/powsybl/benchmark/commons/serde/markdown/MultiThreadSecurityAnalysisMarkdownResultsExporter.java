@@ -44,4 +44,9 @@ public class MultiThreadSecurityAnalysisMarkdownResultsExporter extends Abstract
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
         return MultiThreadUtil.getLineScores(results);
     }
+
+    @Override
+    protected Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return MultiThreadUtil.getLineScoresError(results);
+    }
 }

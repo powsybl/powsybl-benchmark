@@ -66,13 +66,4 @@ public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResult
             throw new IllegalStateException("All results for a given network must have the same number of contingencies");
         }
     }
-
-    @Override
-    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        return Map.of(
-            getPrettyColumnName(results.get(0)), results.get(0).score(),
-            getPrettyColumnName(results.get(1)), results.get(1).score(),
-            getPrettyColumnName(results.get(2)), results.get(2).score()
-        );
-    }
 }

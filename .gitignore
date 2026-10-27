@@ -19,6 +19,9 @@ org.eclipse.jdt.apt.core.prefs
 org.eclipse.jdt.groovy.core.prefs
 org.sonarlint.eclipse.core.prefs
 
+#Sonar
+.sonar
+
 # VS Code settings
 .vscode/*
 

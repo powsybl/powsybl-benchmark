@@ -49,12 +49,23 @@ public class TimeSeriesSplitMarkdownExporter extends AbstractMarkdownResultsExpo
 
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        Map<String, Double> line = new HashMap<>(results.size() + 1, 1);
-        results.forEach(result -> line.put(getColumnName(result), result.score()));
-        return line;
+        return getLineData(results, BenchmarkResult::score);
+    }
+
+    @Override
+    protected Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return getLineData(results, BenchmarkResult::scoreError);
     }
 
     protected String getColumnName(BenchmarkResult benchmarkResult) {
         return "size = " + benchmarkResult.parameters().get("size");
+    }
+
+    private <T> Map<String, T> getLineData(List<BenchmarkResult> results, Function<BenchmarkResult, T> getter) {
+        Map<String, T> lineScores = new HashMap<>(results.size() + 1, 1);
+        for (BenchmarkResult result : results) {
+            lineScores.put(getColumnName(result), getter.apply(result));
+        }
+        return lineScores;
     }
 }

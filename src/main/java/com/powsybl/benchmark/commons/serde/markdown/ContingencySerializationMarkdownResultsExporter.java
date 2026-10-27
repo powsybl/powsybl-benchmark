@@ -48,6 +48,11 @@ public class ContingencySerializationMarkdownResultsExporter extends AbstractMar
         return Map.of(TIME_STRING, results.getFirst().score());
     }
 
+    @Override
+    protected Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return Map.of(TIME_STRING, results.getFirst().scoreError());
+    }
+
     private String getPrettyOperationName(String fullOperationName) {
         String shortName = fullOperationName.substring(fullOperationName.lastIndexOf('.') + 1);
         return switch (shortName) {

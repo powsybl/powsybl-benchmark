@@ -72,12 +72,29 @@ public final class MultiThreadUtil {
      *         no results are provided.
      */
     public static Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return getLineData(results, BenchmarkResult::score);
+    }
+
+    /**
+     * Builds the score map used for baseline comparison by matching each present thread result
+     * to the same thread-based column name used in the markdown table.
+     *
+     * @param results A list of {@code BenchmarkResult} objects containing benchmarking data.
+     * @return A map where each key is the pretty column name for a present thread count and each
+     *         value is the raw benchmark score for that thread count. Returns an empty map when
+     *         no results are provided.
+     */
+    public static Map<String, Double> getLineScoresError(List<BenchmarkResult> results) {
+        return getLineData(results, BenchmarkResult::scoreError);
+    }
+
+    private static <T> Map<String, T> getLineData(List<BenchmarkResult> results, Function<BenchmarkResult, T> getter) {
         if (results.isEmpty()) {
             return Map.of();
         }
-        Map<String, Double> lineScores = new HashMap<>(results.size(), 1);
+        Map<String, T> lineScores = new HashMap<>(results.size(), 1);
         for (BenchmarkResult result : results) {
-            lineScores.put(getPrettyColumnName(getThreadCount(result)), result.score());
+            lineScores.put(getPrettyColumnName(getThreadCount(result)), getter.apply(result));
         }
         return lineScores;
     }
