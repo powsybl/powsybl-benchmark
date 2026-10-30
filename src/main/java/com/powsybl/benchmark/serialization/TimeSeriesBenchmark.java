@@ -5,9 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * SPDX-License-Identifier: MPL-2.0
  */
-package com.powsybl.benchmark.timeseries;
+package com.powsybl.benchmark.serialization;
 
-import com.powsybl.benchmark.timeseries.state.TimeSeriesState;
+import com.powsybl.benchmark.serialization.state.TimeSeriesState;
 import com.powsybl.timeseries.CalculatedTimeSeries;
 import com.powsybl.timeseries.TimeSeries;
 import com.powsybl.timeseries.TimeSeriesTable;
@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.powsybl.benchmark.timeseries.state.TimeSeriesState.generateCalculatedTimeSeries;
-import static com.powsybl.benchmark.timeseries.state.TimeSeriesState.generateTimeSeriesTable;
+import static com.powsybl.benchmark.serialization.state.TimeSeriesState.generateCalculatedTimeSeries;
+import static com.powsybl.benchmark.serialization.state.TimeSeriesState.generateTimeSeriesTable;
 
 /**
  * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
