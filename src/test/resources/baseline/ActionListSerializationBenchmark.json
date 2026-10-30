@@ -1,0 +1,35 @@
+{
+  "benchmarkClass" : "ActionListSerializationBenchmark",
+  "powsyblCoreVersion" : "7.4.0",
+  "openLoadFlowVersion" : "2.4.0",
+  "datetime" : "2026-10-12T15:37:26.374887769",
+  "results" : [ {
+    "benchmarkName" : "ActionListSerializationBenchmark.actionList1Deserializing",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ActionListSerializationBenchmark.actionList2DeserializingFromBytes",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ActionListSerializationBenchmark.actionList3Writing",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 4.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "ActionListSerializationBenchmark.actionList4BufferedWriting",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}

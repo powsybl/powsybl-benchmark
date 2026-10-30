@@ -1,0 +1,43 @@
+{
+  "benchmarkClass" : "LimitScalingSerializationBenchmark",
+  "powsyblCoreVersion" : "7.4.0",
+  "openLoadFlowVersion" : "2.4.0",
+  "datetime" : "20261029_162428",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.LimitScalingSerializationBenchmark.limitScaling1Deserializing",
+    "parameters" : {
+      "defaultLimitScalingPath" : "src/main/resources/data/limit_scalings.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 2.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.LimitScalingSerializationBenchmark.limitScaling2DeserializingFromBytes",
+    "parameters" : {
+      "defaultLimitScalingPath" : "src/main/resources/data/limit_scalings.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.LimitScalingSerializationBenchmark.limitScaling3Writing",
+    "parameters" : {
+      "defaultLimitScalingPath" : "src/main/resources/data/limit_scalings.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 4.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.serialization.LimitScalingSerializationBenchmark.limitScaling4BufferedWriting",
+    "parameters" : {
+      "defaultLimitScalingPath" : "src/main/resources/data/limit_scalings.json"
+    },
+    "mode" : "AverageTime",
+    "score" : 3.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  } ]
+}
