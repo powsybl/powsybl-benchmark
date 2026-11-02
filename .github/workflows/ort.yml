@@ -13,11 +13,6 @@ on:
 
 permissions: {}
 
-# Cancel a previous run of the same PR/branch when new commits are pushed.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 jobs:
   ort:
     name: License and SBOM checks
