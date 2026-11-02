@@ -34,6 +34,7 @@ jobs:
           cp -R ort/. "$HOME/.ort/config/"
 
       - name: Run ORT
+        id: ort
         uses: oss-review-toolkit/ort-ci-github-action@086d928d24ef1653dc0777296b312fda5faaaf52 # v1.2.0
         with:
           # Pin the ORT version so that a new ORT release cannot break the configuration files overnight.
@@ -57,3 +58,66 @@ jobs:
           fail-on: violations
           report-formats: 'CycloneDx,SpdxDocument,WebApp'
           image: 'ghcr.io/oss-review-toolkit/ort:97.3.0'
+
+      - name: Publish ORT findings
+        if:  >-
+          always() 
+          && steps.ort.outputs.results-evaluator-path != ''
+        env:
+          EVALUATOR_RESULT: ${{ steps.ort.outputs.results-evaluator-path }}
+        shell: python
+        run: |
+          import json
+          import os
+
+          path = os.environ["EVALUATOR_RESULT"]
+
+          with open(path, encoding="utf-8") as f:
+              result = json.load(f)
+
+          violations = result.get("evaluator", {}).get("violations", [])
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a",
+                    encoding="utf-8") as summary:
+              summary.write("# ORT compliance results\n\n")
+
+              if not violations:
+                  summary.write("No policy violations found.\n")
+              else:
+                  summary.write(
+                      f"**{len(violations)} finding(s)** detected.\n\n"
+                  )
+
+                  for v in violations:
+                      severity = v.get("severity", "UNKNOWN")
+                      rule = v.get("rule", "Unknown rule")
+                      package = v.get("pkg") or "Repository"
+                      message = v.get("message", "")
+                      fix = v.get("how_to_fix") or "No suggestion available."
+
+                      summary.write(
+                          f"### {severity}: {rule}\n\n"
+                          f"- **Component:** `{package}`\n"
+                          f"- **Message:** {message}\n\n"
+                          f"**How to fix:**\n\n{fix}\n\n---\n\n"
+                      )
+
+                      # Also expose findings in the GitHub Checks UI.
+                      level = {
+                          "ERROR": "error",
+                          "WARNING": "warning",
+                          "HINT": "notice",
+                      }.get(severity, "notice")
+
+                      def escape(value):
+                          return (str(value)
+                              .replace("%", "%25")
+                              .replace("\r", "%0D")
+                              .replace("\n", "%0A")
+                              .replace(":", "%3A")
+                              .replace(",", "%2C"))
+
+                      print(
+                          f"::{level} title={escape(rule)}::"
+                          f"{escape(package + ': ' + message)}"
+                      )
