@@ -20,6 +20,7 @@ jobs:
     timeout-minutes: 60
     permissions:
       contents: read
+      pull-requests: write   # needed to create/update/delete the PR comment
 
     steps:
       - name: Checkout repository
@@ -59,65 +60,125 @@ jobs:
           report-formats: 'CycloneDx,SpdxDocument,WebApp'
           image: 'ghcr.io/oss-review-toolkit/ort:97.3.0'
 
-      - name: Publish ORT findings
-        if:  >-
-          always() 
+
+      - name: Upload ORT reports for PR review
+        id: ort-reports
+        if: always() && steps.ort.outputs.results-path != ''
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
+        with:
+          name: ort-reports-${{ github.run_id }}
+          path: |
+            ${{ steps.ort.outputs.results-sbom-cyclonedx-json-path }}
+            ${{ steps.ort.outputs.results-sbom-spdx-json-path }}
+            ${{ steps.ort.outputs.results-web-app-path }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Create or update the ORT PR comment
+        if: >-
+          always()
           && steps.ort.outputs.results-evaluator-path != ''
+          && github.event_name == 'pull_request'
+          && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           EVALUATOR_RESULT: ${{ steps.ort.outputs.results-evaluator-path }}
-        shell: python
-        run: |
-          import json
-          import os
+          REPORTS_URL: ${{ steps.ort-reports.outputs.artifact-url }}
+        with:
+          script: |
+            const fs = require('fs');
 
-          path = os.environ["EVALUATOR_RESULT"]
+            const marker = '<!-- ort-compliance-check -->';
+            const resultPath = process.env.EVALUATOR_RESULT;
 
-          with open(path, encoding="utf-8") as f:
-              result = json.load(f)
+            const body = [
+              marker,
+              '### 📦 Open Source Compliance Check',
+              '',
+            ];
 
-          violations = result.get("evaluator", {}).get("violations", [])
+            if (fs.existsSync(resultPath)) {
+              const result = JSON.parse(fs.readFileSync(resultPath, 'utf8'));
+              const violations = result.evaluator?.violations || [];
 
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a",
-                    encoding="utf-8") as summary:
-              summary.write("# ORT compliance results\n\n")
+              body.push(
+                violations.length === 0
+                  ? 'No policy violations found.'
+                  : `**${violations.length} finding(s) detected.**`,
+                ''
+              );
 
-              if not violations:
-                  summary.write("No policy violations found.\n")
-              else:
-                  summary.write(
-                      f"**{len(violations)} finding(s)** detected.\n\n"
-                  )
+              for (const v of violations) {
+                const icons = {
+                  ERROR: '🔴',
+                  WARNING: '⚠️',
+                  HINT: 'ℹ️',
+                };
 
-                  for v in violations:
-                      severity = v.get("severity", "UNKNOWN")
-                      rule = v.get("rule", "Unknown rule")
-                      package = v.get("pkg") or "Repository"
-                      message = v.get("message", "")
-                      fix = v.get("how_to_fix") or "No suggestion available."
+                body.push(
+                  `#### ${icons[v.severity] || '•'} ${v.rule} (${v.severity})`,
+                  '',
+                  `**Component:** \`${v.pkg || 'Repository'}\``,
+                  '',
+                  v.message || '',
+                  '',
+                  '**How to fix:**',
+                  '',
+                  v.how_to_fix || 'No remediation suggestion available.',
+                  '',
+                  '---',
+                  ''
+                );
+              }
+            } else {
+              body.push(
+                'ORT failed before producing an evaluation result.',
+                ''
+              );
+            }
 
-                      summary.write(
-                          f"### {severity}: {rule}\n\n"
-                          f"- **Component:** `{package}`\n"
-                          f"- **Message:** {message}\n\n"
-                          f"**How to fix:**\n\n{fix}\n\n---\n\n"
-                      )
+            body.push(
+              '### 📄 Detailed reports',
+              ''
+            );
 
-                      # Also expose findings in the GitHub Checks UI.
-                      level = {
-                          "ERROR": "error",
-                          "WARNING": "warning",
-                          "HINT": "notice",
-                      }.get(severity, "notice")
+            if (process.env.REPORTS_URL) {
+              body.push(
+                `- [Download SBOMs and HTML report](${process.env.REPORTS_URL})`,
+                '  (The downloaded ZIP contains the CycloneDX SBOM, SPDX SBOM and interactive HTML report.)',
+                ''
+              );
+            } else {
+              body.push('Report artifact could not be uploaded.', '');
+            }
 
-                      def escape(value):
-                          return (str(value)
-                              .replace("%", "%25")
-                              .replace("\r", "%0D")
-                              .replace("\n", "%0A")
-                              .replace(":", "%3A")
-                              .replace(",", "%2C"))
+            body.push(
+              `[View workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              '',
+              `_Last updated for commit ${context.payload.pull_request.head.sha.substring(0, 7)}._`
+            );
 
-                      print(
-                          f"::{level} title={escape(rule)}::"
-                          f"{escape(package + ': ' + message)}"
-                      )
+            const commentBody = body.join('\n');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner, repo, issue_number, per_page: 100 }
+            );
+
+            const existing = comments.find(
+              c => c.user?.type === 'Bot' && c.body?.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existing.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number,
+                body: commentBody,
+              });
+            }
