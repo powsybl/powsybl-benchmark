@@ -77,12 +77,12 @@ jobs:
       - name: Create or update the ORT PR comment
         if: >-
           always()
-          && steps.ort.outputs.results-evaluator-path != ''
           && github.event_name == 'pull_request'
           && github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           EVALUATOR_RESULT: ${{ steps.ort.outputs.results-evaluator-path }}
+          ORT_OUTCOME: ${{ steps.ort.outcome }}
           REPORTS_URL: ${{ steps.ort-reports.outputs.artifact-url }}
         with:
           script: |
@@ -97,59 +97,72 @@ jobs:
               '',
             ];
 
-            if (fs.existsSync(resultPath)) {
-              const result = JSON.parse(fs.readFileSync(resultPath, 'utf8'));
-              const violations = result.evaluator?.violations || [];
-
-              body.push(
-                violations.length === 0
-                  ? 'No policy violations found.'
-                  : `**${violations.length} finding(s) detected.**`,
-                ''
+            if (resultPath && fs.existsSync(resultPath)) {
+              const result = JSON.parse(
+                fs.readFileSync(resultPath, 'utf8')
               );
 
-              for (const v of violations) {
-                const icons = {
-                  ERROR: '🔴',
-                  WARNING: '⚠️',
-                  HINT: 'ℹ️',
-                };
+              const violations = result.evaluator?.violations || [];
 
+              if (violations.length === 0) {
                 body.push(
-                  `#### ${icons[v.severity] || '•'} ${v.rule} (${v.severity})`,
+                  '✅ **No policy violations detected.**',
                   '',
-                  `**Component:** \`${v.pkg || 'Repository'}\``,
-                  '',
-                  v.message || '',
-                  '',
-                  '**How to fix:**',
-                  '',
-                  v.how_to_fix || 'No remediation suggestion available.',
-                  '',
-                  '---',
+                  'All dependencies passed the configured ORT policy checks.',
                   ''
                 );
+              } else {
+                body.push(
+                  `⚠️ **${violations.length} finding(s) detected.**`,
+                  ''
+                );
+
+                for (const v of violations) {
+                  const icons = {
+                    ERROR: '🔴',
+                    WARNING: '⚠️',
+                    HINT: 'ℹ️',
+                  };
+
+                  body.push(
+                    `#### ${icons[v.severity] || '•'} ${v.rule} (${v.severity})`,
+                    '',
+                    `**Component:** \`${v.pkg || 'Repository'}\``,
+                    '',
+                    v.message || '',
+                    '',
+                    '**How to fix:**',
+                    '',
+                    v.how_to_fix || 'No remediation suggestion available.',
+                    '',
+                    '---',
+                    ''
+                  );
+                }
               }
             } else {
               body.push(
-                'ORT failed before producing an evaluation result.',
+                '❌ **ORT analysis did not produce an evaluation result.**',
+                '',
+                `ORT step outcome: \`${process.env.ORT_OUTCOME}\`.`,
+                '',
+                'Please consult the workflow logs for details.',
                 ''
               );
             }
 
-            body.push(
-              '### 📄 Detailed reports',
-              ''
-            );
+            body.push('### 📄 Detailed reports', '');
 
             if (process.env.REPORTS_URL) {
               body.push(
                 `- [Download SBOMs and HTML report](${process.env.REPORTS_URL})`,
-                '  (The downloaded ZIP contains the CycloneDX SBOM, SPDX SBOM and interactive HTML report.)',
                 ''
               );
             } else {
-              body.push('Report artifact could not be uploaded.', '');
+              body.push(
+                'Reports artifact is not available for this run.',
+                ''
+              );
             }
 
             body.push(
