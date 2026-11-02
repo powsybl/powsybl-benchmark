@@ -9,8 +9,8 @@
 /*******************************************************
  * OSS Review Toolkit (ORT) policy rules for PowSyBl   *
  *                                                     *
- * PowSyBl projects are Maven/Java projects licensed   *
- * under MPL-2.0. Only ERROR violations fail the CI    *
+ * PowSyBl projects are licensed under MPL-2.0.        *
+ * Only ERROR violations fail the CI                   *
  * (see severeRuleViolationThreshold in config.yml).   *
  *                                                     *
  * These rules are not legal advice: changes to the    *
