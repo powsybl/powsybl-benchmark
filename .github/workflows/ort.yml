@@ -61,3 +61,4 @@ jobs:
           sw-version: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
           fail-on: violations
           report-formats: 'CycloneDx,SpdxDocument,WebApp'
+          image: 'ghcr.io/oss-review-toolkit/ort:97.3.0'
