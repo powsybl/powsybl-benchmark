@@ -218,3 +218,6 @@ To get a list of all available flags, run:
 ```
 java -jar target/benchmark.jar --help
 ```
+
+## License
+This project is licensed under the Mozilla Public License, v. 2.0. See the [LICENSE](LICENSE) file for details.
