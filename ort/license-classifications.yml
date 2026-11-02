@@ -296,6 +296,10 @@ categorizations:
     categories:
       - "public-domain"
       - "include-in-notice-file"
+  - id: "LicenseRef-scancode-public-domain-disclaimer"
+    categories:
+      - "public-domain"
+      - "include-in-notice-file"
   - id: "MIT"
     categories:
       - "permissive"
