@@ -141,20 +141,21 @@ jobs:
                   ''
                 );
               } else {
+                const errorCount = violations.filter(v => v.severity === 'ERROR').length;
+                const warningCount = violations.filter(v => v.severity === 'WARNING').length;
+                const hintCount = violations.filter(v => v.severity === 'HINT').length;
+
                 body.push(
-                  `⚠️ **${violations.length} finding(s) detected.**`,
+                  `⚠️ **${violations.length} finding(s) detected (${errorCount} error(s), ${warningCount} warning(s), ${hintCount} hint(s)).**`,
                   ''
                 );
 
-                for (const v of violations) {
-                  const icons = {
-                    ERROR: '🔴',
-                    WARNING: '⚠️',
-                    HINT: 'ℹ️',
-                  };
-
+                for (const v of violations.filter(
+                  v => v.severity === 'ERROR' || v.severity === 'WARNING'
+                )) {
+                  const icon = v.severity === 'ERROR' ? '🔴' : '⚠️';
                   body.push(
-                    `#### ${icons[v.severity] || '•'} ${v.rule} (${v.severity})`,
+                    `#### ${icon} ${v.rule} (${v.severity})`,
                     '',
                     `**Component:** \`${v.pkg || 'Repository'}\``,
                     '',
