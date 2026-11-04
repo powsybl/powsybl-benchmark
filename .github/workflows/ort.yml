@@ -65,20 +65,43 @@ jobs:
           image: 'ghcr.io/oss-review-toolkit/ort:97.3.0'
 
 
-      - name: Upload ORT reports for PR review
-        id: ort-reports
-        if: always() && steps.ort.outputs.results-path != ''
+      - name: Upload CycloneDX SBOM for PR review
+        id: ort-cyclonedx
+        if: always() && steps.ort.outputs.results-sbom-cyclonedx-json-path != ''
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
         with:
-          name: ort-reports-${{ github.run_id }}
-          path: |
-            ${{ steps.ort.outputs.results-sbom-cyclonedx-json-path }}
-            ${{ steps.ort.outputs.results-sbom-spdx-json-path }}
-            ${{ steps.ort.outputs.results-web-app-path }}
+          name: ort-cyclonedx-${{ github.run_id }}
+          path: ${{ steps.ort.outputs.results-sbom-cyclonedx-json-path }}
           if-no-files-found: warn
           retention-days: 30
+          overwrite: true
+          archive: 'false'
 
-      - name: Create or update the ORT PR comment
+      - name: Upload SPDX SBOM for PR review
+        id: ort-spdx
+        if: always() && steps.ort.outputs.results-sbom-spdx-json-path != ''
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
+        with:
+          name: ort-spdx-${{ github.run_id }}
+          path: ${{ steps.ort.outputs.results-sbom-spdx-json-path }}
+          if-no-files-found: warn
+          retention-days: 30
+          overwrite: true
+          archive: 'false'
+
+      - name: Upload HTML report for PR review
+        id: ort-html
+        if: always() && steps.ort.outputs.results-web-app-path != ''
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
+        with:
+          name: ort-html-${{ github.run_id }}
+          path: ${{ steps.ort.outputs.results-web-app-path }}
+          if-no-files-found: warn
+          retention-days: 30
+          overwrite: true
+          archive: 'false'
+
+      - name: Create the ORT PR comment
         if: >-
           always()
           && github.event_name == 'pull_request'
@@ -87,7 +110,9 @@ jobs:
         env:
           EVALUATOR_RESULT: ${{ steps.ort.outputs.results-evaluator-path }}
           ORT_OUTCOME: ${{ steps.ort.outcome }}
-          REPORTS_URL: ${{ steps.ort-reports.outputs.artifact-url }}
+          CYCLONEDX_URL: ${{ steps.ort-cyclonedx.outputs.artifact-url }}
+          SPDX_URL: ${{ steps.ort-spdx.outputs.artifact-url }}
+          HTML_URL: ${{ steps.ort-html.outputs.artifact-url }}
         with:
           script: |
             const fs = require('fs');
@@ -157,11 +182,14 @@ jobs:
 
             body.push('### 📄 Detailed reports', '');
 
-            if (process.env.REPORTS_URL) {
-              body.push(
-                `- [Download SBOMs and HTML report](${process.env.REPORTS_URL})`,
-                ''
-              );
+            const reportLinks = [
+              ['CycloneDX SBOM', process.env.CYCLONEDX_URL],
+              ['SPDX SBOM', process.env.SPDX_URL],
+              ['HTML report', process.env.HTML_URL],
+            ].filter(([, url]) => url);
+
+            if (reportLinks.length > 0) {
+              body.push(...reportLinks.map(([label, url]) => `- [${label}](${url})`), '');
             } else {
               body.push(
                 'Reports artifact is not available for this run.',
@@ -184,18 +212,17 @@ jobs:
               { owner, repo, issue_number, per_page: 100 }
             );
 
-            const existing = comments.find(
+            const existing = comments.filter(
               c => c.user?.type === 'Bot' && c.body?.includes(marker)
             );
 
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner, repo, comment_id: existing.id,
-                body: commentBody,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner, repo, issue_number,
-                body: commentBody,
+            for (const comment of existing) {
+              await github.rest.issues.deleteComment({
+                owner, repo, comment_id: comment.id,
               });
             }
+
+            await github.rest.issues.createComment({
+              owner, repo, issue_number,
+              body: commentBody,
+            });
