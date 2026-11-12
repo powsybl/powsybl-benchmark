@@ -68,6 +68,11 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
+    @CommandLine.Option(names = "--jmh-args", split = "\\s+",
+        description = "Native JMH options passed as-is to the JMH runner, e.g. --jmh-args=\"-prof gc\". Can be repeated." +
+            "Use the '=' form. Values containing spaces are not supported.")
+    private String[] jmhOptions = new String[0];
+
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
     private BenchmarkSuite benchmarkSuite;
 
@@ -138,6 +143,23 @@ public final class BenchmarkRunner implements Runnable {
     }
 
     /**
+     * Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
+     * @param debug whether debug mode is enabled
+     * @param benchmarkArgs the benchmark arguments to run
+     * @return an array with benchmark arguments and debug options if needed
+     */
+    static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs, String[] jmhOptions) {
+        List<String> args = new ArrayList<>(Arrays.asList(benchmarkArgs));
+        Arrays.stream(jmhOptions).filter(s -> !s.isBlank()).forEach(args::add);
+        if (debug) {
+            LOGGER.info("Debug mode activated: forks are disabled");
+            args.add("-f");
+            args.add("0");
+        }
+        return args.toArray(new String[0]);
+    }
+
+    /**
      * Build the list of benchmarks to be run by JMH using a regex and additionally provided benchmark names.
      * @param benchmarks the named benchmarks to run (might be empty or null)
      * @param benchmarkSuite the name of the benchmark suite
@@ -184,24 +206,6 @@ public final class BenchmarkRunner implements Runnable {
         }
 
         return String.join("|", matchingPatterns);
-    }
-
-    /**
-     * Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
-     * @param debug whether debug mode is enabled
-     * @param benchmarkArgs the benchmark arguments to run
-     * @return an array with benchmark arguments and debug options if needed
-     */
-    private static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs) {
-        if (debug) {
-            LOGGER.info("Debug mode activated: forks are disabled");
-            String[] jmhArgs = new String[benchmarkArgs.length + 2];
-            System.arraycopy(benchmarkArgs, 0, jmhArgs, 0, benchmarkArgs.length);
-            jmhArgs[benchmarkArgs.length] = "-f";
-            jmhArgs[benchmarkArgs.length + 1] = "0";
-            return jmhArgs;
-        }
-        return benchmarkArgs;
     }
 
     /**
@@ -315,7 +319,7 @@ public final class BenchmarkRunner implements Runnable {
     private void runAndExportBenchmarks(Path benchmarkOutputPath, String[] benchmarkArgs) {
         List<BenchmarkReport> reports;
         try {
-            String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs);
+            String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs, jmhOptions);
             CommandLineOptions opts = new CommandLineOptions(jmhArgs);
             // Run the benchmarks and collect the results
             Collection<RunResult> results = new Runner(opts).run();

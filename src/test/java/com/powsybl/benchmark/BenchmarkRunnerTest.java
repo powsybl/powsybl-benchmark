@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -74,5 +76,52 @@ class BenchmarkRunnerTest {
             .doesNotContain("anotherClass.anotherBench")
             .anyMatch(s -> s.contains("LoadFlowBenchmark"))
             .noneMatch(s -> s.contains("NetworkSerializationBenchmark"));
+    }
+    @Test
+    void jmhOptionsAreSplitOnWhitespace() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        CommandLine cmd = new CommandLine(runner);
+        cmd.parseArgs("--jmh-args=-prof gc", "benchA");
+
+        String[] jmhOptions = cmd.getParseResult().matchedOption("--jmh-args").getValue();
+
+        assertArrayEquals(new String[] {"-prof", "gc"}, jmhOptions);
+    }
+
+    @Test
+    void jmhOptionsPassedToBuildJmhArgs() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        CommandLine cmd = new CommandLine(runner);
+        cmd.parseArgs("--debug", "--jmh-args=-prof gc", "benchA");
+
+        String[] jmhOptions = cmd.getParseResult().matchedOption("--jmh-args").getValue();
+        String[] result = BenchmarkRunner.buildJmhArgs(true, new String[] {"benchA"}, jmhOptions);
+
+        assertThat(result).containsExactly("benchA", "-prof", "gc", "-f", "0");
+    }
+
+    @Test
+    void jmhOptionsWithSeparateValueArg() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        CommandLine cmd = new CommandLine(runner);
+        cmd.parseArgs("--jmh-args", "-prof gc", "benchA");
+
+        String[] jmhOptions = cmd.getParseResult().matchedOption("--jmh-args").getValue();
+
+        assertArrayEquals(new String[] {"-prof", "gc"}, jmhOptions);
+    }
+
+    @Test
+    void buildJmhArgsWithDebugAndOptions() {
+        String[] result = BenchmarkRunner.buildJmhArgs(true, new String[] {"benchA"}, new String[] {"-prof", "gc", " "});
+
+        assertThat(result).containsExactly("benchA", "-prof", "gc", "-f", "0");
+    }
+
+    @Test
+    void buildJmhArgsWithoutDebug() {
+        String[] result = BenchmarkRunner.buildJmhArgs(false, new String[] {"benchA"}, new String[0]);
+
+        assertThat(result).containsExactly("benchA");
     }
 }
