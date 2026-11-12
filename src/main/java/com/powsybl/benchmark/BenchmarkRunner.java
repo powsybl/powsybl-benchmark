@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static picocli.CommandLine.Option.NULL_VALUE;
 
