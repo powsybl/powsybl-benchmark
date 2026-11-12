@@ -143,6 +143,23 @@ public final class BenchmarkRunner implements Runnable {
     }
 
     /**
+     * Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
+     * @param debug whether debug mode is enabled
+     * @param benchmarkArgs the benchmark arguments to run
+     * @return an array with benchmark arguments and debug options if needed
+     */
+    static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs, String[] jmhOptions) {
+        List<String> args = new ArrayList<>(Arrays.asList(benchmarkArgs));
+        Arrays.stream(jmhOptions).filter(s -> !s.isBlank()).forEach(args::add);
+        if (debug) {
+            LOGGER.info("Debug mode activated: forks are disabled");
+            args.add("-f");
+            args.add("0");
+        }
+        return args.toArray(new String[0]);
+    }
+
+    /**
      * Build the list of benchmarks to be run by JMH using a regex and additionally provided benchmark names.
      * @param benchmarks the named benchmarks to run (might be empty or null)
      * @param benchmarkSuite the name of the benchmark suite
@@ -189,23 +206,6 @@ public final class BenchmarkRunner implements Runnable {
         }
 
         return String.join("|", matchingPatterns);
-    }
-
-    /**
-     * Build JMH arguments, adding the "-f 0" option when debug mode is enabled.
-     * @param debug whether debug mode is enabled
-     * @param benchmarkArgs the benchmark arguments to run
-     * @return an array with benchmark arguments and debug options if needed
-     */
-    private static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs, String[] jmhOptions) {
-        List<String> args = new ArrayList<>(Arrays.asList(benchmarkArgs));
-        Arrays.stream(jmhOptions).filter(s -> !s.isBlank()).forEach(args::add);
-        if (debug) {
-            LOGGER.info("Debug mode activated: forks are disabled");
-            args.add("-f");
-            args.add("0");
-        }
-        return args.toArray(new String[0]);
     }
 
     /**
