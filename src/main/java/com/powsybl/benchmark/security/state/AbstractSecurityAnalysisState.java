@@ -37,6 +37,7 @@ public abstract class AbstractSecurityAnalysisState extends AbstractAnalysisStat
         OpenSecurityAnalysisParameters securityAnalysisParametersExt = new OpenSecurityAnalysisParameters();
         parameters.addExtension(OpenSecurityAnalysisParameters.class, securityAnalysisParametersExt);
         securityAnalysisParametersExt.setThreadCount(getThreadCount());
+        securityAnalysisParametersExt.setContingencyPropagation(false);
 
         // Security analysis run parameters
         runParameters = SecurityAnalysisRunParameters.getDefault().setSecurityAnalysisParameters(parameters);
