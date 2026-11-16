@@ -32,21 +32,26 @@ _Note: those results are for the v2026.2.0 version_
 This benchmark measures `TimeSeries.split(list, newChunkSize)`, which slices a stored double time series
 into fixed-size chunks (use case: splitting a series)
 
-The benchmark isolates the two factors that actually drive the cost:
+The benchmark isolates the factors that actually drive the cost:
 
 - `size` (n): the number of points in the series.
 - `newChunkSize` (k): the target size of each output chunk.
+- `compressed`: whether data chunks are compressed (`CompressedDoubleDataChunk`) or uncompressed (`UncompressedDoubleDataChunk`).
 
 **Layout**: the input chunk topology.
-- `SINGLE_CHUNK`: one large uncompressed chunk
-- `FRAGMENTED`: many single uncompressed chunks
+- `SINGLE_CHUNK`: one large chunk (uncompressed or compressed)
+- `FRAGMENTED`: many single chunks (uncompressed or compressed)
 
-| Layout       | newChunkSize (k) | size = 1000       | size = 10000       | size = 100000      |
-|--------------|------------------|-------------------|--------------------|--------------------|
-| SINGLE_CHUNK | 100              | 0,003 ms/op (-4%) | 0,265 ms/op (-4%)  | 30,814 ms/op (-6%) |
-| SINGLE_CHUNK | 1000             | 0,000 ms/op (-5%) | 0,028 ms/op (-5%)  | 3,059 ms/op (-7%)  |
-| FRAGMENTED   | 100              | 0,040 ms/op (-5%) | 0,403 ms/op (-6%)  | 4,185 ms/op (-15%) |
-| FRAGMENTED   | 1000             | 0,307 ms/op (-8%) | 3,024 ms/op (-10%) | 31,150 ms/op (-8%) |
+| Layout       | Compressed | newChunkSize (k) | size = 1000 | size = 10000 | size = 100000 |
+|--------------|------------|------------------|-------------|--------------|---------------|
+| SINGLE_CHUNK | false      | 100              | 0,004 ms/op | 0,329 ms/op  | 33,004 ms/op  |
+| SINGLE_CHUNK | false      | 1000             | 0,000 ms/op | 0,036 ms/op  | 3,468 ms/op   |
+| FRAGMENTED   | false      | 100              | 0,043 ms/op | 0,440 ms/op  | 4,646 ms/op   |
+| FRAGMENTED   | false      | 1000             | 0,292 ms/op | 3,055 ms/op  | 31,031 ms/op  |
+| SINGLE_CHUNK | true       | 100              | 0,001 ms/op | 0,006 ms/op  | 0,048 ms/op   |
+| SINGLE_CHUNK | true       | 1000             | 0,000 ms/op | 0,001 ms/op  | 0,006 ms/op   |
+| FRAGMENTED   | true       | 100              | 0,075 ms/op | 0,756 ms/op  | 8,375 ms/op   |
+| FRAGMENTED   | true       | 1000             | 0,477 ms/op | 4,758 ms/op  | 47,592 ms/op  |
 
 _Note: those results are for the v2026.2.0 version_
 

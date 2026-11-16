@@ -7,8 +7,20 @@
  */
 package com.powsybl.benchmark.timeseries.state;
 
-import com.powsybl.timeseries.*;
-import org.openjdk.jmh.annotations.*;
+import com.powsybl.timeseries.CompressedDoubleDataChunk;
+import com.powsybl.timeseries.DoubleDataChunk;
+import com.powsybl.timeseries.DoubleTimeSeries;
+import com.powsybl.timeseries.RegularTimeSeriesIndex;
+import com.powsybl.timeseries.StoredDoubleTimeSeries;
+import com.powsybl.timeseries.TimeSeriesDataType;
+import com.powsybl.timeseries.TimeSeriesIndex;
+import com.powsybl.timeseries.TimeSeriesMetadata;
+import com.powsybl.timeseries.UncompressedDoubleDataChunk;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -32,6 +44,9 @@ public class SplitState {
     @Param({"SINGLE_CHUNK", "FRAGMENTED"})
     private String layout;
 
+    @Param({"false", "true"})
+    private boolean compressed;
+
     private List<DoubleTimeSeries> timeSeriesList;
 
     @Setup(Level.Trial)
@@ -40,17 +55,21 @@ public class SplitState {
         TimeSeriesMetadata metadata = new TimeSeriesMetadata("ts1", TimeSeriesDataType.DOUBLE, Collections.emptyMap(), index);
 
         List<DoubleDataChunk> chunks = switch (layout) {
-            // single large uncompressed chunk
             case "SINGLE_CHUNK" -> {
-                double[] values = new double[size];
-                Arrays.fill(values, 1.0);
-                yield List.of(new UncompressedDoubleDataChunk(0, values));
+                if (compressed) {
+                    yield List.of(new CompressedDoubleDataChunk(0, size, new double[] {1.0}, new int[] {size}));
+                } else {
+                    double[] values = new double[size];
+                    Arrays.fill(values, 1.0);
+                    yield List.of(new UncompressedDoubleDataChunk(0, values));
+                }
             }
-            // many single uncompressed chunks
             case "FRAGMENTED" -> {
                 List<DoubleDataChunk> list = new ArrayList<>(size);
                 for (int i = 0; i < size; i++) {
-                    list.add(new UncompressedDoubleDataChunk(i, new double[] {i}));
+                    list.add(compressed
+                            ? new CompressedDoubleDataChunk(i, 1, new double[] {i}, new int[] {1})
+                            : new UncompressedDoubleDataChunk(i, new double[] {i}));
                 }
                 yield list;
             }
@@ -65,5 +84,9 @@ public class SplitState {
 
     public int getNewChunkSize() {
         return newChunkSize;
+    }
+
+    public boolean isCompressed() {
+        return compressed;
     }
 }
