@@ -40,7 +40,7 @@ public class TimeSeriesBenchmark {
     @Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 4, time = 2, timeUnit = TimeUnit.SECONDS)
     public void benchmark1GenerateTimeSeriesTable(Blackhole blackhole, TimeSeriesState timeSeriesState) {
-        TimeSeriesTable timeSeriesTable = generateTimeSeriesTable(timeSeriesState.getIndex());
+        TimeSeriesTable timeSeriesTable = generateTimeSeriesTable(timeSeriesState.getTimeSeriesLists(), timeSeriesState.getIndex());
         blackhole.consume(timeSeriesTable);
     }
 

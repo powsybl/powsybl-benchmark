@@ -61,17 +61,12 @@ public class TimeSeriesState {
     private RegularTimeSeriesIndex index;
     private TimeSeriesTable table;
     private CalculatedTimeSeries calculatedTimeSeries;
+    private List<List<DoubleTimeSeries>> timeSeriesLists;
 
-    public static TimeSeriesTable generateTimeSeriesTable(RegularTimeSeriesIndex index) {
+    public static TimeSeriesTable generateTimeSeriesTable(List<List<DoubleTimeSeries>> timeSeriesLists, RegularTimeSeriesIndex index) {
         TimeSeriesTable table = new TimeSeriesTable(1, VERSIONS, index);
         for (int i = 0; i < VERSIONS; i++) {
-            List<DoubleTimeSeries> timeSeriesList = new ArrayList<>();
-            for (int j = 0; j < SIZE; j++) {
-                TimeSeriesMetadata metadata1 = new TimeSeriesMetadata("ts" + j, TimeSeriesDataType.DOUBLE, index);
-                DoubleTimeSeries ts = new StoredDoubleTimeSeries(metadata1, generateDataChunk());
-                timeSeriesList.add(ts);
-            }
-            table.load(i + 1, timeSeriesList);
+            table.load(i + 1, timeSeriesLists.get(i));
         }
         return table;
     }
@@ -83,6 +78,20 @@ public class TimeSeriesState {
         CalculatedTimeSeries tsCalc = new CalculatedTimeSeries("ts_calc", nodeCalc);
         addResolver(tsCalc, timeSeriesList);
         return tsCalc;
+    }
+
+    private static List<List<DoubleTimeSeries>> generateTimeSeriesList(RegularTimeSeriesIndex index) {
+        List<List<DoubleTimeSeries>> timeSeriesList = new ArrayList<>();
+        for (int i = 0; i < VERSIONS; i++) {
+            List<DoubleTimeSeries> versionTimeSeriesList = new ArrayList<>();
+            for (int j = 0; j < SIZE; j++) {
+                TimeSeriesMetadata metadata1 = new TimeSeriesMetadata("ts" + j, TimeSeriesDataType.DOUBLE, index);
+                DoubleTimeSeries ts = new StoredDoubleTimeSeries(metadata1, generateDataChunk());
+                versionTimeSeriesList.add(ts);
+            }
+            timeSeriesList.add(versionTimeSeriesList);
+        }
+        return timeSeriesList;
     }
 
     private static RegularTimeSeriesIndex generateIndex() {
@@ -170,7 +179,8 @@ public class TimeSeriesState {
     public void setup() throws IOException {
         // Data generation
         index = generateIndex();
-        table = generateTimeSeriesTable(index);
+        timeSeriesLists = generateTimeSeriesList(index);
+        table = generateTimeSeriesTable(timeSeriesLists, index);
         calculatedTimeSeries = generateCalculatedTimeSeries(index);
 
         // Initialize Jimfs
@@ -223,5 +233,9 @@ public class TimeSeriesState {
 
     public CalculatedTimeSeries getCalculatedTimeSeries() {
         return calculatedTimeSeries;
+    }
+
+    public List<List<DoubleTimeSeries>> getTimeSeriesLists() {
+        return timeSeriesLists;
     }
 }
