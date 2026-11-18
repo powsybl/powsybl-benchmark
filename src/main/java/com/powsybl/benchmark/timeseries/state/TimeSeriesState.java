@@ -31,22 +31,22 @@ import java.util.*;
 public class TimeSeriesState {
 
     // Number of steps in the index
-    private static final int STEPS = 500;
+    private static final int STEPS = 100;
 
     // Number of time series
-    private static final int SIZE = 100;
+    private static final int SIZE = 75;
 
     // Number of values per chunk
-    private static final int CHUNK_SIZE = 500;
+    private static final int CHUNK_SIZE = 25;
 
     // Max depth of the tree
-    private static final int MAX_DEPTH = 25;
+    private static final int MAX_DEPTH = 18;
 
     // Thresholds
     private static final int THRESHOLD_VALUE_START_DEPTH = 5;
     private static final double THRESHOLD_VALUE_START_RANDOM = 0.25;
     private static final double THRESHOLD_DOUBLE_NODE_RANDOM = 0.5;
-    private static final double THRESHOLD_NEW_DOUBLE_TIMESERIES_RANDOM = 0.25;
+    private static final double THRESHOLD_NEW_DOUBLE_TIMESERIES_RANDOM = 0.1;
 
     private static final int VERSIONS = 5;
     private static final String CSV_FILE_NAME = "timeseries.csv";
