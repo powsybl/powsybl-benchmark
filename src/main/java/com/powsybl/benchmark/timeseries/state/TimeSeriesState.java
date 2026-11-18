@@ -93,10 +93,10 @@ public class TimeSeriesState {
     }
 
     private static DoubleDataChunk[] generateDataChunk() {
-        int chunkNumber = Math.ceilDiv(SIZE, CHUNK_SIZE);
+        int chunkNumber = Math.ceilDiv(STEPS, CHUNK_SIZE);
         UncompressedDoubleDataChunk[] chunks = new UncompressedDoubleDataChunk[chunkNumber];
         for (int i = 0; i < chunkNumber; i++) {
-            double[] values = i < chunkNumber - 1 ? RANDOM.doubles(CHUNK_SIZE).toArray() : RANDOM.doubles(SIZE - (long) i * CHUNK_SIZE).toArray();
+            double[] values = i < chunkNumber - 1 ? RANDOM.doubles(CHUNK_SIZE).toArray() : RANDOM.doubles(STEPS - (long) i * CHUNK_SIZE).toArray();
             chunks[i] = new UncompressedDoubleDataChunk(i * CHUNK_SIZE, values);
         }
         return chunks;
