@@ -51,3 +51,22 @@ The benchmark isolates the two factors that actually drive the cost:
 _Note: those results are for the v2026.2.0 version_
 
 The algorithmic complexity of the `split` method is O(n² / k) for a single chunk and O(n * k) for fragmented chunks.
+
+## Time series serialization benchmark
+
+Time series serialization benchmark has been done by generating:
+- A `TimeSeriesTable` with 75 time series, each in 5 versions and on an index with 100 steps.
+- A `CalculatedTimeSeries` with a maximal depth of 18 levels, random operations and on the same index with 100 steps.
+
+These time series are generated randomly but using a specific seed to ensure reproducibility.
+
+| Benchmark Operation                | Time (ms/op) |
+|------------------------------------|--------------|
+| Generation of TimeSeriesTable      | 0,116        |
+| Parsing from CSV                   | 5,238        |
+| Writing to CSV                     | 3,112        |
+| Generation of CalculatedTimeSeries | 1,945        |
+| Parsing from JSON                  | 3,520        |
+| Writing to JSON                    | 2,866        |
+
+_Note: those results are for the v2026.2.0 version_
