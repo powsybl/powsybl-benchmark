@@ -33,11 +33,10 @@ public class ActionListSerializationBenchmark {
 
     @Benchmark
     public void actionList1Deserializing(Blackhole blackhole, ActionListSerializationState serializationState) throws IOException {
-        ActionList list;
         try (InputStream inputStream = Files.newInputStream(serializationState.getFilePath())) {
-            list = serializationState.reader().readValue(inputStream);
+            ActionList list = serializationState.reader().readValue(inputStream);
+            blackhole.consume(list);
         }
-        blackhole.consume(list);
     }
 
     @Benchmark
