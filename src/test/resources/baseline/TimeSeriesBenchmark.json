@@ -4,7 +4,7 @@
   "openLoadFlowVersion" : "2.4.0",
   "datetime" : "20261023_083733",
   "results" : [ {
-    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark1GenerateTimeSeries",
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark1GenerateTimeSeriesTable",
     "parameters" : { },
     "mode" : "AverageTime",
     "score" : 2.0,
