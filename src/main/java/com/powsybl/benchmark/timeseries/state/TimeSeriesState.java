@@ -51,7 +51,8 @@ public class TimeSeriesState {
     private static final int VERSIONS = 5;
     private static final String CSV_FILE_NAME = "timeseries.csv";
     private static final String JSON_FILE_NAME = "timeseries.json";
-    private static final Random RANDOM = new Random(31);
+
+    private final Random random = new Random(31);
 
     private FileSystem fileSystem;
     private Path csvFilePath;
@@ -71,22 +72,22 @@ public class TimeSeriesState {
         return table;
     }
 
-    public static CalculatedTimeSeries generateCalculatedTimeSeries(RegularTimeSeriesIndex index) {
+    public static CalculatedTimeSeries generateCalculatedTimeSeries(RegularTimeSeriesIndex index, Random random) {
         List<DoubleTimeSeries> timeSeriesList = new ArrayList<>(SIZE * (SIZE - 1));
-        NodeCalc nodeCalc = generateNodeCalc(index, timeSeriesList, 0);
+        NodeCalc nodeCalc = generateNodeCalc(index, timeSeriesList, 0, random);
 
         CalculatedTimeSeries tsCalc = new CalculatedTimeSeries("ts_calc", nodeCalc);
         addResolver(tsCalc, timeSeriesList);
         return tsCalc;
     }
 
-    private static List<List<DoubleTimeSeries>> generateTimeSeriesList(RegularTimeSeriesIndex index) {
+    private static List<List<DoubleTimeSeries>> generateTimeSeriesList(RegularTimeSeriesIndex index, Random random) {
         List<List<DoubleTimeSeries>> timeSeriesList = new ArrayList<>();
         for (int i = 0; i < VERSIONS; i++) {
             List<DoubleTimeSeries> versionTimeSeriesList = new ArrayList<>();
             for (int j = 0; j < SIZE; j++) {
                 TimeSeriesMetadata metadata1 = new TimeSeriesMetadata("ts" + j, TimeSeriesDataType.DOUBLE, index);
-                DoubleTimeSeries ts = new StoredDoubleTimeSeries(metadata1, generateDataChunk());
+                DoubleTimeSeries ts = new StoredDoubleTimeSeries(metadata1, generateDataChunk(random));
                 versionTimeSeriesList.add(ts);
             }
             timeSeriesList.add(versionTimeSeriesList);
@@ -101,11 +102,11 @@ public class TimeSeriesState {
         return RegularTimeSeriesIndex.create(start, end, step);
     }
 
-    private static DoubleDataChunk[] generateDataChunk() {
+    private static DoubleDataChunk[] generateDataChunk(Random random) {
         int chunkNumber = Math.ceilDiv(STEPS, CHUNK_SIZE);
         UncompressedDoubleDataChunk[] chunks = new UncompressedDoubleDataChunk[chunkNumber];
         for (int i = 0; i < chunkNumber; i++) {
-            double[] values = i < chunkNumber - 1 ? RANDOM.doubles(CHUNK_SIZE).toArray() : RANDOM.doubles(STEPS - (long) i * CHUNK_SIZE).toArray();
+            double[] values = i < chunkNumber - 1 ? random.doubles(CHUNK_SIZE).toArray() : random.doubles(STEPS - (long) i * CHUNK_SIZE).toArray();
             chunks[i] = new UncompressedDoubleDataChunk(i * CHUNK_SIZE, values);
         }
         return chunks;
@@ -133,18 +134,18 @@ public class TimeSeriesState {
         tsCalc.setTimeSeriesNameResolver(resolver);
     }
 
-    private static NodeCalc generateNodeCalc(RegularTimeSeriesIndex index, List<DoubleTimeSeries> timeSeriesList, int currentLevel) {
-        if (currentLevel == MAX_DEPTH || currentLevel > THRESHOLD_VALUE_START_DEPTH && RANDOM.nextDouble() < THRESHOLD_VALUE_START_RANDOM) {
-            return generateValueNodeCalc(index, timeSeriesList);
+    private static NodeCalc generateNodeCalc(RegularTimeSeriesIndex index, List<DoubleTimeSeries> timeSeriesList, int currentLevel, Random random) {
+        if (currentLevel == MAX_DEPTH || currentLevel > THRESHOLD_VALUE_START_DEPTH && random.nextDouble() < THRESHOLD_VALUE_START_RANDOM) {
+            return generateValueNodeCalc(index, timeSeriesList, random);
         } else {
-            NodeCalc left = generateNodeCalc(index, timeSeriesList, currentLevel + 1);
-            NodeCalc right = generateNodeCalc(index, timeSeriesList, currentLevel + 1);
-            return generateBinaryNodeCalc(left, right);
+            NodeCalc left = generateNodeCalc(index, timeSeriesList, currentLevel + 1, random);
+            NodeCalc right = generateNodeCalc(index, timeSeriesList, currentLevel + 1, random);
+            return generateBinaryNodeCalc(left, right, random);
         }
     }
 
-    private static NodeCalc generateBinaryNodeCalc(NodeCalc left, NodeCalc right) {
-        double rand = RANDOM.nextDouble();
+    private static NodeCalc generateBinaryNodeCalc(NodeCalc left, NodeCalc right, Random random) {
+        double rand = random.nextDouble();
         if (rand < 0.25) {
             return BinaryOperation.plus(left, right);
         } else if (rand < 0.5) {
@@ -156,32 +157,32 @@ public class TimeSeriesState {
         }
     }
 
-    private static NodeCalc generateValueNodeCalc(RegularTimeSeriesIndex index, List<DoubleTimeSeries> timeSeriesList) {
-        if (RANDOM.nextDouble() < THRESHOLD_DOUBLE_NODE_RANDOM) {
-            return new DoubleNodeCalc(RANDOM.nextDouble());
+    private static NodeCalc generateValueNodeCalc(RegularTimeSeriesIndex index, List<DoubleTimeSeries> timeSeriesList, Random random) {
+        if (random.nextDouble() < THRESHOLD_DOUBLE_NODE_RANDOM) {
+            return new DoubleNodeCalc(random.nextDouble());
         } else {
-            if (timeSeriesList.isEmpty() || RANDOM.nextDouble() < THRESHOLD_NEW_DOUBLE_TIMESERIES_RANDOM) {
+            if (timeSeriesList.isEmpty() || random.nextDouble() < THRESHOLD_NEW_DOUBLE_TIMESERIES_RANDOM) {
                 String id = "ts_" + timeSeriesList.size();
-                DoubleTimeSeries ts = createDoubleTimeSeries(index, id);
+                DoubleTimeSeries ts = createDoubleTimeSeries(index, id, random);
                 timeSeriesList.add(ts);
                 return new TimeSeriesNameNodeCalc(id);
             } else {
-                return new TimeSeriesNameNodeCalc(timeSeriesList.get(RANDOM.nextInt(timeSeriesList.size())).getMetadata().getName());
+                return new TimeSeriesNameNodeCalc(timeSeriesList.get(random.nextInt(timeSeriesList.size())).getMetadata().getName());
             }
         }
     }
 
-    private static DoubleTimeSeries createDoubleTimeSeries(RegularTimeSeriesIndex index, String id) {
-        return TimeSeries.createDouble(id, index, RANDOM.doubles(STEPS).toArray());
+    private static DoubleTimeSeries createDoubleTimeSeries(RegularTimeSeriesIndex index, String id, Random random) {
+        return TimeSeries.createDouble(id, index, random.doubles(STEPS).toArray());
     }
 
     @Setup(Level.Trial)
     public void setup() throws IOException {
         // Data generation
         index = generateIndex();
-        timeSeriesLists = generateTimeSeriesList(index);
+        timeSeriesLists = generateTimeSeriesList(index, random);
         table = generateTimeSeriesTable(timeSeriesLists, index);
-        calculatedTimeSeries = generateCalculatedTimeSeries(index);
+        calculatedTimeSeries = generateCalculatedTimeSeries(index, random);
 
         // Initialize Jimfs
         fileSystem = Jimfs.newFileSystem(Configuration.unix());
@@ -237,5 +238,9 @@ public class TimeSeriesState {
 
     public List<List<DoubleTimeSeries>> getTimeSeriesLists() {
         return timeSeriesLists;
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }
