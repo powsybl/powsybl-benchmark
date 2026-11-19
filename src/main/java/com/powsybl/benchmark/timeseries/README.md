@@ -54,9 +54,11 @@ The algorithmic complexity of the `split` method is O(n² / k) for a single chun
 
 ## Time series serialization benchmark
 
-Time series serialization benchmark has been done by randomly generating:
+Time series serialization benchmark has been done by generating:
 - A `TimeSeriesTable` with 75 time series, each in 5 versions and on an index with 100 steps.
 - A `CalculatedTimeSeries` with a maximal depth of 18 levels, random operations and on the same index with 100 steps.
+
+These time series are generated randomly but using a specific seed to ensure reproducibility.
 
 | Benchmark Operation                | Time (ms/op) |
 |------------------------------------|--------------|

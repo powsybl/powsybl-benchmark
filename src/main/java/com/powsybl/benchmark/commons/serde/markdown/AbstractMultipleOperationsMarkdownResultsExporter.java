@@ -23,6 +23,11 @@ public abstract class AbstractMultipleOperationsMarkdownResultsExporter extends 
         super(benchmarksClasses);
     }
 
+    /**
+     * Return a prettier name for the given full operation name (e.g. "Generation of TimeSeriesTable" instead of "benchmark1GenerateTimeSeriesTable")
+     * @param fullOperationName the full method name of the benchmark operation
+     * @return a prettier name for the given full operation name
+     */
     abstract String getPrettyOperationName(String fullOperationName);
 
     @Override
