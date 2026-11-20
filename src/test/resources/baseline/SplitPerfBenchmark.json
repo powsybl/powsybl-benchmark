@@ -6,6 +6,7 @@
   "results" : [ {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "SINGLE_CHUNK",
       "newChunkSize" : "100",
       "size" : "1000"
@@ -17,6 +18,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "SINGLE_CHUNK",
       "newChunkSize" : "100",
       "size" : "10000"
@@ -28,6 +30,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "SINGLE_CHUNK",
       "newChunkSize" : "100",
       "size" : "100000"
@@ -39,6 +42,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "SINGLE_CHUNK",
       "newChunkSize" : "1000",
       "size" : "1000"
@@ -50,6 +54,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "SINGLE_CHUNK",
       "newChunkSize" : "1000",
       "size" : "10000"
@@ -61,6 +66,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "SINGLE_CHUNK",
       "newChunkSize" : "1000",
       "size" : "100000"
@@ -72,6 +78,79 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "true",
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 7.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 8.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "100",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 9.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 10.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 11.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "SINGLE_CHUNK",
+      "newChunkSize" : "1000",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 12.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "false",
       "layout" : "FRAGMENTED",
       "newChunkSize" : "100",
       "size" : "1000"
@@ -83,6 +162,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "FRAGMENTED",
       "newChunkSize" : "100",
       "size" : "10000"
@@ -94,6 +174,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "FRAGMENTED",
       "newChunkSize" : "100",
       "size" : "100000"
@@ -105,6 +186,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "FRAGMENTED",
       "newChunkSize" : "1000",
       "size" : "1000"
@@ -116,6 +198,7 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "FRAGMENTED",
       "newChunkSize" : "1000",
       "size" : "10000"
@@ -127,12 +210,85 @@
   }, {
     "benchmarkName" : "SplitPerfBenchmark.split",
     "parameters" : {
+      "compressed" : "false",
       "layout" : "FRAGMENTED",
       "newChunkSize" : "1000",
       "size" : "100000"
     },
     "mode" : "AverageTime",
     "score" : 10.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 19.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 20.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "100",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 21.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "1000"
+    },
+    "mode" : "AverageTime",
+    "score" : 22.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "10000"
+    },
+    "mode" : "AverageTime",
+    "score" : 23.0,
+    "scoreError" : 0.1,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "SplitPerfBenchmark.split",
+    "parameters" : {
+      "compressed" : "true",
+      "layout" : "FRAGMENTED",
+      "newChunkSize" : "1000",
+      "size" : "100000"
+    },
+    "mode" : "AverageTime",
+    "score" : 20.0,
     "scoreError" : 0.1,
     "scoreUnit" : "ms/op"
   } ]
