@@ -112,7 +112,7 @@ public final class BenchmarkRunner implements Runnable {
     @Override
     public void run() {
         String[] benchmarkArgs = buildBenchmarkArgs();
-        if (benchmarkArgs == null) {
+        if (benchmarkArgs.length == 0) {
             LOGGER.warn("No benchmark provided");
             return;
         }
