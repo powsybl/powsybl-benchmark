@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static picocli.CommandLine.Option.NULL_VALUE;
 
@@ -68,11 +69,6 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Option(names = "--serde-path", description = "Where to exportAll benchmark results", defaultValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private String serdePath = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING;
 
-    @CommandLine.Option(names = "--jmh-args", split = "\\s+",
-        description = "Native JMH options passed as-is to the JMH runner, e.g. --jmh-args=\"-prof gc\". Can be repeated." +
-            "Use the '=' form. Values containing spaces are not supported.")
-    private String[] jmhOptions = new String[0];
-
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "0..1", heading = "Benchmark suite selection\n")
     private BenchmarkSuite benchmarkSuite;
 
@@ -89,8 +85,13 @@ public final class BenchmarkRunner implements Runnable {
     }
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new BenchmarkRunner()).execute(args);
+        int exitCode = createCommandLine(new BenchmarkRunner()).execute(args);
         System.exit(exitCode);
+    }
+
+    static CommandLine createCommandLine(BenchmarkRunner runner) {
+        // Unknown options (e.g. native JMH options like "-prof gc") are kept as positional parameters
+        return new CommandLine(runner).setUnmatchedOptionsArePositionalParams(true);
     }
 
     private static Map<String, String> loadBenchmarkMethodToClassCache() {
@@ -148,15 +149,16 @@ public final class BenchmarkRunner implements Runnable {
      * @param benchmarkArgs the benchmark arguments to run
      * @return an array with benchmark arguments and debug options if needed
      */
-    static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs, String[] jmhOptions) {
-        List<String> args = new ArrayList<>(Arrays.asList(benchmarkArgs));
-        Arrays.stream(jmhOptions).filter(s -> !s.isBlank()).forEach(args::add);
+    static String[] buildJmhArgs(boolean debug, String[] benchmarkArgs) {
         if (debug) {
             LOGGER.info("Debug mode activated: forks are disabled");
-            args.add("-f");
-            args.add("0");
+            String[] jmhArgs = new String[benchmarkArgs.length + 2];
+            System.arraycopy(benchmarkArgs, 0, jmhArgs, 0, benchmarkArgs.length);
+            jmhArgs[benchmarkArgs.length] = "-f";
+            jmhArgs[benchmarkArgs.length + 1] = "0";
+            return jmhArgs;
         }
-        return args.toArray(new String[0]);
+        return benchmarkArgs;
     }
 
     /**
@@ -171,10 +173,10 @@ public final class BenchmarkRunner implements Runnable {
         String regex = regexSupplier.get();
         LOGGER.info("Running {} benchmarks matching: {}", benchmarkSuite, regex);
         // The complete list of benchmarks to run is the benchmarks from the regex + benchmarks that are named individually
-        int benchmarksArgNumber = benchmarks != null ? benchmarks.length + 1 : 1;
+        int benchmarksArgNumber = (benchmarks != null && benchmarks.length > 0) ? benchmarks.length + 1 : 1;
         String[] allBenchmarks = new String[benchmarksArgNumber]; // same length
         allBenchmarks[0] = regex;
-        if (benchmarks != null) {
+        if (benchmarks != null && benchmarks.length > 0) {
             System.arraycopy(benchmarks, 0, allBenchmarks, 1, benchmarks.length);
         }
         return allBenchmarks;
@@ -261,18 +263,53 @@ public final class BenchmarkRunner implements Runnable {
      * @return an array, where the first element is a potential JMH regex, and the remaining elements are the names in {@link #benchmarks} (if any).
      */
     String[] buildBenchmarkArgs() {
+        String[] names = getBenchmarkNames();
         if (benchmarkSuite != null) {
             if (benchmarkSuite.release) {
                 //discover all @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
-                return buildBenchmarkSuiteRegex(benchmarks, "release",
+                return buildBenchmarkSuiteRegex(names, "release",
                     () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class));
             } else if (benchmarkSuite.full) {
                 //discover all @FullBenchmark and @ReleaseBenchmark classes and prepend the regex to the list of benchmarks
-                return buildBenchmarkSuiteRegex(benchmarks, "full",
+                return buildBenchmarkSuiteRegex(names, "full",
                     () -> buildBenchmarkSuiteRegexFromAnnotation(ReleaseBenchmark.class, FullBenchmark.class));
             }
         }
-        return benchmarks;
+        return names;
+    }
+
+    /**
+     * Index of the first token in {@link #benchmarks} that looks like an option (starts with "-").
+     * Tokens before it are benchmark names, tokens from it onward are native JMH options.
+     */
+    private int firstJmhOptionIndex() {
+        for (int i = 0; i < benchmarks.length; i++) {
+            if (benchmarks[i].startsWith("-")) {
+                return i;
+            }
+        }
+        return benchmarks.length;
+    }
+
+    /**
+     * @return the benchmark names given on the command line, or null if there are none.
+     */
+    private String[] getBenchmarkNames() {
+        if (benchmarks == null) {
+            return new String[0];
+        }
+        String[] names = Arrays.copyOfRange(benchmarks, 0, firstJmhOptionIndex());
+        return names.length == 0 ? new String[0] : names;
+    }
+
+    /**
+     * @return the native JMH options given on the command line (possibly empty).
+     */
+    String[] getJmhOptions() {
+        if (benchmarks == null) {
+            return new String[0];
+        }
+        return Arrays.copyOfRange(benchmarks, firstJmhOptionIndex(), benchmarks.length);
     }
 
     private void checkOrCreateDirectory(Path directory) {
@@ -319,7 +356,8 @@ public final class BenchmarkRunner implements Runnable {
     private void runAndExportBenchmarks(Path benchmarkOutputPath, String[] benchmarkArgs) {
         List<BenchmarkReport> reports;
         try {
-            String[] jmhArgs = buildJmhArgs(debug, benchmarkArgs, jmhOptions);
+            String[] allArgs = Stream.concat(Arrays.stream(benchmarkArgs), Arrays.stream(getJmhOptions())).toArray(String[]::new);
+            String[] jmhArgs = buildJmhArgs(debug, allArgs);
             CommandLineOptions opts = new CommandLineOptions(jmhArgs);
             // Run the benchmarks and collect the results
             Collection<RunResult> results = new Runner(opts).run();

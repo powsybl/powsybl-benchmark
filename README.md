@@ -218,3 +218,15 @@ To get a list of all available flags, run:
 ```
 java -jar target/benchmark.jar --help
 ```
+
+### Using JMH options
+
+JMH options can be passed **after the benchmark names**. For example, to run a benchmark with a profiler, you can use the following command:
+
+```
+java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark -prof gc
+```
+
+This will run the `MultiThreadSecurityAnalysisBenchmark` with a GC profiler.
+
+> _The JMH options have to be passed after the benchmark names, otherwise they will be ignored._
