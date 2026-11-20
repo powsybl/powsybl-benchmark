@@ -33,11 +33,10 @@ public class LimitScalingSerializationBenchmark {
 
     @Benchmark
     public void limitScaling1Deserializing(Blackhole blackhole, LimitScalingSerializationState serializationState) throws IOException {
-        LimitScalingList list;
         try (InputStream inputStream = Files.newInputStream(serializationState.getFilePath())) {
-            list = serializationState.reader().readValue(inputStream);
+            LimitScalingList list = serializationState.reader().readValue(inputStream);
+            blackhole.consume(list);
         }
-        blackhole.consume(list);
     }
 
     @Benchmark
