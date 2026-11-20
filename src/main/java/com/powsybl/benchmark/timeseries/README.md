@@ -57,7 +57,7 @@ _Note: those results are for the v2026.2.0 version_
 
 The algorithmic complexity of the `split` method is O(n² / k) for a single chunk and O(n * k) for fragmented chunks.
 
-## Time series serialization benchmark
+### Time series serialization benchmark
 
 Time series serialization benchmark has been done by generating:
 - A `TimeSeriesTable` with 75 time series, each in 5 versions and on an index with 100 steps.
