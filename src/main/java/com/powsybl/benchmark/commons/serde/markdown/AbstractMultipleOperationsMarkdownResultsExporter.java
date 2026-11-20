@@ -1,0 +1,53 @@
+/**
+ * Copyright (c) 2026, RTE (https://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+package com.powsybl.benchmark.commons.serde.markdown;
+
+import com.powsybl.benchmark.commons.serde.BenchmarkResult;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author Nicolas Rol {@literal <nicolas.rol at rte-france.com>}
+ */
+public abstract class AbstractMultipleOperationsMarkdownResultsExporter extends AbstractMarkdownResultsExporter {
+
+    private static final String TIME_STRING = "Time (ms/op)";
+
+    protected AbstractMultipleOperationsMarkdownResultsExporter(List<String> benchmarksClasses) {
+        super(benchmarksClasses);
+    }
+
+    /**
+     * Return a prettier name for the given full operation name (e.g. "Generation of TimeSeriesTable" instead of "benchmark1GenerateTimeSeriesTable")
+     * @param fullOperationName the full method name of the benchmark operation
+     * @return a prettier name for the given full operation name
+     */
+    abstract String getPrettyOperationName(String fullOperationName);
+
+    @Override
+    protected String[] columnNames(List<BenchmarkResult> resultsForNetwork) {
+        return new String[] {
+            "Benchmark Operation",
+            TIME_STRING
+        };
+    }
+
+    @Override
+    protected Map<String, String> getLine(List<BenchmarkResult> results) {
+        return Map.of(
+            "Benchmark Operation", getPrettyOperationName(results.getFirst().benchmarkName()),
+            TIME_STRING, getFormattedScore(results.getFirst(), 3)
+        );
+    }
+
+    @Override
+    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
+        return Map.of(TIME_STRING, results.getFirst().score());
+    }
+}
