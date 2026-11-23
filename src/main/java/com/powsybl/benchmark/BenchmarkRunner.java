@@ -298,8 +298,7 @@ public final class BenchmarkRunner implements Runnable {
         if (benchmarks == null) {
             return new String[0];
         }
-        String[] names = Arrays.copyOfRange(benchmarks, 0, firstJmhOptionIndex());
-        return names.length == 0 ? new String[0] : names;
+        return Arrays.copyOfRange(benchmarks, 0, firstJmhOptionIndex());
     }
 
     /**
