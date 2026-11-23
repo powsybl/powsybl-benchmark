@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Dissoubray Nathan {@literal <nathan.dissoubray at rte-france.com>}
@@ -34,7 +34,7 @@ class BenchmarkRunnerTest {
         int exitCode = new CommandLine(runner).execute("--list");
 
         assertEquals(0, exitCode);
-        assertNull(runner.buildBenchmarkArgs());
+        assertEquals(0, runner.buildBenchmarkArgs().length);
     }
 
     @Test
@@ -74,5 +74,45 @@ class BenchmarkRunnerTest {
             .doesNotContain("anotherClass.anotherBench")
             .anyMatch(s -> s.contains("LoadFlowBenchmark"))
             .noneMatch(s -> s.contains("NetworkSerializationBenchmark"));
+    }
+
+    @Test
+    void jmhOptionsAreSeparatedFromBenchmarkNames() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        int exitCode = BenchmarkRunner.createCommandLine(runner)
+            .execute("--list", "benchA", "benchB", "-prof", "gc", "-wi", "2");
+
+        assertEquals(0, exitCode);
+        assertThat(runner.buildBenchmarkArgs()).containsExactly("benchA", "benchB");
+        assertThat(runner.getJmhOptions()).containsExactly("-prof", "gc", "-wi", "2");
+    }
+
+    @Test
+    void jmhOptionsWithReleaseSuite() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        int exitCode = BenchmarkRunner.createCommandLine(runner)
+            .execute("--list", "--release", "-prof", "gc");
+
+        assertEquals(0, exitCode);
+        assertThat(runner.buildBenchmarkArgs())
+            .hasSize(1)
+            .noneMatch(s -> s.contains("gc"));
+        assertThat(runner.getJmhOptions()).containsExactly("-prof", "gc");
+    }
+
+    @Test
+    void onlyJmhOptionsMeansNoBenchmark() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        int exitCode = BenchmarkRunner.createCommandLine(runner).execute("--list", "-prof", "gc");
+
+        assertEquals(0, exitCode);
+        assertEquals(0, runner.buildBenchmarkArgs().length);
+    }
+
+    @Test
+    void buildJmhArgsWithoutDebug() {
+        String[] result = BenchmarkRunner.buildJmhArgs(false, new String[] {"benchA"});
+
+        assertThat(result).containsExactly("benchA");
     }
 }
