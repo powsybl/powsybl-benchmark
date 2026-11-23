@@ -181,3 +181,6 @@ java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark -prof gc
 This will run the `MultiThreadSecurityAnalysisBenchmark` with a GC profiler.
 
 > _The JMH options have to be passed after the benchmark names, otherwise they will be ignored._
+
+## License
+This project is licensed under the Mozilla Public License, v. 2.0. See the [LICENSE](LICENSE) file for details.
