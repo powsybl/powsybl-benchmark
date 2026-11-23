@@ -18,22 +18,35 @@ import java.util.Map;
  */
 public class TimeSeriesSplitMarkdownExporterTest extends AbstractMarkdownSerializerTest {
 
+    @Override
     protected List<RunResult> buildResults() {
         String benchName = getBenchClass() + ".split";
 
         return List.of(
-            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "100", "1000"), 1.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "100", "10000"), 2.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "100", "100000"), 3.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "1000", "1000"), 4.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "1000", "10000"), 5.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "1000", "100000"), 6.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "100", "1000"), 7.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "100", "10000"), 8.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "100", "100000"), 9.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "1000", "1000"), 10.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "1000", "10000"), 11.0),
-            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "1000", "100000"), 12.0)
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "false", "100", "1000"), 1.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "false", "100", "10000"), 2.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "false", "100", "100000"), 3.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "false", "1000", "1000"), 4.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "false", "1000", "10000"), 5.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "false", "1000", "100000"), 6.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "true", "100", "1000"), 7.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "true", "100", "10000"), 8.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "true", "100", "100000"), 9.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "true", "1000", "1000"), 10.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "true", "1000", "10000"), 11.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("SINGLE_CHUNK", "true", "1000", "100000"), 12.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "false", "100", "1000"), 13.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "false", "100", "10000"), 14.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "false", "100", "100000"), 15.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "false", "1000", "1000"), 16.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "false", "1000", "10000"), 17.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "false", "1000", "100000"), 18.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "true", "100", "1000"), 19.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "true", "100", "10000"), 20.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "true", "100", "100000"), 21.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "true", "1000", "1000"), 22.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "true", "1000", "10000"), 23.0),
+            BenchmarkTestUtils.mockRunResult(benchName, params("FRAGMENTED", "true", "1000", "100000"), 24.0)
         );
     }
 
@@ -52,7 +65,7 @@ public class TimeSeriesSplitMarkdownExporterTest extends AbstractMarkdownSeriali
         return List.of("/timeseries-split-report-with-baseline.md");
     }
 
-    private Map<String, String> params(String layout, String newChunkSize, String size) {
-        return Map.of("layout", layout, "newChunkSize", newChunkSize, "size", size);
+    private Map<String, String> params(String layout, String compressed, String newChunkSize, String size) {
+        return Map.of("layout", layout, "compressed", compressed, "newChunkSize", newChunkSize, "size", size);
     }
 }

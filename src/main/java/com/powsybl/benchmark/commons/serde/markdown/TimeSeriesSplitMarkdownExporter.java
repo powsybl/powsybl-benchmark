@@ -30,18 +30,19 @@ public class TimeSeriesSplitMarkdownExporter extends AbstractMarkdownResultsExpo
 
     @Override
     protected String[] columnNames(List<BenchmarkResult> results) {
-        return getColumnNamesWithFirstColumnsAndColumnsProvider(results, this::getColumnName, "Layout", "newChunkSize (k)");
+        return getColumnNamesWithFirstColumnsAndColumnsProvider(results, this::getColumnName, "Layout", "Compressed", "newChunkSize (k)");
     }
 
     @Override
     protected Function<BenchmarkResult, String> getLineSorter() {
-        return result -> result.parameters().get("layout") + "_" + result.parameters().get("newChunkSize");
+        return result -> result.parameters().get("layout") + "_" + result.parameters().getOrDefault("compressed", "false") + "_" + result.parameters().get("newChunkSize");
     }
 
     @Override
     protected Map<String, String> getLine(List<BenchmarkResult> results) {
-        Map<String, String> line = new HashMap<>(results.size() + 1, 1);
+        Map<String, String> line = new HashMap<>(results.size() + 2, 1);
         line.put("Layout", results.getFirst().parameters().get("layout"));
+        line.put("Compressed", results.getFirst().parameters().getOrDefault("compressed", "false"));
         line.put("newChunkSize (k)", results.getFirst().parameters().get("newChunkSize"));
         results.forEach(result -> line.put(getColumnName(result), getFormattedScoreAndUnit(result, 3)));
         return line;
@@ -49,7 +50,7 @@ public class TimeSeriesSplitMarkdownExporter extends AbstractMarkdownResultsExpo
 
     @Override
     protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        Map<String, Double> line = new HashMap<>(results.size() + 1, 1);
+        Map<String, Double> line = new HashMap<>(results.size() + 2, 1);
         results.forEach(result -> line.put(getColumnName(result), result.score()));
         return line;
     }

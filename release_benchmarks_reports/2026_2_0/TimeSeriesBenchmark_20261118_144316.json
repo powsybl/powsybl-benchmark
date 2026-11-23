@@ -1,0 +1,49 @@
+{
+  "benchmarkClass" : "TimeSeriesBenchmark",
+  "powsyblCoreVersion" : "7.4.0",
+  "openLoadFlowVersion" : "2.4.0",
+  "datetime" : "20261118_144316",
+  "results" : [ {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark1GenerateTimeSeriesTable",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 0.11570044548758529,
+    "scoreError" : 0.008923204686196397,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark2ParseCsv",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 5.237973257209103,
+    "scoreError" : 0.13755592333650077,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark3WriteCsv",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.11205679918519,
+    "scoreError" : 0.13443406110061387,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark4GenerateCalculatedTimeSeries",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 1.9448140109069447,
+    "scoreError" : 0.0425696531266511,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark5ParseJson",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 3.519849438250082,
+    "scoreError" : 0.25082198380214005,
+    "scoreUnit" : "ms/op"
+  }, {
+    "benchmarkName" : "com.powsybl.benchmark.timeseries.TimeSeriesBenchmark.benchmark6WriteJson",
+    "parameters" : { },
+    "mode" : "AverageTime",
+    "score" : 2.8661828926233666,
+    "scoreError" : 0.17730813039193277,
+    "scoreUnit" : "ms/op"
+  } ]
+}
