@@ -28,3 +28,6 @@ dependency-reduced-pom.xml
 # Temporary directory to store benchmark run results before potentially moving them to the resources
 benchmark_reports/
 
+# Default output directory of compare_versions.sh
+version_comparison/
+
