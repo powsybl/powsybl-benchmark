@@ -181,3 +181,35 @@ java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark -prof gc
 This will run the `MultiThreadSecurityAnalysisBenchmark` with a GC profiler.
 
 > _The JMH options have to be passed after the benchmark names, otherwise they will be ignored._
+
+### Comparing two dependency versions
+
+The `compare_versions.sh` script builds the benchmark JAR twice with different Maven property values (typically
+dependency versions), runs the same benchmarks with the baseline then the candidate JAR, and compares the candidate
+results with the baseline ones.
+
+```
+./compare_versions.sh --baseline powsybl-core.version=7.4.0 --candidate powsybl-core.version=7.4.3 -- LoadFlowBenchmark
+```
+
+- `--baseline` and `--candidate` can be repeated to override several properties (e.g. `powsybl-open-loadflow.version`).
+- Everything after `--` is passed to the benchmark JAR (benchmark names, `--release`, JMH options...).
+- Results are written in `version_comparison/<timestamp>/baseline` and `version_comparison/<timestamp>/candidate`
+  (use `--output-dir` to change it). The Markdown files of the candidate directory contain the comparison with the baseline.
+- Use `--skip-tests` to skip unit tests during the builds and `--pause <seconds>` to change the cool-down pause
+  between the two runs (30 s by default). Run `./compare_versions.sh --help` for details.
+
+> _The selected versions must be compatible with the benchmark sources, otherwise the build fails._
+
+### Comparing two branches
+
+The `compare_branches.sh` script works the same way, but builds the benchmark JAR from two git refs (branches, tags or
+commits) instead of two property values. Each ref is built in a temporary git worktree, so the current checkout and
+its uncommitted changes are left untouched.
+
+```
+./compare_branches.sh --baseline main --candidate my-fix-branch -- LoadFlowBenchmark
+```
+
+The `--output-dir`, `--skip-tests` and `--pause` options are the same as for `compare_versions.sh`.
+Run `./compare_branches.sh --help` for details.
