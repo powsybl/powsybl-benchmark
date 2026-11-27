@@ -61,7 +61,10 @@ The results here are the duration per contingency.
 
 _Note: those results are for the v2026.2.0 version_
 
-In the current version, the security analysis is unexpectedly slow for the RealGrid network. This is to be investigated.
+Contingency propagation is disabled for networks without any openable breaker. For the RealGrid network, whose
+node-breaker voltage levels have no switch able to stop the propagation, each contingency would otherwise disconnect
+almost the whole network. The results below were obtained with contingency propagation enabled and have to be
+regenerated.
 
 | Network  | Contingencies | Basic parameters | Standard parameters | Standard parameters <br/>with reactive limits not used |
 |----------|---------------|------------------|---------------------|--------------------------------------------------------|
@@ -180,4 +183,6 @@ java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark -prof gc
 
 This will run the `MultiThreadSecurityAnalysisBenchmark` with a GC profiler.
 
-> _The JMH options have to be passed after the benchmark names, otherwise they will be ignored._
+> _The JMH options have to be passed after the benchmark names, otherwise they will be ignored. All the arguments
+> following the first JMH option are passed to JMH as is (e.g. `-jvmArgsAppend -Dfoo=bar`), so the options of the
+> benchmark runner have to be passed before the JMH options._

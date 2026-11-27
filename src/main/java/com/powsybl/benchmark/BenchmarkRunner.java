@@ -46,6 +46,9 @@ public final class BenchmarkRunner implements Runnable {
     @CommandLine.Parameters(paramLabel = "<benchmarks>", description = "List of benchmarks to run, separated by spaces")
     private String[] benchmarks;
 
+    @CommandLine.Unmatched
+    private String[] jmhOptions;
+
     @CommandLine.Option(names = {"--compare", "-C"}, arity = "0..1", description = "Compare with a baselineDirectory containing baseline benchmark results to compare with." +
         "Must contain only one of each serialized benchmark result", defaultValue = NULL_VALUE, fallbackValue = BenchmarkReportJsonSerDe.BENCHMARK_PATH_STRING)
     private Path baselineDirectory;
@@ -90,8 +93,9 @@ public final class BenchmarkRunner implements Runnable {
     }
 
     static CommandLine createCommandLine(BenchmarkRunner runner) {
-        // Unknown options (e.g. native JMH options like "-prof gc") are kept as positional parameters
-        return new CommandLine(runner).setUnmatchedOptionsArePositionalParams(true);
+        // Parsing stops at the first unknown option: it is the first native JMH option (e.g. "-prof gc"), and
+        // all remaining arguments are kept as JMH options, even values looking like runner options (e.g. "-Dfoo=bar")
+        return new CommandLine(runner).setStopAtUnmatched(true);
     }
 
     private static Map<String, String> loadBenchmarkMethodToClassCache() {
@@ -279,36 +283,17 @@ public final class BenchmarkRunner implements Runnable {
     }
 
     /**
-     * Index of the first token in {@link #benchmarks} that looks like an option (starts with "-").
-     * Tokens before it are benchmark names, tokens from it onward are native JMH options.
-     */
-    private int firstJmhOptionIndex() {
-        for (int i = 0; i < benchmarks.length; i++) {
-            if (benchmarks[i].startsWith("-")) {
-                return i;
-            }
-        }
-        return benchmarks.length;
-    }
-
-    /**
-     * @return the benchmark names given on the command line, or null if there are none.
+     * @return the benchmark names given on the command line (possibly empty).
      */
     private String[] getBenchmarkNames() {
-        if (benchmarks == null) {
-            return new String[0];
-        }
-        return Arrays.copyOfRange(benchmarks, 0, firstJmhOptionIndex());
+        return benchmarks != null ? benchmarks : new String[0];
     }
 
     /**
      * @return the native JMH options given on the command line (possibly empty).
      */
     String[] getJmhOptions() {
-        if (benchmarks == null) {
-            return new String[0];
-        }
-        return Arrays.copyOfRange(benchmarks, firstJmhOptionIndex(), benchmarks.length);
+        return jmhOptions != null ? jmhOptions : new String[0];
     }
 
     private void checkOrCreateDirectory(Path directory) {
