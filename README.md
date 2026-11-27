@@ -183,4 +183,6 @@ java -jar target/benchmark.jar MultiThreadSecurityAnalysisBenchmark -prof gc
 
 This will run the `MultiThreadSecurityAnalysisBenchmark` with a GC profiler.
 
-> _The JMH options have to be passed after the benchmark names, otherwise they will be ignored._
+> _The JMH options have to be passed after the benchmark names, otherwise they will be ignored. All the arguments
+> following the first JMH option are passed to JMH as is (e.g. `-jvmArgsAppend -Dfoo=bar`), so the options of the
+> benchmark runner have to be passed before the JMH options._

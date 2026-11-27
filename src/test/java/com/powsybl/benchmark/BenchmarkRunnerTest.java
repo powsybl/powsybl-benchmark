@@ -88,6 +88,17 @@ class BenchmarkRunnerTest {
     }
 
     @Test
+    void jmhOptionValuesAreNotParsedAsRunnerOptions() {
+        BenchmarkRunner runner = new BenchmarkRunner();
+        int exitCode = BenchmarkRunner.createCommandLine(runner)
+            .execute("--list", "benchA", "-jvmArgsAppend", "-Dfoo=bar", "-jvmArgs", "-Dbar=baz -Xmx1G", "-prof", "gc");
+
+        assertEquals(0, exitCode);
+        assertThat(runner.buildBenchmarkArgs()).containsExactly("benchA");
+        assertThat(runner.getJmhOptions()).containsExactly("-jvmArgsAppend", "-Dfoo=bar", "-jvmArgs", "-Dbar=baz -Xmx1G", "-prof", "gc");
+    }
+
+    @Test
     void jmhOptionsWithReleaseSuite() {
         BenchmarkRunner runner = new BenchmarkRunner();
         int exitCode = BenchmarkRunner.createCommandLine(runner)
