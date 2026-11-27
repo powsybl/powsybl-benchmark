@@ -99,17 +99,6 @@ public abstract class AbstractMarkdownResultsExporter implements ResultsExporter
     }
 
     /**
-     * Format the score of a benchmark result with the associated unit.
-     * @param score the score of the benchmark result
-     * @param unit the unit of the benchmark result
-     * @param scorePerOperationFormatter an operation to apply on the score before formatting
-     * @return the formatted score with the associated unit
-     */
-    public static String getFormattedScoreAndUnit(double score, String unit, DoubleUnaryOperator scorePerOperationFormatter) {
-        return String.format("%.2f %s", scorePerOperationFormatter.applyAsDouble(score), unit);
-    }
-
-    /**
      * Constructs an array of column names by combining a list of initial column names and
      * column names derived from a list of benchmark results using a column provider function.
      *

@@ -41,7 +41,6 @@ public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResult
 
     @Override
     protected Map<String, String> getLine(List<BenchmarkResult> results) {
-        Map<String, Double> lineScores = getLineScores(results);
         //this is formatted like a double in the string, but it's an int, get the integer part with the split
         ToIntFunction<BenchmarkResult> contingenciesNumberGetter = r -> Integer.parseInt(r.parameters().get(BenchmarkResult.NUMBER_OF_CONTINGENCIES_KEY_PARAM)
             .split("\\.")[0]);
@@ -53,26 +52,10 @@ public class ContingenciesMarkdownResultsExporter extends LoadFlowMarkdownResult
             Map<String, String> lineStrings = new HashMap<>();
             lineStrings.put("Network", Constants.getPrettyNetworkName(results.getFirst().parameters().get("networkName")));
             lineStrings.put("Contingencies", String.valueOf(contingenciesNumber));
-            int resultIndex = 0;
-            for (Map.Entry<String, Double> scorePerColumn : lineScores.entrySet()) {
-                lineStrings.put(
-                    scorePerColumn.getKey(),
-                    getFormattedScoreAndUnit(scorePerColumn.getValue(), results.get(resultIndex).scoreUnit(), scorePerContingency)
-                );
-                ++resultIndex;
-            }
+            results.forEach(result -> lineStrings.put(getPrettyColumnName(result), getFormattedScoreAndUnit(result, scorePerContingency)));
             return lineStrings;
         } else {
             throw new IllegalStateException("All results for a given network must have the same number of contingencies");
         }
-    }
-
-    @Override
-    protected Map<String, Double> getLineScores(List<BenchmarkResult> results) {
-        return Map.of(
-            getPrettyColumnName(results.get(0)), results.get(0).score(),
-            getPrettyColumnName(results.get(1)), results.get(1).score(),
-            getPrettyColumnName(results.get(2)), results.get(2).score()
-        );
     }
 }
