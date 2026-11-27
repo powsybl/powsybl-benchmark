@@ -40,6 +40,10 @@ die() {
     exit 1
 }
 
+# Check that required commands are available
+command -v mvn >/dev/null || die "mvn not found in PATH"
+command -v java >/dev/null || die "java not found in PATH"
+
 BASELINE_PROPS=()
 CANDIDATE_PROPS=()
 OUTPUT_DIR=""
@@ -100,8 +104,6 @@ done
 [[ ${#BASELINE_PROPS[@]} -gt 0 ]] || die "at least one --baseline property is required"
 [[ ${#CANDIDATE_PROPS[@]} -gt 0 ]] || die "at least one --candidate property is required"
 [[ ${#BENCHMARK_ARGS[@]} -gt 0 ]] || die "no benchmark arguments given after '--'"
-command -v mvn >/dev/null || die "mvn not found in PATH"
-command -v java >/dev/null || die "java not found in PATH"
 
 cd "$SCRIPT_DIR"
 

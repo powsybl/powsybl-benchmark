@@ -41,6 +41,11 @@ die() {
     exit 1
 }
 
+# Check that required commands are available
+command -v git >/dev/null || die "git not found in PATH"
+command -v mvn >/dev/null || die "mvn not found in PATH"
+command -v java >/dev/null || die "java not found in PATH"
+
 BASELINE_REF=""
 CANDIDATE_REF=""
 OUTPUT_DIR=""
@@ -94,9 +99,6 @@ done
 [[ -n "$BASELINE_REF" ]] || die "--baseline ref is required"
 [[ -n "$CANDIDATE_REF" ]] || die "--candidate ref is required"
 [[ ${#BENCHMARK_ARGS[@]} -gt 0 ]] || die "no benchmark arguments given after '--'"
-command -v git >/dev/null || die "git not found in PATH"
-command -v mvn >/dev/null || die "mvn not found in PATH"
-command -v java >/dev/null || die "java not found in PATH"
 
 cd "$SCRIPT_DIR"
 
