@@ -8,6 +8,8 @@
 package com.powsybl.benchmark.security.state;
 
 import com.powsybl.benchmark.commons.state.AbstractAnalysisState;
+import com.powsybl.iidm.network.Network;
+import com.powsybl.iidm.network.SwitchKind;
 import com.powsybl.openloadflow.sa.OpenSecurityAnalysisParameters;
 import com.powsybl.security.SecurityAnalysisParameters;
 import com.powsybl.security.SecurityAnalysisRunParameters;
@@ -37,9 +39,20 @@ public abstract class AbstractSecurityAnalysisState extends AbstractAnalysisStat
         OpenSecurityAnalysisParameters securityAnalysisParametersExt = new OpenSecurityAnalysisParameters();
         parameters.addExtension(OpenSecurityAnalysisParameters.class, securityAnalysisParametersExt);
         securityAnalysisParametersExt.setThreadCount(getThreadCount());
+        if (!hasOpenableBreaker(getNetwork())) {
+            // Contingency propagation stops at openable (non fictitious) breakers. In a node-breaker network without
+            // any, such as RealGrid whose only switches are open fictitious breakers created by the CGMES importer
+            // for disconnected terminals, each contingency would disconnect almost the whole network. Networks
+            // without any switch (bus-breaker IEEE and Matpower cases) are not affected by the propagation.
+            securityAnalysisParametersExt.setContingencyPropagation(false);
+        }
 
         // Security analysis run parameters
         runParameters = SecurityAnalysisRunParameters.getDefault().setSecurityAnalysisParameters(parameters);
+    }
+
+    private static boolean hasOpenableBreaker(Network network) {
+        return network.getSwitchStream().anyMatch(sw -> sw.getKind() == SwitchKind.BREAKER && !sw.isFictitious());
     }
 
     public SecurityAnalysisRunParameters getRunParameters() {
